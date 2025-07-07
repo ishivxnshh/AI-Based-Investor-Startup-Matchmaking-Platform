@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvestAI - AI-Powered Startup-Investor Matching Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            /* Default light mode background */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+        }
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+            color: #E2E8F0;
+        }
+        .dark-mode * {
+            color: inherit;
+        }
+        .image-overlay::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 0.5rem;
+        }
+        .dark-mode .header-bg {
+            background-color: rgba(26, 32, 44, 0.9);
+            color: #E2E8F0;
+        }
+        .dark-mode .header-text {
+            color: #E2E8F0;
+        }
+        .dark-mode .nav-link {
+            color: #CBD5E0;
+        }
+        .dark-mode .nav-link:hover {
+            color: #F7FAFC;
+        }
+        .dark-mode .footer-bg {
+            background-color: #1A202C;
+            color: #E2E8F0;
+        }
+        .dark-mode .image-overlay::before {
+            background: rgba(0, 0, 0, 0.6);
+        }
+        .dark-mode .text-white {
+            color: #E2E8F0 !important;
+        }
+        .dark-mode .text-gray-100 {
+            color: #CBD5E0 !important;
+        }
+        .dark-mode .bg-white {
+            background-color: #2D3748 !important;
+        }
+        .dark-mode .bg-gray-200 {
+            background-color: #4A5568 !important;
+        }
+        .dark-mode .bg-gray-100 {
+            background-color: #2D3748 !important;
+        }
+        .dark-mode .bg-purple-50 {
+            background-color: #322659 !important;
+        }
+        .dark-mode .text-gray-800 {
+            color: #E2E8F0 !important;
+        }
+        .dark-mode .text-gray-600 {
+            color: #A0AEC0 !important;
+        }
+        .dark-mode .text-gray-700 {
+            color: #E2E8F0 !important;
+        }
+        .dark-mode .text-gray-300 {
+            color: #A0AEC0 !important;
+        }
+        .dark-mode .text-purple-800 {
+            color: #D6BCFA !important;
+        }
+        .dark-mode .text-purple-700 {
+            color: #B794F4 !important;
+        }
+        .dark-mode .text-purple-600 {
+            color: #D6BCFA !important;
+        }
+        .dark-mode .text-purple-400 {
+            color: #C4B5FD !important;
+        }
+        .dark-mode .border-gray-200 {
+            border-color: #4A5568 !important;
+        }
+        .dark-mode .border-gray-700 {
+            border-color: #A0AEC0 !important;
+        }
+        .dark-mode .bg-opacity-90 {
+            background-color: rgba(26, 32, 44, 0.9) !important;
+        }
+        .dark-mode .bg-gray-50 {
+            background-color: #1A202C !important;
+        }
+        .dark-mode .bg-gray-800 {
+            background-color: #2D3748 !important;
+        }
+        .dark-mode .bg-gray-900 {
+            background-color: #1A202C !important;
+        }
+        .dark-mode .bg-purple-100 {
+            background-color: #553C9A !important;
+        }
+        .dark-mode .bg-purple-900 {
+            background-color: #553C9A !important;
+        }
+        .dark-mode .bg-blue-100 {
+            background-color: #2C5282 !important;
+        }
+        .dark-mode .bg-blue-900 {
+            background-color: #2C5282 !important;
+        }
+        .dark-mode .bg-green-100 {
+            background-color: #22543D !important;
+        }
+        .dark-mode .bg-green-900 {
+            background-color: #22543D !important;
+        }
+        .dark-mode .bg-yellow-100 {
+            background-color: #744210 !important;
+        }
+        .dark-mode .bg-yellow-900 {
+            background-color: #744210 !important;
+        }
+        .dark-mode .bg-red-100 {
+            background-color: #742A2A !important;
+        }
+        .dark-mode .bg-red-900 {
+            background-color: #742A2A !important;
+        }
+        .dark-mode .bg-indigo-100 {
+            background-color: #3730A3 !important;
+        }
+        .dark-mode .bg-indigo-900 {
+            background-color: #3730A3 !important;
+        }
+        .dark-mode .text-blue-700 {
+            color: #90CDF4 !important;
+        }
+        .dark-mode .text-blue-300 {
+            color: #90CDF4 !important;
+        }
+        .dark-mode .text-green-700 {
+            color: #9AE6B4 !important;
+        }
+        .dark-mode .text-green-300 {
+            color: #9AE6B4 !important;
+        }
+        .dark-mode .text-yellow-700 {
+            color: #FBD38D !important;
+        }
+        .dark-mode .text-yellow-300 {
+            color: #FBD38D !important;
+        }
+        .dark-mode .text-red-700 {
+            color: #FEB2B2 !important;
+        }
+        .dark-mode .text-red-300 {
+            color: #FEB2B2 !important;
+        }
+        .dark-mode .text-orange-700 {
+            color: #FBD38D !important;
+        }
+        .dark-mode .text-orange-300 {
+            color: #FBD38D !important;
+        }
+        .dark-mode .text-indigo-700 {
+            color: #A3BFFA !important;
+        }
+        .dark-mode .text-indigo-300 {
+            color: #A3BFFA !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="header-bg bg-white bg-opacity-90 shadow-md py-4 px-6 md:px-12 lg:px-24 flex justify-between items-center rounded-b-lg">
+        <div class="text-xl font-bold text-gray-800 header-text">InvestAI</div>
+        <nav class="hidden md:flex space-x-8">
+            <a href="#how-it-works" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300 nav-link">How It Works</a>
+            <a href="#features" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300 nav-link">Features</a>
+            <a href="#pricing" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300 nav-link">Pricing</a>
+            <a href="#testimonials" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300 nav-link">Success Stories</a>
+            <a href="#faq" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300 nav-link">FAQ</a>
+            <a href="#contact" class="text-gray-600 hover:text-gray-900 font-medium transition duration-300 nav-link">Contact</a>
+        </nav>
+        <div class="text-gray-600 header-text">
+            <!-- Dark/Light Mode Toggle Button -->
+            <button id="theme-toggle" class="p-2 rounded-full bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-500 transition duration-300">
+
+                <svg id="sun-icon" class="w-6 h-6 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h1M3 12H2m15.325-4.675l.707-.707M6.343 17.657l-.707.707M16.95 7.05l.707-.707M7.05 16.95l-.707.707M12 18a6 6 0 100-12 6 6 0 000 12z"></path>
+                </svg>
+
+                <svg id="moon-icon" class="w-6 h-6 text-gray-800 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <main class="flex-grow container mx-auto px-4 md:px-8 lg:px-16 py-8 flex flex-col lg:flex-row items-center justify-center">
+
+        <div class="w-full lg:w-1/2 p-4 lg:pr-8 text-white">
+            <div class="mb-6">
+                <p class="text-lg font-semibold mb-2">🚀 AI-Powered Startup-Investor Matching</p>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+                Where Great Ideas Meet Smart Capital
+            </h1>
+            <p class="text-xl mb-8 text-gray-100">
+                Our AI platform connects innovative startups with the right investors, 
+                analyzing compatibility and generating intelligent matches for successful partnerships.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <button class="bg-white text-purple-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition duration-300">
+                    For Startups
+                </button>
+                <button id="investor-btn" class="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-purple-600 transition duration-300">
+                    For Investors
+                </button>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 p-4">
+            <div class="relative rounded-xl overflow-hidden shadow-2xl image-overlay">
+                <!-- Placeholder image-->
+                <img src="https://placehold.co/1200x800/667eea/FFFFFF?text=AI+Matching+Platform"
+                     alt="AI Startup-Investor Matching Platform"
+                     class="w-full h-auto object-cover rounded-xl"
+                     onerror="this.onerror=null;this.src='https://placehold.co/1200x800/667eea/FFFFFF?text=AI+Matching+Platform';"
+                >
+                <div class="absolute top-4 right-4 bg-white bg-opacity-90 text-purple-600 px-3 py-1 rounded-md text-sm font-medium">
+                    AI-Powered
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- About the Platform Section -->
+    <section id="about" class="py-16 px-4 md:px-8 lg:px-32 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white">About InvestAI</h2>
+        <p class="text-lg text-gray-600 dark:text-gray-300 mb-6">
+          InvestAI is a next-generation matchmaking platform designed to bridge the gap between innovative startups and forward-thinking investors. Our mission is to empower entrepreneurs and investors by leveraging artificial intelligence to create meaningful, data-driven connections that lead to successful partnerships.
+        </p>
+        <div class="flex flex-col md:flex-row justify-center gap-8 mt-8">
+          <div class="flex-1 bg-purple-50 dark:bg-purple-900/30 rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-semibold text-purple-700 dark:text-purple-300 mb-2">For Startups</h3>
+            <p class="text-gray-700 dark:text-gray-200">Showcase your ideas, team, and traction. Get matched with investors who believe in your vision and receive AI-powered feedback to refine your pitch.</p>
+          </div>
+          <div class="flex-1 bg-purple-50 dark:bg-purple-900/30 rounded-lg p-6 shadow-md">
+            <h3 class="text-xl font-semibold text-purple-700 dark:text-purple-300 mb-2">For Investors</h3>
+            <p class="text-gray-700 dark:text-gray-200">Discover promising startups that fit your investment criteria. Access AI-generated insights, risk scoring, and connect directly with founders ready to make an impact.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features/How It Works Section -->
+    <section id="how-it-works" class="py-16 px-4 md:px-8 lg:px-32 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white">How It Works</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300">Our AI-powered platform makes connecting startups and investors simple and effective</p>
+        </div>
+        
+        <div class="grid md:grid-cols-3 gap-8 mb-16">
+          <div class="text-center">
+            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-white text-xl font-bold">1</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-white">Create Profiles</h3>
+            <p class="text-gray-600 dark:text-gray-300">Startups submit their pitch details, goals, and funding needs. Investors list their interests, industry focus, and investment criteria.</p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-white text-xl font-bold">2</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-white">AI Analysis</h3>
+            <p class="text-gray-600 dark:text-gray-300">Our AI analyzes language, compatibility factors, and market trends to generate intelligent matches and risk assessments.</p>
+          </div>
+          
+          <div class="text-center">
+            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span class="text-white text-xl font-bold">3</span>
+            </div>
+            <h3 class="text-xl font-semibold mb-3 text-gray-800 dark:text-white">Connect & Grow</h3>
+            <p class="text-gray-600 dark:text-gray-300">Both parties receive matched recommendations, connect through our platform, and start building successful partnerships.</p>
+          </div>
+        </div>
+
+        <!-- Key Features -->
+        <div class="text-center mb-12">
+          <h3 class="text-2xl font-bold mb-8 text-gray-800 dark:text-white">Key Features</h3>
+        </div>
+        
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow-md">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">AI-Powered Matching</h4>
+            <p class="text-gray-600 dark:text-gray-300">Advanced algorithms analyze compatibility based on industry, stage, location, and investment preferences.</p>
+          </div>
+          
+          <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow-md">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Risk Assessment</h4>
+            <p class="text-gray-600 dark:text-gray-300">Get detailed risk/opportunity scoring for each startup to make informed investment decisions.</p>
+          </div>
+          
+          <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow-md">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Direct Messaging</h4>
+            <p class="text-gray-600 dark:text-gray-300">Connect directly with matched parties through our secure messaging and scheduling system.</p>
+          </div>
+          
+          <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow-md">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Pitch Feedback</h4>
+            <p class="text-gray-600 dark:text-gray-300">AI-generated feedback helps startups refine their pitch and improve their presentation.</p>
+          </div>
+          
+          <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow-md">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Verified Profiles</h4>
+            <p class="text-gray-600 dark:text-gray-300">All profiles are verified to ensure quality connections and build trust between parties.</p>
+          </div>
+          
+          <div class="bg-white dark:bg-gray-700 rounded-lg p-6 shadow-md">
+            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center mb-4">
+              <svg class="w-6 h-6 text-purple-600 dark:text-purple-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"></path>
+              </svg>
+            </div>
+            <h4 class="text-lg font-semibold mb-2 text-gray-800 dark:text-white">Market Insights</h4>
+            <p class="text-gray-600 dark:text-gray-300">Access to market trends, industry analysis, and investment opportunities in your preferred sectors.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-16 px-4 md:px-8 lg:px-32 bg-white dark:bg-gray-900 transition-colors duration-300">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white">Simple, Transparent Pricing</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300">Choose the plan that fits your needs. No hidden fees, no surprises.</p>
+        </div>
+
+        <!-- Pricing Toggle -->
+        <div class="flex justify-center mb-8">
+          <div class="bg-gray-100 dark:bg-gray-700 rounded-lg p-1">
+            <button id="startup-pricing" class="px-6 py-2 rounded-md bg-purple-600 text-white font-medium transition duration-300">
+              For Startups
+            </button>
+            <button id="investor-pricing" class="px-6 py-2 rounded-md text-gray-600 dark:text-gray-300 font-medium transition duration-300">
+              For Investors
+            </button>
+          </div>
+        </div>
+
+        <!-- Startup Pricing -->
+        <div id="startup-plans" class="grid md:grid-cols-3 gap-8">
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Starter</h3>
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">Free</div>
+              <p class="text-gray-600 dark:text-gray-300">Perfect for early-stage startups</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Basic profile creation</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">5 investor matches per month</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Basic pitch feedback</span>
+              </li>
+            </ul>
+            <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+              Get Started Free
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500 p-8 relative">
+            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span class="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">Most Popular</span>
+            </div>
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Growth</h3>
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">$49<span class="text-lg text-gray-600 dark:text-gray-300">/month</span></div>
+              <p class="text-gray-600 dark:text-gray-300">For growing startups</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Everything in Starter</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Unlimited investor matches</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Advanced AI feedback</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Priority support</span>
+              </li>
+            </ul>
+            <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+              Start Growth Plan
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Scale</h3>
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">$99<span class="text-lg text-gray-600 dark:text-gray-300">/month</span></div>
+              <p class="text-gray-600 dark:text-gray-300">For established startups</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Everything in Growth</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Custom pitch deck analysis</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Dedicated success manager</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Market insights & reports</span>
+              </li>
+            </ul>
+            <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+              Start Scale Plan
+            </button>
+          </div>
+        </div>
+
+        <!-- Investor Pricing -->
+        <div id="investor-plans" class="grid md:grid-cols-3 gap-8 hidden">
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Basic</h3>
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">$29<span class="text-lg text-gray-600 dark:text-gray-300">/month</span></div>
+              <p class="text-gray-600 dark:text-gray-300">For individual investors</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Access to startup database</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">10 startup matches per month</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Basic risk assessment</span>
+              </li>
+            </ul>
+            <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+              Start Basic Plan
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border-2 border-purple-500 p-8 relative">
+            <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+              <span class="bg-purple-600 text-white px-4 py-1 rounded-full text-sm font-medium">Most Popular</span>
+            </div>
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Professional</h3>
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">$79<span class="text-lg text-gray-600 dark:text-gray-300">/month</span></div>
+              <p class="text-gray-600 dark:text-gray-300">For active investors</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Everything in Basic</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Unlimited startup matches</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Advanced AI insights</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Priority matching</span>
+              </li>
+            </ul>
+            <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+              Start Professional Plan
+            </button>
+          </div>
+
+          <div class="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8">
+            <div class="text-center mb-6">
+              <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">Enterprise</h3>
+              <div class="text-3xl font-bold text-purple-600 dark:text-purple-400 mb-2">$199<span class="text-lg text-gray-600 dark:text-gray-300">/month</span></div>
+              <p class="text-gray-600 dark:text-gray-300">For investment firms</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Everything in Professional</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Team collaboration tools</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Custom reporting & analytics</span>
+              </li>
+              <li class="flex items-center">
+                <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-gray-700 dark:text-gray-300">Dedicated account manager</span>
+              </li>
+            </ul>
+            <button class="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition duration-300">
+              Contact Sales
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section-->
+    <section id="testimonials" class="py-16 px-4 md:px-8 lg:px-32 bg-gray-50 dark:bg-gray-800 transition-colors duration-300">
+      <div class="max-w-6xl mx-auto">
+        <div class="text-center mb-12">
+          <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-800 dark:text-white">Success Stories</h2>
+          <p class="text-lg text-gray-600 dark:text-gray-300">Hear from startups and investors who found success through our platform</p>
+        </div>
+        <div class="relative overflow-hidden">
+          <div id="testimonials-carousel" class="flex transition-transform duration-500 ease-in-out" style="width: max-content;">
+            <!-- Card 1 -->
+            <div class="testimonial-card flex-shrink-0 w-80 md:w-96 lg:w-80 xl:w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 flex flex-col justify-between min-h-[280px] mr-6">
+              <div>
+                <div class="star-rating mb-3 text-yellow-400">★★★★★</div>
+                <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                  "InvestAI connected us with the perfect investors who understood our vision. The AI matching was incredibly accurate - we secured $2M in funding within 3 months!"
+                </p>
+              </div>
+              <div class="flex flex-col items-start mt-auto">
+                <span class="font-semibold text-purple-700 dark:text-purple-300 mb-1">Sarah Chen</span>
+                <span class="category-badge bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">Startup</span>
+              </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="testimonial-card flex-shrink-0 w-80 md:w-96 lg:w-80 xl:w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 flex flex-col justify-between min-h-[280px] mr-6">
+              <div>
+                <div class="star-rating mb-3 text-yellow-400">★★★★★</div>
+                <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                  "The AI insights helped me identify promising startups I would have missed. I've made 3 investments through the platform, all performing above expectations."
+                </p>
+              </div>
+              <div class="flex flex-col items-start mt-auto">
+                <span class="font-semibold text-blue-700 dark:text-blue-300 mb-1">Michael Rodriguez</span>
+                <span class="category-badge bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">Investor</span>
+              </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="testimonial-card flex-shrink-0 w-80 md:w-96 lg:w-80 xl:w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 flex flex-col justify-between min-h-[280px] mr-6">
+              <div>
+                <div class="star-rating mb-3 text-yellow-400">★★★★★</div>
+                <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                  "The AI feedback on our pitch deck was invaluable. We refined our presentation and secured funding from investors who truly aligned with our mission."
+                </p>
+              </div>
+              <div class="flex flex-col items-start mt-auto">
+                <span class="font-semibold text-green-700 dark:text-green-300 mb-1">Alex Thompson</span>
+                <span class="category-badge bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">Startup</span>
+              </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="testimonial-card flex-shrink-0 w-80 md:w-96 lg:w-80 xl:w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 flex flex-col justify-between min-h-[280px] mr-6">
+              <div>
+                <div class="star-rating mb-3 text-yellow-400">★★★★★</div>
+                <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                  "InvestAI's risk assessment tools have been game-changing for our investment decisions. The platform has helped us discover 5 portfolio companies this year."
+                </p>
+              </div>
+              <div class="flex flex-col items-start mt-auto">
+                <span class="font-semibold text-orange-700 dark:text-orange-300 mb-1">Lisa Park</span>
+                <span class="category-badge bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">Investor</span>
+              </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="testimonial-card flex-shrink-0 w-80 md:w-96 lg:w-80 xl:w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 flex flex-col justify-between min-h-[280px] mr-6">
+              <div>
+                <div class="star-rating mb-3 text-yellow-400">★★★★★</div>
+                <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                  "The platform's AI matching found us investors who specialized in healthcare technology. We closed our Series A in record time!"
+                </p>
+              </div>
+              <div class="flex flex-col items-start mt-auto">
+                <span class="font-semibold text-red-700 dark:text-red-300 mb-1">David Kim</span>
+                <span class="category-badge bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">Startup</span>
+              </div>
+            </div>
+            <!-- Card 6 -->
+            <div class="testimonial-card flex-shrink-0 w-80 md:w-96 lg:w-80 xl:w-80 bg-white dark:bg-gray-700 rounded-xl shadow-lg p-6 flex flex-col justify-between min-h-[280px] mr-6">
+              <div>
+                <div class="star-rating mb-3 text-yellow-400">★★★★★</div>
+                <p class="text-gray-700 dark:text-gray-300 text-lg mb-6">
+                  "InvestAI's platform has streamlined our deal sourcing process. The quality of startups and the accuracy of AI insights have exceeded our expectations."
+                </p>
+              </div>
+              <div class="flex flex-col items-start mt-auto">
+                <span class="font-semibold text-indigo-700 dark:text-indigo-300 mb-1">Robert Wilson</span>
+                <span class="category-badge bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200">Investor</span>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-center mt-8 space-x-4">
+            <button id="prevBtn" class="carousel-arrow disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+              </svg>
+            </button>
+            <button id="nextBtn" class="carousel-arrow disabled:opacity-50 disabled:cursor-not-allowed">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+      <style>
+        .carousel-arrow {
+          background-color: #e0f2fe;
+          color: #000;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background-color 0.3s ease;
+        }
+        .carousel-arrow:hover {
+          background-color: #a7d9f7;
+        }
+        .testimonial-card {
+          background-color: #ffffff;
+          border-radius: 8px;
+          padding: 1.5rem;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+          min-height: 280px;
+        }
+        .star-rating {
+          color: #fbbf24;
+          font-size: 1.25rem;
+        }
+        .category-badge {
+          background-color: #e0f2fe;
+          color: #333;
+          padding: 0.3rem 0.8rem;
+          border-radius: 20px;
+          font-size: 0.85rem;
+          font-weight: 500;
+        }
+        .dark-mode .testimonial-card {
+          background-color: #374151 !important;
+        }
+        .dark-mode .carousel-arrow {
+          background-color: #4A5568 !important;
+          color: #E2E8F0 !important;
+        }
+        .dark-mode .carousel-arrow:hover {
+          background-color: #2D3748 !important;
+        }
+        .dark-mode .carousel-arrow:disabled {
+          background-color: #2D3748 !important;
+          color: #718096 !important;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+      </style>
+      <script>
+        const carousel = document.getElementById('testimonials-carousel');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const cards = Array.from(carousel.children);
+        let currentIndex = 0;
+        
+        function getVisibleCards() {
+          if (window.innerWidth >= 1280) return 4; // xl
+          if (window.innerWidth >= 1024) return 3; // lg
+          if (window.innerWidth >= 768) return 2;  // md
+          return 1; // mobile
+        }
+        
+        function updateCarousel() {
+          const cardWidth = 320; // w-80 = 320px
+          const gap = 24; // mr-6 = 24px
+          const visibleCards = getVisibleCards();
+          const maxIndex = Math.max(0, cards.length - visibleCards);
+          
+
+          currentIndex = Math.max(0, Math.min(currentIndex, maxIndex));
+          
+          const offset = -currentIndex * (cardWidth + gap);
+          carousel.style.transform = `translateX(${offset}px)`;
+          
+
+          prevBtn.disabled = currentIndex === 0;
+          nextBtn.disabled = currentIndex >= maxIndex;
+        }
+        
+        prevBtn.addEventListener('click', () => {
+          if (currentIndex > 0) {
+            currentIndex--;
+            updateCarousel();
+          }
+        });
+        
+        nextBtn.addEventListener('click', () => {
+          const visibleCards = getVisibleCards();
+          const maxIndex = Math.max(0, cards.length - visibleCards);
+          
+          if (currentIndex < maxIndex) {
+            currentIndex++;
+            updateCarousel();
+          }
+        });
+        
+
+        window.addEventListener('resize', () => {
+          updateCarousel();
+        });
+        
+
+        updateCarousel();
+      </script>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-bg bg-gray-800 text-white text-center py-4 mt-8 rounded-t-lg">
+        <p>&copy; 2025 Reon Consultancy. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const themeToggle = document.getElementById('theme-toggle');
+            const body = document.body;
+            const sunIcon = document.getElementById('sun-icon');
+            const moonIcon = document.getElementById('moon-icon');
+
+            // Theme preference, default to light
+            const currentTheme = localStorage.getItem('theme');
+            if (currentTheme === 'dark') {
+                body.classList.add('dark-mode');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+            } else {
+                body.classList.remove('dark-mode');
+                sunIcon.classList.remove('hidden');
+                moonIcon.classList.add('hidden');
+            }
+
+            themeToggle.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+
+
+                sunIcon.classList.toggle('hidden');
+                moonIcon.classList.toggle('hidden');
+
+
+                if (body.classList.contains('dark-mode')) {
+                    localStorage.setItem('theme', 'dark');
+                } else {
+                    localStorage.setItem('theme', 'light');
+                }
+            });
+
+            // Pricing toggle functionality
+            const startupPricing = document.getElementById('startup-pricing');
+            const investorPricing = document.getElementById('investor-pricing');
+            const startupPlans = document.getElementById('startup-plans');
+            const investorPlans = document.getElementById('investor-plans');
+
+            startupPricing.addEventListener('click', () => {
+                startupPricing.classList.add('bg-purple-600', 'text-white');
+                startupPricing.classList.remove('text-gray-600', 'dark:text-gray-300');
+                investorPricing.classList.remove('bg-purple-600', 'text-white');
+                investorPricing.classList.add('text-gray-600', 'dark:text-gray-300');
+                startupPlans.classList.remove('hidden');
+                investorPlans.classList.add('hidden');
+            });
+
+            investorPricing.addEventListener('click', () => {
+                investorPricing.classList.add('bg-purple-600', 'text-white');
+                investorPricing.classList.remove('text-gray-600', 'dark:text-gray-300');
+                startupPricing.classList.remove('bg-purple-600', 'text-white');
+                startupPricing.classList.add('text-gray-600', 'dark:text-gray-300');
+                investorPlans.classList.remove('hidden');
+                startupPlans.classList.add('hidden');
+            });
+        });
+    </script>
+
+</body>
+</html>
