@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Startup Details - InvestR</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f9fc;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2d47a6 0%, #1e3a8a 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        .breadcrumb {
+            background: white;
+            padding: 1rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breadcrumb a {
+            color: #2d47a6;
+            text-decoration: none;
+            margin-right: 0.5rem;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        .startup-hero {
+            background: white;
+            padding: 3rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        .hero-main {
+            flex: 1;
+        }
+
+        .startup-logo {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .startup-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .startup-tagline {
+            font-size: 1.3rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2d47a6;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .investment-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 2rem;
+        }
+
+        .investment-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .funding-progress {
+            margin-bottom: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+            transition: width 0.3s ease;
+        }
+
+        .funding-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .funding-stat {
+            text-align: center;
+        }
+
+        .funding-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .funding-label {
+            font-size: 0.85rem;
+            color: #6b7280;
+        }
+
+        .interest-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #2d47a6 0%, #1e3a8a 100%);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 1rem;
+        }
+
+        .interest-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(45, 71, 166, 0.4);
+        }
+
+        .investment-info {
+            font-size: 0.9rem;
+            color: #6b7280;
+            text-align: center;
+        }
+
+        .content-section {
+            background: white;
+            margin: 2rem 0;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+
+        .section-content {
+            color: #374151;
+            line-height: 1.7;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #e5e7eb;
+            margin-bottom: 2rem;
+        }
+
+        .tab {
+            padding: 1rem 2rem;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .tab.active {
+            color: #2d47a6;
+            border-bottom-color: #2d47a6;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .team-member {
+            text-align: center;
+            padding: 1.5rem;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .member-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin: 0 auto 1rem;
+        }
+
+        .member-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-role {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .related-startups {
+            padding: 3rem 0;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .related-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .related-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .related-image {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .related-content {
+            padding: 1.5rem;
+        }
+
+        .related-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .related-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+
+        .footer {
+            background: #1f2937;
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .startup-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">InvestR</div>
+                <nav class="nav-links">
+                    <a href="index.html">Home</a>
+                    <a href="index.html#startups">Startups</a>
+                    <a href="#investors">Investors</a>
+                    <a href="#about">About</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <nav class="breadcrumb">
+        <div class="container">
+            <a href="home.html">Home</a> > 
+            <a href="home.html#startups">Startups</a> > 
+            <span id="breadcrumbTitle">Startup Details</span>
+        </div>
+    </nav>
+
+    <main>
+        <section class="startup-hero">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-main">
+                        <div class="startup-logo" id="startupLogo">ST</div>
+                        <h1 class="startup-title" id="startupTitle">Loading...</h1>
+                        <p class="startup-tagline" id="startupTagline">Loading startup details...</p>
+                        
+                        <div class="hero-stats">
+                            <div class="stat-item">
+                                <div class="stat-value" id="statIndustry">-</div>
+                                <div class="stat-label">Industry</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="statStage">-</div>
+                                <div class="stat-label">Stage</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="statLocation">-</div>
+                                <div class="stat-label">Location</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-value" id="statFounded">-</div>
+                                <div class="stat-label">Founded</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="investment-card">
+                        <h3 class="investment-title">Investment Opportunity</h3>
+                        <div class="funding-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <div class="funding-stats">
+                                <div class="funding-stat">
+                                    <div class="funding-value" id="fundingRaised">$0</div>
+                                    <div class="funding-label">Raised</div>
+                                </div>
+                                <div class="funding-stat">
+                                    <div class="funding-value" id="fundingGoal">$0</div>
+                                    <div class="funding-label">Goal</div>
+                                </div>
+                                <div class="funding-stat">
+                                    <div class="funding-value" id="investorCount">0</div>
+                                    <div class="funding-label">Investors</div>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="interest-btn" onclick="showInterest()">
+                            Show Interest as Investor
+                        </button>
+                        <p class="investment-info">
+                            Join other investors backing this innovative startup
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-section">
+            <div class="container">
+                <div class="tabs">
+                    <div class="tab active" onclick="showTab('overview')">Overview</div>
+                    <div class="tab" onclick="showTab('team')">Team</div>
+                    <div class="tab" onclick="showTab('financials')">Financials</div>
+                    <div class="tab" onclick="showTab('updates')">Updates</div>
+                </div>
+
+                <div class="tab-content active" id="overview">
+                    <h2 class="section-title">About This Startup</h2>
+                    <div class="section-content" id="aboutContent">
+                        <p>Loading startup information...</p>
+                    </div>
+                    
+                    <h2 class="section-title">Business Model</h2>
+                    <div class="section-content" id="businessModel">
+                        <p>Details about the business model will be loaded here...</p>
+                    </div>
+                    
+                    <h2 class="section-title">Market Opportunity</h2>
+                    <div class="section-content" id="marketOpportunity">
+                        <p>Market analysis and opportunity details will be displayed here...</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="team">
+                    <h2 class="section-title">Meet the Team</h2>
+                    <div class="team-grid" id="teamGrid">
+                        <!-- Team members will be loaded here -->
+                    </div>
+                </div>
+
+                <div class="tab-content" id="financials">
+                    <h2 class="section-title">Financial Information</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-value" id="revenue">$0</div>
+                            <div class="metric-label">Annual Revenue</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="growth">0%</div>
+                            <div class="metric-label">Growth Rate</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="valuation">$0</div>
+                            <div class="metric-label">Valuation</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="burnRate">$0</div>
+                            <div class="metric-label">Monthly Burn Rate</div>
+                        </div>
+                    </div>
+                    
+                    <h3 class="section-title">Financial Projections</h3>
+                    <div class="section-content">
+                        <p>Detailed financial projections and key metrics will be displayed here based on the startup's business plan and growth trajectory.</p>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="updates">
+                    <h2 class="section-title">Recent Updates</h2>
+                    <div id="updatesContent">
+                        <!-- Updates will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="related-startups">
+            <div class="container">
+                <h2 class="section-title">Related Startups</h2>
+                <div class="related-grid" id="relatedGrid">
+                    <!-- Related startups will be loaded here -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 StartupHub. All rights reserved. Connecting investors with innovative startups.</p>
+        </div>
+    </footer>
+
+    <script src="data/startups.js"></script>
+    <script>
+        let currentStartup = null;
+
+        function loadStartupDetails() {
+            // Get startup ID from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const startupId = urlParams.get('id');
+            
+            if (!startupId) {
+                // Fallback to localStorage for backward compatibility
+                const storedId = localStorage.getItem('selectedStartupId');
+                if (storedId) {
+                    currentStartup = getStartupById(storedId);
+                } else {
+                    // Default to first startup if no ID found
+                    currentStartup = startupsData[0];
+                }
+            } else {
+                currentStartup = getStartupById(startupId);
+            }
+            
+            if (!currentStartup) {
+                document.getElementById('startupTitle').textContent = 'Startup Not Found';
+                return;
+            }
+
+            // Update page title and breadcrumb
+            document.title = `${currentStartup.name} - StartupHub`;
+            document.getElementById('breadcrumbTitle').textContent = currentStartup.name;
+
+            // Update hero section
+            document.getElementById('startupLogo').textContent = currentStartup.name.substring(0, 2);
+            document.getElementById('startupTitle').textContent = currentStartup.name;
+            document.getElementById('startupTagline').textContent = currentStartup.description;
+
+            // Update stats
+            document.getElementById('statIndustry').textContent = currentStartup.industry;
+            document.getElementById('statStage').textContent = currentStartup.stage;
+            document.getElementById('statLocation').textContent = currentStartup.location;
+            document.getElementById('statFounded').textContent = currentStartup.founded;
+
+            // Update investment card
+            document.getElementById('fundingRaised').textContent = currentStartup.raised;
+            document.getElementById('fundingGoal').textContent = currentStartup.fundingGoal;
+            document.getElementById('investorCount').textContent = currentStartup.investors;
+
+            // Calculate and update progress bar
+            const raised = parseFloat(currentStartup.raised.replace(/[$MK]/g, ''));
+            const goal = parseFloat(currentStartup.fundingGoal.replace(/[$MK]/g, ''));
+            const progress = (raised / goal) * 100;
+            document.getElementById('progressFill').style.width = `${Math.min(progress, 100)}%`;
+
+            // Update overview content
+            document.getElementById('aboutContent').innerHTML = `
+                <p>${currentStartup.description}</p>
+                <p style="margin-top: 1rem;">Founded in ${currentStartup.founded}, ${currentStartup.name} is currently in the ${currentStartup.stage} stage and has raised ${currentStartup.raised} of their ${currentStartup.fundingGoal} funding goal.</p>
+            `;
+
+            document.getElementById('businessModel').innerHTML = `<p>${currentStartup.businessModel}</p>`;
+            document.getElementById('marketOpportunity').innerHTML = `<p>${currentStartup.marketOpportunity}</p>`;
+
+            // Update team
+            loadTeam();
+
+            // Update financials
+            loadFinancials();
+
+            // Load updates
+            loadUpdates();
+
+            // Load related startups
+            loadRelatedStartups();
+        }
+
+        function loadTeam() {
+            const teamGrid = document.getElementById('teamGrid');
+            teamGrid.innerHTML = '';
+
+            currentStartup.team.forEach(member => {
+                const memberDiv = document.createElement('div');
+                memberDiv.className = 'team-member';
+                memberDiv.innerHTML = `
+                    <div class="member-avatar">${member.initials}</div>
+                    <div class="member-name">${member.name}</div>
+                    <div class="member-role">${member.role}</div>
+                `;
+                teamGrid.appendChild(memberDiv);
+            });
+        }
+
+        function loadFinancials() {
+            document.getElementById('revenue').textContent = currentStartup.financials.revenue;
+            document.getElementById('growth').textContent = currentStartup.financials.growth;
+            document.getElementById('valuation').textContent = currentStartup.financials.valuation;
+            document.getElementById('burnRate').textContent = currentStartup.financials.burnRate;
+        }
+
+        function loadUpdates() {
+            const updatesContent = document.getElementById('updatesContent');
+            updatesContent.innerHTML = '';
+
+            sampleUpdates.forEach(update => {
+                const updateDiv = document.createElement('div');
+                updateDiv.className = 'update-item';
+                updateDiv.innerHTML = `
+                    <div class="update-date">${update.date}</div>
+                    <div class="update-title">${update.title}</div>
+                    <div class="update-content">${update.content}</div>
+                `;
+                updatesContent.appendChild(updateDiv);
+            });
+        }
+
+        function loadRelatedStartups() {
+            const relatedGrid = document.getElementById('relatedGrid');
+            relatedGrid.innerHTML = '';
+
+            // Show 3 related startups (excluding current one)
+            const relatedStartups = startupsData.filter(s => s.id !== currentStartup.id).slice(0, 3);
+
+            relatedStartups.forEach(startup => {
+                const cardDiv = document.createElement('div');
+                cardDiv.className = 'related-card';
+                cardDiv.onclick = () => {
+                    // Navigate to the startup's detail page using URL parameters
+                    window.location.href = `details.html?id=${startup.id}`;
+                };
+                cardDiv.innerHTML = `
+                    <div class="related-image">${startup.name}</div>
+                    <div class="related-content">
+                        <div class="related-title">${startup.name}</div>
+                        <div class="related-description">${startup.description}</div>
+                    </div>
+                `;
+                relatedGrid.appendChild(cardDiv);
+            });
+        }
+
+        function showTab(tabName) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function showInterest() {
+            alert(`Thank you for your interest in ${currentStartup.name}! In a real application, this would open a form to collect your investment details and connect you with the startup.`);
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadStartupDetails();
+        });
+    </script>
+</body>
+</html>
