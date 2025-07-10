@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+         :root {
+            --primary-50: #f0f9ff;
+            --primary-100: #e0f2fe;
+            --primary-500: #0ea5e9;
+            --primary-600: #0284c7;
+            --primary-700: #0369a1;
+            --primary-900: #0c4a6e;
+            --neutral-50: #fafafa;
+            --neutral-100: #f5f5f5;
+            --neutral-200: #e5e5e5;
+            --neutral-300: #d4d4d4;
+            --neutral-400: #a3a3a3;
+            --neutral-500: #737373;
+            --neutral-600: #525252;
+            --neutral-700: #404040;
+            --neutral-800: #262626;
+            --neutral-900: #171717;
+            --accent-purple: #8b5cf6;
+            --accent-emerald: #10b981;
+            --accent-amber: #f59e0b;
+            --font-primary: 'Inter', system-ui, -apple-system, sans-serif;
+            --font-display: 'Space Grotesk', system-ui, -apple-system, sans-serif;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            /* Responsive spacing variables */
+            --spacing-xs: clamp(0.25rem, 1vw, 0.5rem);
+            --spacing-sm: clamp(0.5rem, 1.5vw, 0.75rem);
+            --spacing-base: clamp(0.75rem, 2vw, 1rem);
+            --spacing-lg: clamp(1rem, 2.5vw, 1.5rem);
+            --spacing-xl: clamp(1.5rem, 3vw, 2rem);
+            --spacing-2xl: clamp(2rem, 4vw, 2.5rem);
+            --spacing-3xl: clamp(2.5rem, 5vw, 3rem);
+            --spacing-4xl: clamp(3rem, 6vw, 4rem);
+            --spacing-5xl: clamp(4rem, 8vw, 6rem);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+        
+        body {
+            font-family: var(--font-primary);
+            line-height: 1.6;
+            color: var(--neutral-800);
+            background-color: var(--neutral-50);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        /* Enhanced container system */
+        
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            width: 100%;
+        }
+        
+        .container-sm {
+            max-width: 768px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-lg);
+            width: 100%;
+        }
+        /* Hero Section - Enhanced for all devices */
+        
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--neutral-50) 100%);
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800"><defs><radialGradient id="grad1" cx="50%" cy="50%" r="50%"><stop offset="0%" style="stop-color:rgb(14,165,233);stop-opacity:0.1" /><stop offset="100%" style="stop-color:rgb(14,165,233);stop-opacity:0" /></radialGradient></defs><circle cx="400" cy="200" r="100" fill="url(%23grad1)"/><circle cx="600" cy="400" r="80" fill="url(%23grad1)"/><circle cx="200" cy="600" r="60" fill="url(%23grad1)"/></svg>') no-repeat center;
+            background-size: cover;
+            opacity: 0.4;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+            /* Move padding here */
+        }
+        
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-base);
+            background: var(--primary-100);
+            color: var(--primary-700);
+            border-radius: 999px;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+            font-weight: 500;
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.75rem, 6vw, 3.5rem);
+            font-weight: 700;
+            line-height: 1.1;
+            color: var(--neutral-900);
+            margin-bottom: var(--spacing-lg);
+            letter-spacing: -0.025em;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1rem, 3vw, 1.25rem);
+            color: var(--neutral-600);
+            margin-bottom: var(--spacing-2xl);
+            line-height: 1.6;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: var(--spacing-base);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        /* Enhanced Button System */
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            padding: var(--spacing-sm) var(--spacing-lg);
+            font-weight: 500;
+            text-decoration: none;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+            position: relative;
+            overflow: hidden;
+            min-height: 44px;
+            /* Touch target size */
+            text-align: center;
+            white-space: nowrap;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .btn-primary {
+            background: var(--primary-600);
+            color: white;
+            border: 2px solid var(--primary-600);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-700);
+            border-color: var(--primary-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--neutral-700);
+            border: 2px solid var(--neutral-300);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--neutral-100);
+            border-color: var(--neutral-400);
+        }
+        
+        .btn-secondary:active {
+            background: var(--neutral-200);
+        }
+        /* Content Sections */
+        
+        .section {
+            padding: var(--spacing-4xl) 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: var(--spacing-4xl);
+        }
+        
+        .section-eyebrow {
+            color: var(--primary-600);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: clamp(0.75rem, 2vw, 0.875rem);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .section-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 5vw, 2.5rem);
+            font-weight: 700;
+            color: var(--neutral-900);
+            margin-bottom: var(--spacing-base);
+            letter-spacing: -0.025em;
+        }
+        
+        .section-subtitle {
+            font-size: clamp(1rem, 3vw, 1.125rem);
+            color: var(--neutral-600);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        /* Enhanced Features Grid */
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+            gap: var(--spacing-xl);
+            width: 100%;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: var(--spacing-2xl);
+            border-radius: var(--border-radius-xl);
+            border: 1px solid var(--neutral-200);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            width: 100%;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-500), var(--accent-purple));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .feature-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--primary-500), var(--accent-purple));
+            border-radius: var(--border-radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: var(--spacing-lg);
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        
+        .feature-title {
+            font-family: var(--font-display);
+            font-size: clamp(1.125rem, 3vw, 1.25rem);
+            font-weight: 600;
+            color: var(--neutral-900);
+            margin-bottom: var(--spacing-sm);
+            line-height: 1.3;
+        }
+        
+        .feature-description {
+            color: var(--neutral-600);
+            line-height: 1.6;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+        }
+        /* Mission Section */
+        
+        .mission-section {
+            background: var(--neutral-900);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .mission-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        }
+        
+        .mission-content {
+            position: relative;
+            z-index: 2;
+        }
+        
+        .mission-section .section-title {
+            color: white;
+        }
+        
+        .mission-section .section-subtitle {
+            color: var(--neutral-300);
+            font-size: clamp(1rem, 3vw, 1.25rem);
+        }
+        /* CTA Section */
+        
+        .cta-section {
+            background: linear-gradient(135deg, var(--primary-600), var(--accent-purple));
+            color: white;
+            text-align: center;
+        }
+        
+        .cta-section .section-title {
+            color: white;
+        }
+        
+        .cta-section .section-subtitle {
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .cta-section .btn-primary {
+            background: white;
+            color: var(--primary-600);
+            border-color: white;
+        }
+        
+        .cta-section .btn-primary:hover {
+            background: var(--neutral-100);
+            transform: translateY(-2px);
+        }
+        /* Enhanced Footer */
+        
+        .footer {
+            background: var(--neutral-900);
+            color: var(--neutral-300);
+            padding: var(--spacing-4xl) 0 var(--spacing-xl);
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
+            gap: var(--spacing-2xl);
+            margin-bottom: var(--spacing-2xl);
+        }
+        
+        .footer-section h3 {
+            color: white;
+            margin-bottom: var(--spacing-base);
+            font-size: clamp(1rem, 2.5vw, 1.125rem);
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-links li {
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        .footer-links a {
+            color: var(--neutral-400);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-size: clamp(0.875rem, 2vw, 1rem);
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        /* Responsive Design Breakpoints */
+        
+        @media (max-width: 768px) {
+            .hero {
+                min-height: 100vh;
+                min-height: 100dvh;
+                text-align: center;
+            }
+            .hero-content {
+                padding: var(--spacing-base);
+            }
+            .hero-cta {
+                flex-direction: column;
+                align-items: stretch;
+                width: 100%;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .section {
+                padding: var(--spacing-2xl) 0;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container,
+            .container-sm {
+                padding: 0 var(--spacing-base);
+            }
+            .hero-title {
+                font-size: clamp(1.5rem, 8vw, 2.5rem);
+            }
+            .feature-card {
+                padding: var(--spacing-xl);
+            }
+            .section-header {
+                margin-bottom: var(--spacing-2xl);
+            }
+        }
+        /* Large screens optimization */
+        
+        @media (min-width: 1440px) {
+            .container {
+                max-width: 1440px;
+            }
+        }
+        /* High DPI displays */
+        
+        @media (-webkit-min-device-pixel-ratio: 2),
+        (min-resolution: 2dppx) {
+            .hero::before {
+                background-size: 80% 80%;
+            }
+        }
+        /* Animations */
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(2);
+                opacity: 0;
+            }
+        }
+        
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        /* Accessibility improvements */
+        
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .animate-on-scroll {
+                transform: none;
+                opacity: 1;
+            }
+        }
+        /* Focus states for accessibility */
+        
+        .btn:focus {
+            outline: 2px solid var(--primary-500);
+            outline-offset: 2px;
+        }
+        /* Print styles */
+        
+        @media print {
+            .hero::before,
+            .mission-section::before {
+                display: none;
+            }
+            .btn {
+                background: transparent !important;
+                color: var(--neutral-800) !important;
+                border: 1px solid var(--neutral-800) !important;
+            }
+        }
+        /* iOS Safari specific fixes */
+        
+        @supports (-webkit-touch-callout: none) {
+            .hero {
+                min-height: -webkit-fill-available;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-eyebrow">
+                    <span role="img" aria-label="rocket">🚀</span> AI-Powered Investor Matching
+                </div>
+                <h1 class="hero-title">Connecting Visionary Startups with Forward-Thinking Investors</h1>
+                <p class="hero-subtitle">
+                    Our intelligent platform uses advanced algorithms and behavioral data to create meaningful connections that drive innovation and accelerate growth.
+                </p>
+                <div class="hero-cta">
+                    <a href="#" class="btn btn-primary" role="button">Get Started Today</a>
+                    <a href="#features" class="btn btn-secondary" role="button">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section" id="features">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <div class="section-eyebrow">Platform Features</div>
+                <h2 class="section-title">Built for Success</h2>
+                <p class="section-subtitle">
+                    Our platform combines cutting-edge technology with deep industry expertise to deliver unparalleled matching accuracy.
+                </p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" role="img" aria-label="lightning bolt">⚡</div>
+                    <h3 class="feature-title">Intelligent Matching Algorithm</h3>
+                    <p class="feature-description">
+                        Advanced machine learning models analyze 200+ compatibility factors including investment thesis, sector preferences, ticket sizes, and growth stage alignment.
+                    </p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" role="img" aria-label="growth chart">📈</div>
+                    <h3 class="feature-title">Dynamic Profile Intelligence</h3>
+                    <p class="feature-description">
+                        Profiles that evolve with user behavior, automatically updating preferences and improving match quality based on interaction patterns and successful connections.
+                    </p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" role="img" aria-label="shield">🛡️</div>
+                    <h3 class="feature-title">Enterprise-Grade Security</h3>
+                    <p class="feature-description">
+                        Multi-layer verification system with KYC/AML compliance, secure document sharing, and encrypted communications to protect sensitive business information.
+                    </p>
+                </div>
+                <div class="feature-card animate-on-scroll">
+                    <div class="feature-icon" role="img" aria-label="globe">🌍</div>
+                    <h3 class="feature-title">Global Market Intelligence</h3>
+                    <p class="feature-description">
+                        Real-time market insights, regional trend analysis, and local regulatory knowledge to facilitate cross-border investment opportunities.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section section" id="mission">
+        <div class="container">
+            <div class="mission-content">
+                <div class="section-header animate-on-scroll">
+                    <div class="section-eyebrow">Our Mission</div>
+                    <h2 class="section-title">Democratizing Access to Capital</h2>
+                    <p class="section-subtitle">
+                        We believe that groundbreaking innovations shouldn't fail due to lack of funding access. Our platform eliminates traditional barriers, connecting the right investors with the right startups at the right time.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section section">
+        <div class="container-sm">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Ready to Transform Your Funding Journey?</h2>
+                <p class="section-subtitle">
+                    Join thousands of successful startups and investors who have found their perfect match through our platform.
+                </p>
+                <div style="margin-top: 2rem;">
+                    <a href="#" class="btn btn-primary" role="button">Start Matching Today</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <p>Connecting the future of innovation with the capital it needs to thrive.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Platform</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">For Startups</a></li>
+                        <li><a href="#">For Investors</a></li>
+                        <li><a href="#">Success Stories</a></li>
+                        <li><a href="#">Pricing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Company</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Press</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Enhanced scroll animation manager with performance optimization
+        class ScrollAnimationManager {
+            constructor() {
+                this.observer = null;
+                this.animatedElements = new Set();
+                this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                this.init();
+            }
+
+            init() {
+                if (!this.reducedMotion) {
+                    this.setupObserver();
+                    this.observeElements();
+                } else {
+                    // Skip animations for users who prefer reduced motion
+                    this.showAllElements();
+                }
+            }
+
+            setupObserver() {
+                const options = {
+                    root: null,
+                    rootMargin: '0px 0px -50px 0px',
+                    threshold: 0.1
+                };
+
+                this.observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !this.animatedElements.has(entry.target)) {
+                            this.animateElement(entry.target);
+                            this.animatedElements.add(entry.target);
+                        }
+                    });
+                }, options);
+            }
+
+            observeElements() {
+                const elements = document.querySelectorAll('.animate-on-scroll');
+                elements.forEach(element => {
+                    this.observer.observe(element);
+                });
+            }
+
+            showAllElements() {
+                const elements = document.querySelectorAll('.animate-on-scroll');
+                elements.forEach(element => {
+                    element.style.opacity = '1';
+                    element.style.transform = 'translateY(0)';
+                });
+            }
+
+            animateElement(element) {
+                // Add staggered animation delay for grid items
+                const siblings = Array.from(element.parentNode.children);
+                const index = siblings.indexOf(element);
+
+                if (element.classList.contains('feature-card')) {
+                    element.style.transitionDelay = `${index * 0.1}s`;
+                }
+
+                requestAnimationFrame(() => {
+                    element.classList.add('visible');
+                });
+            }
+        }
+
+        // Enhanced button interactions with better mobile support
+        class ButtonEnhancer {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupButtonEffects();
+                this.setupTouchSupport();
+            }
+
+            setupButtonEffects() {
+                const buttons = document.querySelectorAll('.btn');
+
+                buttons.forEach(button => {
+                    // Mouse events
+                    button.addEventListener('mouseenter', (e) => {
+                        if (!this.isTouchDevice()) {
+                            this.createHoverEffect(e.target);
+                        }
+                    });
+
+                    button.addEventListener('mouseleave', (e) => {
+                        if (!this.isTouchDevice()) {
+                            this.removeHoverEffect(e.target);
+                        }
+                    });
+
+                    // Touch events
+                    button.addEventListener('touchstart', (e) => {
+                        this.createTouchEffect(e.target);
+                    });
+
+                    button.addEventListener('touchend', (e) => {
+                        this.removeTouchEffect(e.target);
+                    });
+
+                    // Click events
+                    button.addEventListener('click', (e) => {
+                        this.createClickEffect(e);
+                    });
+                });
+            }
+
+            setupTouchSupport() {
+                // Prevent double-tap zoom on buttons
+                const buttons = document.querySelectorAll('.btn');
+                buttons.forEach(button => {
+                    button.addEventListener('touchend', (e) => {
+                        e.preventDefault();
+                        button.click();
+                    });
+                });
+            }
+
+            isTouchDevice() {
+                return 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+            }
+
+            createHoverEffect(button) {
+                if (!button.querySelector('.hover-overlay')) {
+                    const overlay = document.createElement('div');
+                    overlay.className = 'hover-overlay';
+                    overlay.style.cssText = `
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        bottom: 0;
+                        background: rgba(255, 255, 255, 0.1);
+                        opacity: 0;
+                        transition: opacity 0.2s ease;
+                        pointer-events: none;
+                        border-radius: inherit;
+                    `;
+                    button.appendChild(overlay);
+
+                    requestAnimationFrame(() => {
+                        overlay.style.opacity = '1';
+                    });
+                }
+            }
+
+            removeHoverEffect(button) {
+                const overlay = button.querySelector('.hover-overlay');
+                if (overlay) {
+                    overlay.style.opacity = '0';
+                    setTimeout(() => {
+                        if (overlay.parentNode) {
+                            overlay.parentNode.removeChild(overlay);
+                        }
+                    }, 200);
+                }
+            }
+
+            createTouchEffect(button) {
+                button.style.transform = 'scale(0.98)';
+                button.style.opacity = '0.8';
+            }
+
+            removeTouchEffect(button) {
+                button.style.transform = '';
+                button.style.opacity = '';
+            }
+
+            createClickEffect(e) {
+                const button = e.currentTarget;
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                const ripple = document.createElement('div');
+                ripple.style.cssText = `
+                    position: absolute;
+                    left: ${x}px;
+                    top: ${y}px;
+                    width: ${size}px;
+                    height: ${size}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+
+                button.appendChild(ripple);
+
+                setTimeout(() => {
+                    if (ripple.parentNode) {
+                        ripple.parentNode.removeChild(ripple);
+                    }
+                }, 600);
+            }
+        }
+
+        // Performance optimization class
+        class PerformanceOptimizer {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.optimizeImages();
+                this.setupLazyLoading();
+                this.optimizeScrolling();
+            }
+
+            optimizeImages() {
+                // Preload critical images
+                const criticalImages = [
+                    'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">...</svg>'
+                ];
+
+                criticalImages.forEach(src => {
+                    const img = new Image();
+                    img.src = src;
+                });
+            }
+
+            setupLazyLoading() {
+                // Lazy load non-critical content
+                if ('IntersectionObserver' in window) {
+                    const lazyElements = document.querySelectorAll('[data-lazy]');
+                    const lazyObserver = new IntersectionObserver((entries) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const element = entry.target;
+                                element.src = element.dataset.lazy;
+                                element.removeAttribute('data-lazy');
+                                lazyObserver.unobserve(element);
+                            }
+                        });
+                    });
+
+                    lazyElements.forEach(element => {
+                        lazyObserver.observe(element);
+                    });
+                }
+            }
+
+            optimizeScrolling() {
+                // Throttle scroll events for better performance
+                let scrollTimeout;
+                window.addEventListener('scroll', () => {
+                    if (scrollTimeout) {
+                        clearTimeout(scrollTimeout);
+                    }
+                    scrollTimeout = setTimeout(() => {
+                        // Perform scroll-based optimizations
+                        this.updateViewport();
+                    }, 16); // 60fps
+                });
+            }
+
+            updateViewport() {
+                // Update viewport-specific optimizations
+                const viewportHeight = window.innerHeight;
+                const scrollTop = window.pageYOffset;
+
+                // Add viewport-based optimizations here
+                document.documentElement.style.setProperty('--viewport-height', `${viewportHeight}px`);
+            }
+        }
+
+        // Accessibility enhancements
+        class AccessibilityEnhancer {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                this.setupKeyboardNavigation();
+                this.setupFocusManagement();
+                this.setupAriaLabels();
+            }
+
+            setupKeyboardNavigation() {
+                // Enhanced keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Tab') {
+                        document.body.classList.add('keyboard-navigation');
+                    }
+                });
+
+                document.addEventListener('mousedown', () => {
+                    document.body.classList.remove('keyboard-navigation');
+                });
+            }
+
+            setupFocusManagement() {
+                // Smooth scrolling for anchor links
+                const anchorLinks = document.querySelectorAll('a[href^="#"]');
+                anchorLinks.forEach(link => {
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        const target = document.querySelector(link.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                            target.focus();
+                        }
+                    });
+                });
+            }
+
+            setupAriaLabels() {
+                // Dynamic ARIA labels for interactive elements
+                const buttons = document.querySelectorAll('.btn');
+                buttons.forEach(button => {
+                    if (!button.getAttribute('aria-label')) {
+                        button.setAttribute('aria-label', button.textContent.trim());
+                    }
+                });
+            }
+        }
+
+        // Device detection and optimization
+        class DeviceOptimizer {
+            constructor() {
+                this.deviceType = this.detectDevice();
+                this.init();
+            }
+
+            detectDevice() {
+                const userAgent = navigator.userAgent;
+                const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent);
+                const isTablet = /iPad|Android.*Tablet/i.test(userAgent);
+
+                if (isMobile && !isTablet) return 'mobile';
+                if (isTablet) return 'tablet';
+                return 'desktop';
+            }
+
+            init() {
+                document.body.setAttribute('data-device', this.deviceType);
+                this.applyDeviceOptimizations();
+            }
+
+            applyDeviceOptimizations() {
+                switch (this.deviceType) {
+                    case 'mobile':
+                        this.optimizeForMobile();
+                        break;
+                    case 'tablet':
+                        this.optimizeForTablet();
+                        break;
+                    case 'desktop':
+                        this.optimizeForDesktop();
+                        break;
+                }
+            }
+
+            optimizeForMobile() {
+                // Mobile-specific optimizations
+                const viewport = document.querySelector('meta[name="viewport"]');
+                if (viewport) {
+                    viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
+                }
+
+                // Reduce animations on mobile for better performance
+                if (window.matchMedia('(max-width: 768px)').matches) {
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        .animate-on-scroll {
+                            transition-duration: 0.3s !important;
+                        }
+                        .feature-card:hover {
+                            transform: none !important;
+                        }
+                    `;
+                    document.head.appendChild(style);
+                }
+            }
+
+            optimizeForTablet() {
+                // Tablet-specific optimizations
+                const style = document.createElement('style');
+                style.textContent = `
+                    @media (min-width: 769px) and (max-width: 1024px) {
+                        .features-grid {
+                            grid-template-columns: repeat(2, 1fr);
+                        }
+                        .hero-cta {
+                            flex-direction: row;
+                            justify-content: center;
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+
+            optimizeForDesktop() {
+                // Desktop-specific optimizations
+                const style = document.createElement('style');
+                style.textContent = `
+                    @media (min-width: 1025px) {
+                        .hero-content {
+                            max-width: 700px;
+                        }
+                        .features-grid {
+                            grid-template-columns: repeat(2, 1fr);
+                        }
+                    }
+                    @media (min-width: 1200px) {
+                        .features-grid {
+                            grid-template-columns: repeat(4, 1fr);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+
+        // Initialize all managers when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            new ScrollAnimationManager();
+            new ButtonEnhancer();
+            new PerformanceOptimizer();
+            new AccessibilityEnhancer();
+            new DeviceOptimizer();
+        });
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                // Recalculate viewport dimensions
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }, 100);
+        });
+
+        // Handle resize events
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                // Recalculate viewport dimensions
+                const vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }, 250);
+        });
+
+        // Service Worker registration for offline support (optional)
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                // Register service worker if available
+                // navigator.serviceWorker.register('/sw.js');
+            });
+        }
+    </script>
+</body>
+
+</html>
