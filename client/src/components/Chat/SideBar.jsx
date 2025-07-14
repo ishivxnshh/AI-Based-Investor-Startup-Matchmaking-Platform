@@ -1,5 +1,5 @@
 import React from "react";
-import assets, { userDummyData } from "../assets/assets";
+import assets, { userDummyData } from "../../assets/assets";
 
 const SideBar = ({ selectedUser, setSelectedUser }) => {
 

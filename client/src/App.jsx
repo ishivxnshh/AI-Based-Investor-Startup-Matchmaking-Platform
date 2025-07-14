@@ -1,19 +1,15 @@
-import React from 'react'
 import { Routes, Route } from 'react-router-dom'
-import HomePage from './pages/HomePage'
+import ChatPage from './pages/ChatPage'
+// Add other page imports as needed
+// import LandingPage from './pages/LandingPage'
 
 const App = () => {
   return (
-    <div className="relative w-screen h-screen overflow-hidden">
-      {/* Blurred background layer */}
-      <div className="absolute inset-0 bg-[url('./src/assets/bgImage.svg')] bg-cover w-full h-full blur-md z-0"></div>
-      {/* Main app content */}
-      <div className="relative z-10 w-full h-full">
-        <Routes>
-          <Route path='/' element={<HomePage />}/>
-        </Routes>
-      </div>
-    </div>
+    <Routes>
+      {/* <Route path="/" element={<LandingPage />} /> */}
+      <Route path="/chat" element={<ChatPage />} />
+      {/* Add other routes here like /login, /startup, /investor, etc */}
+    </Routes>
   )
 }
 
