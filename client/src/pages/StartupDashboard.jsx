@@ -35,7 +35,7 @@ const StartupDashboard = () => {
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">
             <button onClick={() => navigate('/startup-dashboard')} className="hover:text-purple-300">Home</button>
-            <button onClick={() => navigate('/startupssearch')} className="hover:text-purple-300">Explore Investors</button>
+            <button onClick={() => navigate('/startup-dashboard')} className="hover:text-purple-300">Explore Investors</button>
           </nav>
         </header>
 
