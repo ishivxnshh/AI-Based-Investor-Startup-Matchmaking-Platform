@@ -42,6 +42,9 @@ const InvestorDashboard = () => {
             <button onClick={() => navigate('/investor-dashboard')} className="hover:text-purple-300">Home</button>
             <button onClick={() => navigate('/startupssearch')} className="hover:text-purple-300">Startups</button>
             <button onClick={() => navigate('/investor-profile-settings')} className="hover:text-purple-300">Profile Settings</button>
+            <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
+              <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
+            </button>
           </nav>
         </header>
 

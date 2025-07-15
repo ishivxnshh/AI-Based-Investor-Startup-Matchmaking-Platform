@@ -14,6 +14,7 @@ import pic3 from './pic3.png'
 import pic4 from './pic4.png'
 import img1 from './img1.jpg'
 import img2 from './img2.jpg'
+import chat_icon from './chat_icon.svg'
 
 const assets = {
     avatar_icon,
@@ -25,7 +26,8 @@ const assets = {
     menu_icon,
     arrow_icon,
     bgImage,
-    profile_richard
+    profile_richard,
+    chat_icon
 }
 
 export default assets;

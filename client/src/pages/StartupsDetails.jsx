@@ -28,15 +28,18 @@ function StartupsDetails() {
             <span className="text-2xl font-bold">Chatiao</span>
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">
-            <button onClick={() => navigate('/')} className="hover:text-purple-300">Home</button>
+            <button onClick={() => navigate('/investor-dashboard')} className="hover:text-purple-300">Home</button>
             <button onClick={() => navigate('/startupssearch')} className="hover:text-purple-300">Startups</button>
+            <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
+              <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
+            </button>
           </nav>
         </header>
 
         {/* Breadcrumb */}
         <div className="breadcrumb bg-white/10 py-4 border-b border-gray-700 px-4">
           <div className="container mx-auto">
-            <button onClick={() => navigate('/')} className="text-indigo-300 hover:underline mr-2 bg-transparent">Home</button>
+            <button onClick={() => navigate('/investor-dashboard')} className="text-indigo-300 hover:underline mr-2 bg-transparent">Home</button>
             <span className="text-gray-400">/</span>
             <span className="ml-2 text-white font-semibold">{startup.name}</span>
           </div>
