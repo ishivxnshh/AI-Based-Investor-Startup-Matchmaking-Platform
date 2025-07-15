@@ -9,10 +9,10 @@ const Register = () => {
     fullName: '',
     email: '',
     password: '',
-    bio: '',
     role: '',
   })
-  const [isDataSubmitted, setIsDataSubmitted] = useState(false)
+  // Remove isDataSubmitted state
+  // const [isDataSubmitted, setIsDataSubmitted] = useState(false)
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -21,23 +21,31 @@ const Register = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
-
-    if (!isDataSubmitted) {
-      setIsDataSubmitted(true)
-      return
-    }
-
-    const response = await fetch('http://localhost:5000/api/register', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(formData),
-    })
-    const result = await response.json()
-    if (response.ok) {
-      if (formData.role === 'startup') navigate('/startup-form')
-      else navigate('/investor-form')
-    } else {
-      alert(result.message || 'Signup failed')
+    try {
+      const response = await fetch('http://localhost:5000/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      })
+      if (response.ok) {
+        if (formData.role === 'startup') navigate('/startup-dashboard')
+        else navigate('/investor-dashboard')
+        return
+      } else {
+        // If backend returns error, fall back to localStorage
+        throw new Error('Backend signup failed')
+      }
+    } catch (err) {
+      // Fallback: Save user to localStorage
+      const users = JSON.parse(localStorage.getItem('users') || '[]')
+      if (users.some(u => u.email === formData.email)) {
+        alert('Email already registered!')
+        return
+      }
+      users.push(formData)
+      localStorage.setItem('users', JSON.stringify(users))
+      if (formData.role === 'startup') navigate('/startup-dashboard')
+      else navigate('/investor-dashboard')
     }
   }
 
@@ -46,63 +54,48 @@ const Register = () => {
       <h2 className='text-2xl font-semibold'>Sign Up</h2>
 
       <form onSubmit={onSubmitHandler} className='flex flex-col gap-4'>
-        {!isDataSubmitted && (
-          <>
-            <input
-              name='fullName'
-              type='text'
-              value={formData.fullName}
-              onChange={handleChange}
-              placeholder='Full Name'
-              className='p-2 border border-gray-500 rounded-md text-black'
-              required
-            />
-            <input
-              name='email'
-              type='email'
-              value={formData.email}
-              onChange={handleChange}
-              placeholder='Email Address'
-              className='p-2 border border-gray-500 rounded-md text-black'
-              required
-            />
-            <input
-              name='password'
-              type='password'
-              value={formData.password}
-              onChange={handleChange}
-              placeholder='Password'
-              className='p-2 border border-gray-500 rounded-md text-black'
-              required
-            />
-            <select
-              name='role'
-              value={formData.role}
-              onChange={handleChange}
-              required
-              className='p-2 border border-gray-500 rounded-md text-black'
-            >
-              <option value='' disabled>Select your role</option>
-              <option value='startup'>Startup</option>
-              <option value='investor'>Investor</option>
-            </select>
-          </>
-        )}
-
-        {isDataSubmitted && (
-          <textarea
-            name='bio'
-            value={formData.bio}
+        <>
+          <input
+            name='fullName'
+            type='text'
+            value={formData.fullName}
             onChange={handleChange}
-            placeholder='Provide a short bio...'
-            rows={4}
+            placeholder='Full Name'
             className='p-2 border border-gray-500 rounded-md text-black'
             required
           />
-        )}
-
+          <input
+            name='email'
+            type='email'
+            value={formData.email}
+            onChange={handleChange}
+            placeholder='Email Address'
+            className='p-2 border border-gray-500 rounded-md text-black'
+            required
+          />
+          <input
+            name='password'
+            type='password'
+            value={formData.password}
+            onChange={handleChange}
+            placeholder='Password'
+            className='p-2 border border-gray-500 rounded-md text-black'
+            required
+          />
+          <select
+            name='role'
+            value={formData.role}
+            onChange={handleChange}
+            required
+            className='p-2 border border-gray-500 rounded-md text-black'
+          >
+            <option value='' disabled>Select your role</option>
+            <option value='startup'>Startup</option>
+            <option value='investor'>Investor</option>
+          </select>
+        </>
         <button type='submit' className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md'>
-          {isDataSubmitted ? 'Create Account' : 'Continue'}
+          Create Account
         </button>
       </form>
 

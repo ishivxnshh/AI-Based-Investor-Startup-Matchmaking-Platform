@@ -10,17 +10,33 @@ const LoginPage = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault()
-
-    const response = await fetch('http://localhost:5000/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
-    const result = await response.json()
-    if (response.ok) {
-      navigate('/chat')
-    } else {
-      alert(result.message || 'Login failed')
+    try {
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      })
+      if (response.ok) {
+        // You can parse result if needed
+        // const result = await response.json()
+        // Redirect to chat or dashboard as needed
+        navigate('/chat')
+        return
+      } else {
+        throw new Error('Backend login failed')
+      }
+    } catch (err) {
+      // Fallback: Authenticate using localStorage
+      const users = JSON.parse(localStorage.getItem('users') || '[]')
+      const user = users.find(u => u.email === email && u.password === password)
+      if (user) {
+        localStorage.setItem('currentUser', JSON.stringify(user))
+        if (user.role === 'startup') navigate('/startup-dashboard')
+        else if (user.role === 'investor') navigate('/investor-dashboard')
+        else navigate('/chat')
+      } else {
+        alert('Invalid email or password!')
+      }
     }
   }
 

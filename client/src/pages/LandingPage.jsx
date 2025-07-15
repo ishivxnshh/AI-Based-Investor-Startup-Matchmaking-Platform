@@ -42,7 +42,7 @@ const LandingPage = () => {
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <button
-              onClick={() => navigate('/signup')}
+              onClick={() => navigate('/register')}
               className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-3 rounded-md font-medium"
             >
               Join Now

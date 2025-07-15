@@ -10,6 +10,9 @@ import Matches from './pages/Matches'
 import ChatPage from './pages/ChatPage'
 import StartupDashboard from './pages/StartupDashboard'
 import InvestorDashboard from './pages/InvestorDashboard'
+import StartupsSearch from './pages/StartupsSearch'
+import InvestorProfileSettings from './pages/InvestorProfileSettings'
+import StartupsDetails from './pages/StartupsDetails'
 
 const Routing = () => {
   return (
@@ -23,6 +26,9 @@ const Routing = () => {
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/startup-dashboard" element={<StartupDashboard />} />
       <Route path="/investor-dashboard" element={<InvestorDashboard />} />
+      <Route path="/startupssearch" element={<StartupsSearch />} />
+      <Route path="/startupsdetails/:id" element={<StartupsDetails />} />
+      <Route path="/investor-profile-settings" element={<InvestorProfileSettings />} />
       {/* Optional: 404 page */}
       {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
