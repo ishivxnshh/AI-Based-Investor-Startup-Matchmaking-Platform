@@ -1,90 +1,129 @@
-import React, { useState } from 'react';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import AuthLayout from '../components/AuthLayout'
 
-const Signup = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Register = () => {
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const existingUser = users.find(
-      (user) => user.email === email || user.username === username
-    );
-    if (existingUser) {
-      alert('Email or username already registered.');
-      return;
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    password: '',
+    bio: '',
+    role: '',
+  })
+  const [isDataSubmitted, setIsDataSubmitted] = useState(false)
+
+  const handleChange = (e) => {
+    const { name, value } = e.target
+    setFormData({ ...formData, [name]: value })
+  }
+
+  const onSubmitHandler = async (e) => {
+    e.preventDefault()
+
+    if (!isDataSubmitted) {
+      setIsDataSubmitted(true)
+      return
     }
-    const newUser = { username, email, password };
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    alert('Sign-up successful! You can now log in.');
-    window.location.href = 'login.html';
-  };
+
+    const response = await fetch('http://localhost:5000/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    })
+    const result = await response.json()
+    if (response.ok) {
+      if (formData.role === 'startup') navigate('/startup-form')
+      else navigate('/investor-form')
+    } else {
+      alert(result.message || 'Signup failed')
+    }
+  }
 
   return (
-    <div style={{
-      fontFamily: 'Arial, sans-serif',
-      backgroundImage:
-        'url("https://images.unsplash.com/photo-1556740714-a8395b3bf30f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D")',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center center',
-      backgroundAttachment: 'fixed',
-      minHeight: '100vh',
-    }}>
-      <div className="signup-container" style={{
-        width: 300,
-        margin: '100px auto',
-        padding: 30,
-        background: 'white',
-        borderRadius: 6,
-        boxShadow: '0 0 8px #aaa',
-      }}>
-        <form id="signup-form" onSubmit={handleSubmit}>
-          <h2>Sign Up</h2>
-          <input
-            type="text"
-            id="signup-username"
-            placeholder="Username"
-            required
-            value={username}
-            onChange={e => setUsername(e.target.value)}
-            style={{ width: '100%', padding: 10, margin: '8px 0' }}
-          />
-          <input
-            type="email"
-            id="signup-email"
-            placeholder="Email"
-            required
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            style={{ width: '100%', padding: 10, margin: '8px 0' }}
-          />
-          <input
-            type="password"
-            id="signup-password"
-            placeholder="Password"
-            required
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-            style={{ width: '100%', padding: 10, margin: '8px 0' }}
-          />
-          <button
-            type="submit"
-            style={{ width: '100%', padding: 10, margin: '8px 0', background: '#0370cf', color: 'rgb(224, 222, 222)', border: 'none' }}
-          >
-            Sign Up
-          </button>
-        </form>
-        <div className="link-to-login" style={{ textAlign: 'center', marginTop: 10 }}>
-          <a href="login.html" style={{ color: '#0370cf' }}>
-            Already have an account? Login
-          </a>
-        </div>
-      </div>
-    </div>
-  );
-};
+    <AuthLayout>
+      <h2 className='text-2xl font-semibold'>Sign Up</h2>
 
-export default Signup;
+      <form onSubmit={onSubmitHandler} className='flex flex-col gap-4'>
+        {!isDataSubmitted && (
+          <>
+            <input
+              name='fullName'
+              type='text'
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder='Full Name'
+              className='p-2 border border-gray-500 rounded-md text-black'
+              required
+            />
+            <input
+              name='email'
+              type='email'
+              value={formData.email}
+              onChange={handleChange}
+              placeholder='Email Address'
+              className='p-2 border border-gray-500 rounded-md text-black'
+              required
+            />
+            <input
+              name='password'
+              type='password'
+              value={formData.password}
+              onChange={handleChange}
+              placeholder='Password'
+              className='p-2 border border-gray-500 rounded-md text-black'
+              required
+            />
+            <select
+              name='role'
+              value={formData.role}
+              onChange={handleChange}
+              required
+              className='p-2 border border-gray-500 rounded-md text-black'
+            >
+              <option value='' disabled>Select your role</option>
+              <option value='startup'>Startup</option>
+              <option value='investor'>Investor</option>
+            </select>
+          </>
+        )}
+
+        {isDataSubmitted && (
+          <textarea
+            name='bio'
+            value={formData.bio}
+            onChange={handleChange}
+            placeholder='Provide a short bio...'
+            rows={4}
+            className='p-2 border border-gray-500 rounded-md text-black'
+            required
+          />
+        )}
+
+        <button type='submit' className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md'>
+          {isDataSubmitted ? 'Create Account' : 'Continue'}
+        </button>
+      </form>
+
+      <div className='flex items-center gap-2 text-sm text-gray-400 mt-2'>
+        <input type='checkbox' required />
+        <p>I agree to the terms & privacy policy.</p>
+      </div>
+
+      <div className='text-sm text-gray-300 mt-2'>
+        <p>
+          Already have an account?{' '}
+          <span
+            className='text-violet-400 cursor-pointer underline'
+            onClick={() => navigate('/login')}
+          >
+            Login here
+          </span>
+        </p>
+      </div>
+    </AuthLayout>
+  )
+}
+
+export default Register

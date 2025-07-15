@@ -1,8 +1,123 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
+import assets from '../assets/assets'
 
 const LandingPage = () => {
+  const navigate = useNavigate()
+
   return (
-    <div>LandingPage</div>
+    <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col">
+      {/* Background Layer */}
+      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+
+      {/* Main Content */}
+      <div className="relative z-10 flex-1 w-full">
+        {/* Navbar */}
+        <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
+          <div className="flex items-center gap-2">
+            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
+            <span className="text-2xl font-bold">Chatiao</span>
+          </div>
+          <nav className="flex items-center gap-6 text-sm font-medium">
+            <a href="#about" className="hover:text-purple-300">About</a>
+            <a href="#testimonials" className="hover:text-purple-300">Testimonials</a>
+            <a href="#contact" className="hover:text-purple-300">Contact</a>
+            <button onClick={() => navigate('/login')} className="hover:text-purple-300 cursor-pointer">Login</button>
+            <button
+              onClick={() => navigate('/register')}
+              className="bg-gradient-to-r from-purple-500 to-violet-600 px-4 py-2 rounded-md text-white cursor-pointer"
+            >
+              Get Started
+            </button>
+          </nav>
+        </header>
+
+        {/* Hero Section */}
+        <section className="flex flex-col items-center justify-center text-center py-24 px-4 max-w-4xl mx-auto">
+          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
+            Connecting Innovative Startups <br /> with Visionary Investors
+          </h1>
+          <p className="mt-6 text-gray-300 text-lg">
+            Discover funding opportunities or invest in groundbreaking ideas through our intelligent matchmaking platform.
+          </p>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={() => navigate('/signup')}
+              className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-3 rounded-md font-medium"
+            >
+              Join Now
+            </button>
+            <button
+              onClick={() => navigate('/login')}
+              className="border border-gray-400 px-6 py-3 rounded-md font-medium"
+            >
+              Login
+            </button>
+          </div>
+        </section>
+
+        {/* About Section */}
+        <section id="about" className="px-4 py-20 flex justify-center">
+          <div className="max-w-4xl w-full text-center">
+            <h2 className="text-3xl font-bold mb-4">About Us</h2>
+            <p className="text-gray-300 leading-relaxed text-lg">
+              Our platform bridges the gap between visionaries with brilliant startup ideas and investors
+              who are looking to fund the next big innovation. With an intuitive AI-based matchmaking system,
+              Chatiao personalizes connections and accelerates the startup journey.
+            </p>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section id="testimonials" className="px-4 py-20 flex justify-center">
+          <div className="max-w-6xl w-full text-center">
+            <h2 className="text-3xl font-bold mb-10">What People Say</h2>
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
+                <p className="text-md">🚀 "Chatiao helped me find investors in just weeks. It’s like magic!"</p>
+                <p className="mt-4 font-semibold text-right">— Ananya, Startup Founder</p>
+              </div>
+              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
+                <p className="text-md">💼 "Perfect for discovering promising startups aligned with my interests."</p>
+                <p className="mt-4 font-semibold text-right">— Ravi, Angel Investor</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Contact Section */}
+        <section id="contact" className="px-4 py-20 flex justify-center">
+          <div className="max-w-3xl w-full text-center">
+            <h2 className="text-3xl font-bold mb-6">Contact Us</h2>
+            <form className="space-y-4">
+              <input
+                type="text"
+                placeholder="Your Name"
+                className="w-full p-3 rounded bg-white/10 border border-gray-500 text-white focus:outline-none"
+              />
+              <input
+                type="email"
+                placeholder="Your Email"
+                className="w-full p-3 rounded bg-white/10 border border-gray-500 text-white focus:outline-none"
+              />
+              <textarea
+                placeholder="Your Message"
+                rows={5}
+                className="w-full p-3 rounded bg-white/10 border border-gray-500 text-white focus:outline-none"
+              />
+              <button type="submit" className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-3 rounded-md">
+                Send Message
+              </button>
+            </form>
+          </div>
+        </section>
+      </div>
+
+      {/* Footer */}
+      <footer className="text-center text-sm py-6 bg-black/70 border-t border-gray-700 relative z-10">
+        © {new Date().getFullYear()} Chatiao. All rights reserved.
+      </footer>
+    </div>
   )
 }
 

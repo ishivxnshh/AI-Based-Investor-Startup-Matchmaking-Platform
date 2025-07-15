@@ -7,13 +7,14 @@ const ChatPage = () => {
   const [selectedUser, setSelectedUser] = useState(false)
 
   return (
-    <div className="w-full h-screen">
-      {/* Background layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-cover w-full h-full blur-md -z-10"></div>
+    <div className="relative w-full h-screen overflow-hidden">
+      {/* Background Image Layer */}
+      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-cover bg-center blur-sm brightness-75 -z-10"></div>
 
-      <div className="relative w-full h-full border sm:px-[15%] sm:py-[5%]">
+      {/* Foreground Chat UI */}
+      <div className="relative w-full h-full flex items-center justify-center px-4 py-6 sm:px-[10%] sm:py-[5%]">
         <div
-          className={`backdrop-blur-xl border-2 border-gray-600 rounded-2xl overflow-hidden h-full grid grid-cols-1 relative ${
+          className={`w-full h-full backdrop-blur-2xl border-2 border-gray-600 rounded-2xl overflow-hidden grid grid-cols-1 ${
             selectedUser
               ? 'md:grid-cols-[1fr_1.5fr_1fr] xl:grid-cols-[1fr_2fr_1fr]'
               : 'md:grid-cols-2'
