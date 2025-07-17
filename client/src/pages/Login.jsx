@@ -8,37 +8,47 @@ const LoginPage = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const onSubmitHandler = async (e) => {
-    e.preventDefault()
-    try {
-      const response = await fetch('http://localhost:5000/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      if (response.ok) {
-        // You can parse result if needed
-        // const result = await response.json()
-        // Redirect to chat or dashboard as needed
-        navigate('/chat')
-        return
+  // Login.jsx
+const onSubmitHandler = async (e) => {
+  e.preventDefault()
+  try {
+    const response = await fetch('http://localhost:5000/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password }),
+    })
+    if (response.ok) {
+      const user = await response.json();
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      const hasFilledForm = localStorage.getItem(`hasFilled${user.role}Form`) === 'true';
+      
+      if (!hasFilledForm) {
+        navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
       } else {
-        throw new Error('Backend login failed')
+        navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
       }
-    } catch (err) {
-      // Fallback: Authenticate using localStorage
-      const users = JSON.parse(localStorage.getItem('users') || '[]')
-      const user = users.find(u => u.email === email && u.password === password)
-      if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user))
-        if (user.role === 'startup') navigate('/startup-dashboard')
-        else if (user.role === 'investor') navigate('/investor-dashboard')
-        else navigate('/chat')
+      return
+    } else {
+      throw new Error('Backend login failed')
+    }
+  } catch (err) {
+    // Fallback: Authenticate using localStorage
+    const users = JSON.parse(localStorage.getItem('users') || '[]')
+    const user = users.find(u => u.email === email && u.password === password)
+    if (user) {
+      localStorage.setItem('currentUser', JSON.stringify(user))
+      const hasFilledForm = localStorage.getItem(`hasFilled${user.role}Form`) === 'true';
+      
+      if (!hasFilledForm) {
+        navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
       } else {
-        alert('Invalid email or password!')
+        navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
       }
+    } else {
+      alert('Invalid email or password!')
     }
   }
+}
 
   return (
     <AuthLayout>

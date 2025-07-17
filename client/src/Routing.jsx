@@ -1,4 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
+import ProtectedRoute from './components/ProtectedRoute'
 
 // Import all page components
 import LandingPage from './pages/LandingPage'
@@ -22,15 +23,22 @@ const Routing = () => {
       <Route path="/register" element={<Register />} />
       <Route path="/startup-form" element={<StartupForm />} />
       <Route path="/investor-form" element={<InvestorForm />} />
+      
+      {/* Protected routes */}
+      <Route element={<ProtectedRoute role="startup" />}>
+        <Route path="/startup-dashboard" element={<StartupDashboard />} />
+      </Route>
+      
+      <Route element={<ProtectedRoute role="investor" />}>
+        <Route path="/investor-dashboard" element={<InvestorDashboard />} />
+        <Route path="/investor-profile-settings" element={<InvestorProfileSettings />} />
+      </Route>
+      
+      {/* Common protected routes */}
       <Route path="/matches" element={<Matches />} />
       <Route path="/chat" element={<ChatPage />} />
-      <Route path="/startup-dashboard" element={<StartupDashboard />} />
-      <Route path="/investor-dashboard" element={<InvestorDashboard />} />
       <Route path="/startupssearch" element={<StartupsSearch />} />
       <Route path="/startupsdetails/:id" element={<StartupsDetails />} />
-      <Route path="/investor-profile-settings" element={<InvestorProfileSettings />} />
-      {/* Optional: 404 page */}
-      {/* <Route path="*" element={<NotFound />} /> */}
     </Routes>
   )
 }
