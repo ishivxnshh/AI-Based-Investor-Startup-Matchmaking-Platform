@@ -59,52 +59,6 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* AI-based Investor & Startup Previous Meet Section */}
-        <section className="flex flex-col items-center justify-center py-12 px-4 max-w-4xl mx-auto">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-center">AI-Powered Investor & Startup Connections</h2>
-          <p className="text-gray-300 text-center mb-6 max-w-2xl">
-            Our platform has already facilitated impactful meetings between visionary investors and innovative startups. Here’s a glimpse of how AI brings people together for the future of Entrepreneurship.
-          </p>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center justify-center w-full">
-            <div className="flex flex-col items-center">
-              <img
-                src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80"
-                alt="AI-based Investor and Startup Meeting"
-                className="rounded-lg shadow-lg w-full max-w-xs border-4 border-purple-500"
-                style={{objectFit: 'cover', height: '220px'}}
-              />
-              <span className="text-xs text-gray-400 mt-2">Investor and Startup handshake (AI-generated)</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <img
-                src="https://img.freepik.com/premium-photo/diverse-business-team-collaborating-modern-office_875825-52442.jpg"
-                alt="Startup Team Collaboration"
-                className="rounded-lg shadow-lg w-full max-w-xs border-4 border-purple-500"
-                style={{objectFit: 'cover', height: '220px'}}
-              />
-              <span className="text-xs text-gray-400 mt-2">Startup team collaborating with investor </span>
-            </div>
-            <div className="flex flex-col items-center">
-              <img
-                src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=800&q=80"
-                alt="Pitch Presentation"
-                className="rounded-lg shadow-lg w-full max-w-xs border-4 border-purple-500"
-                style={{objectFit: 'cover', height: '220px'}}
-              />
-              <span className="text-xs text-gray-400 mt-2">Pitching ideas to investors</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <img
-                src="https://images.unsplash.com/photo-1521737852567-6949f3f9f2b5?auto=format&fit=crop&w=800&q=80"
-                alt="Investor Discussion"
-                className="rounded-lg shadow-lg w-full max-w-xs border-4 border-purple-500"
-                style={{objectFit: 'cover', height: '220px'}}
-              />
-              <span className="text-xs text-gray-400 mt-2">Investors discussing with startup founders </span>
-            </div>
-          </div>
-        </section>
-
         {/* About Section */}
         <section id="about" className="px-4 py-20 flex justify-center">
           <div className="max-w-4xl w-full text-center">
@@ -167,44 +121,39 @@ const LandingPage = () => {
             <h2 className="text-3xl font-bold mb-10">Meet Our Team</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
               <div className="bg-white/10 p-6 rounded-lg border border-gray-500 w-full max-w-xs">
-                <img src="https://i.ibb.co/SXD8y4Sy/IMG-20250717-WA0017.jpg" alt="Aditya Verma" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
+                <img src="https://i.ibb.co/PzgvcL73/IMG-20250717-WA0017.jpg" alt="Aditya Verma" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
                 <h3 className="text-xl font-semibold">Aditya Verma</h3>
-                <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Great Leader with Visionary Entrepreneur, Passionate about AI and Startups and 😎Here working as Backend Developer.</p>
-                <a href="mailto:9905adityaverma@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ 9905adityaverma@gmail.com</a>
-                <a href="https://www.linkedin.com/in/aditya-verma-2a3915289/" className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+                <p className="text-purple-300">Founder</p>
+                <p className="text-gray-300 text-sm mt-2">Visionary entrepreneur passionate about AI and startups.</p>
+                <a href="mail:9905adityaverma@gmail.com" className="text-purple-400 hover:underline mt-2 block">9905adityaverma@gmail.com</a>
               </div>
               <div className="bg-white/10 p-6 rounded-lg border border-gray-500 w-full max-w-xs">
-                <img src="https://i.ibb.co/67mNJMnR/Whats-App-Image-2025-07-17-at-15-57-25-659fea5d.jpg" alt="Shivansh Mittal" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
-                <h3 className="text-xl font-semibold">Shivansh Mittal</h3>
-                <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Tech visionary turning bold ideas into scalable products</p>
-                <a href="mailto:shivanshmittalsde@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ shivanshmittalsde@gmail.com</a>
-                <a href="https://www.linkedin.com/in/ishivxnshh " className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+                <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Rohit Sharma" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
+                <h3 className="text-xl font-semibold">Rohit Sharma</h3>
+                <p className="text-purple-300">Co-Founder & CTO</p>
+                <p className="text-gray-300 text-sm mt-2">Tech leader driving innovation and product development.</p>
+                <a href="mailto:rohit@email.com" className="text-purple-400 hover:underline mt-2 block">rohit@email.com</a>
               </div>
               <div className="bg-white/10 p-6 rounded-lg border border-gray-500 w-full max-w-xs">
-                <img src="https://i.ibb.co/yck71YCH/Whats-App-Image-2025-07-17-at-16-54-01-c82fb624.jpg" alt="Vijay K.S" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
-                <h3 className="text-xl font-semibold">Vijay K.S</h3>
-                <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Command, Creater, Conquer.</p>
-                <a href="mailto:ksvijay2005@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ ksvijay2005@gmail.com</a>
-                <a href="https://www.linkedin.com/in/vj-ks/" className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+                <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Priya Singh" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
+                <h3 className="text-xl font-semibold">Priya Singh</h3>
+                <p className="text-purple-300">Head of Marketing</p>
+                <p className="text-gray-300 text-sm mt-2">Expert in digital marketing and brand strategy.</p>
+                <a href="mailto:priya@email.com" className="text-purple-400 hover:underline mt-2 block">priya@email.com</a>
               </div>
               <div className="bg-white/10 p-6 rounded-lg border border-gray-500 w-full max-w-xs">
-                <img src="https://i.ibb.co/SXk3XFmd/Whats-App-Image-2025-07-17-at-17-27-50-4d4c97ec.jpg" alt="Dikshant Raj" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
-                <h3 className="text-xl font-semibold">Dikshant Raj</h3>
-                <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Frontend developer with a passion for scalable systems.</p>
-                <a href="mailto:rajdikshant07@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ rajdikshant07@gmail.com</a>
-                <a href="http://www.linkedin.com/in/dikshant-raj" className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+                <img src="https://randomuser.me/api/portraits/men/77.jpg" alt="Amit Patel" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
+                <h3 className="text-xl font-semibold">Amit Patel</h3>
+                <p className="text-purple-300">Lead Developer</p>
+                <p className="text-gray-300 text-sm mt-2">Full-stack developer with a passion for scalable systems.</p>
+                <a href="mailto:amit@email.com" className="text-purple-400 hover:underline mt-2 block">amit@email.com</a>
               </div>
               <div className="bg-white/10 p-6 rounded-lg border border-gray-500 w-full max-w-xs">
-                <img src="https://i.ibb.co/rRZXxnQ0/Whats-App-Image-2025-07-17-at-21-42-28-73b21e27.jpg" alt="Surya Pranav SR " className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
-                <h3 className="text-xl font-semibold">Surya Pranav SR </h3>
-                <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Handling Frontend and Building strong connections with Team</p>
-                <a href="mailto:suryapranav.official@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ suryapranav.official@gmail.com</a>
-                <a href="http://www.linkedin.com/in/surya-pranav-2k5" className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+                <img src="https://randomuser.me/api/portraits/women/12.jpg" alt="Sneha Gupta" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
+                <h3 className="text-xl font-semibold">Sneha Gupta</h3>
+                <p className="text-purple-300">Investor Relations</p>
+                <p className="text-gray-300 text-sm mt-2">Building strong connections with our investor community.</p>
+                <a href="mailto:sneha@email.com" className="text-purple-400 hover:underline mt-2 block">sneha@email.com</a>
               </div>
             </div>
           </div>
