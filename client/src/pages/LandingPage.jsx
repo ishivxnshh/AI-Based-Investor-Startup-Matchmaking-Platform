@@ -19,9 +19,6 @@ const LandingPage = () => {
             <span className="text-2xl font-bold">Chatiao</span>
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">
-            <a href="#about" className="hover:text-purple-300">About</a>
-            <a href="#testimonials" className="hover:text-purple-300">Testimonials</a>
-            <a href="#contact" className="hover:text-purple-300">Contact</a>
             <button onClick={() => navigate('/login')} className="hover:text-purple-300 cursor-pointer">Login</button>
             <button
               onClick={() => navigate('/register')}
