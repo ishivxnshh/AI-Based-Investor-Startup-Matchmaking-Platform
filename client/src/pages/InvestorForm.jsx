@@ -196,7 +196,7 @@ const InvestorForm = () => {
                     onChange={handleChange}
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select an option</option>
                     {investorTypes.map(type => (
                       <option key={type} value={type} className="bg-gray-800 text-white">{type}</option>
                     ))}
@@ -307,7 +307,7 @@ const InvestorForm = () => {
                     required
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select an option</option>
                     <option value="Under ₹5L" className="bg-gray-800 text-white">Under ₹5L</option>
                     <option value="₹5L–₹25L" className="bg-gray-800 text-white">₹5L–₹25L</option>
                     <option value="₹25L–₹1Cr" className="bg-gray-800 text-white">₹25L–₹1Cr</option>
@@ -354,7 +354,7 @@ const InvestorForm = () => {
                     required
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select an option</option>
                     {investmentModels.map(model => (
                       <option key={model} value={model} className="bg-gray-800 text-white">{model}</option>
                     ))}
@@ -504,7 +504,7 @@ const InvestorForm = () => {
                     required
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select an option</option>
                     <option value="Low" className="bg-gray-800 text-white">Low</option>
                     <option value="Moderate" className="bg-gray-800 text-white">Moderate</option>
                     <option value="High" className="bg-gray-800 text-white">High</option>
@@ -524,7 +524,7 @@ const InvestorForm = () => {
                     required
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select an option</option>
                     <option value="Short-term" className="bg-gray-800 text-white">Short-term (1-3 years)</option>
                     <option value="Medium" className="bg-gray-800 text-white">Medium (3-5 years)</option>
                     <option value="Long-term" className="bg-gray-800 text-white">Long-term (5+ years)</option>
@@ -586,7 +586,7 @@ const InvestorForm = () => {
                     required
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select an option</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select an option</option>
                     <option value="Email" className="bg-gray-800 text-white">Email</option>
                     <option value="WhatsApp" className="bg-gray-800 text-white">WhatsApp</option>
                     <option value="Phone" className="bg-gray-800 text-white">Phone</option>

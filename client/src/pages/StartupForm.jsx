@@ -331,11 +331,11 @@ const StartupForm = () => {
                       value={formData.businessModel}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                     >
-                      <option value="">Select business model</option>
+                      <option value="" disabled className="bg-gray-800 text-white/50">Select business model</option>
                       {businessModels.map(model => (
-                        <option key={model} value={model}>{model}</option>
+                        <option key={model} value={model} className="bg-gray-800 text-white">{model}</option>
                       ))}
                     </select>
                   </div>
@@ -359,11 +359,11 @@ const StartupForm = () => {
                       value={formData.startupStage}
                       onChange={handleChange}
                       required
-                      className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400"
+                      className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                     >
-                      <option value="">Select stage</option>
+                      <option value="" disabled className="bg-gray-800 text-white/50">Select stage</option>
                       {startupStages.map(stage => (
-                        <option key={stage} value={stage}>{stage}</option>
+                        <option key={stage} value={stage} className="bg-gray-800 text-white">{stage}</option>
                       ))}
                     </select>
                   </div>
@@ -504,11 +504,11 @@ const StartupForm = () => {
                     value={formData.fundingRoundType}
                     onChange={handleChange}
                     required
-                    className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400"
+                    className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 appearance-none"
                   >
-                    <option value="">Select round type</option>
+                    <option value="" disabled className="bg-gray-800 text-white/50">Select round type</option>
                     {fundingRoundTypes.map(type => (
-                      <option key={type} value={type}>{type}</option>
+                      <option key={type} value={type} className="bg-gray-800 text-white">{type}</option>
                     ))}
                   </select>
                 </div>

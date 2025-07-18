@@ -356,7 +356,7 @@ const LandingPage = () => {
                 <img src="https://i.ibb.co/rRZXxnQ0/Whats-App-Image-2025-07-17-at-21-42-28-73b21e27.jpg" alt="Surya Pranav SR " className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
                 <h3 className="text-xl font-semibold">Surya Pranav SR </h3>
                 <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Handling Frontend and Building strong connections with Team</p>
+                <p className="text-gray-300 text-sm mt-2">Ideas, Code, Impact.</p>
                 <a href="mailto:suryapranav.official@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ suryapranav.official@gmail.com</a>
                 <a href="http://www.linkedin.com/in/surya-pranav-2k5" className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
               </div>
