@@ -19,7 +19,12 @@ const LandingPage = () => {
             <span className="text-2xl font-bold">Chatiao</span>
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">
-            <button onClick={() => navigate('/login')} className="hover:text-purple-300 cursor-pointer">Login</button>
+            <button
+              onClick={() => navigate('/login')}
+              className="hover:text-purple-300 cursor-pointer"
+            >
+              Login
+            </button>
             <button
               onClick={() => navigate('/register')}
               className="bg-gradient-to-r from-purple-500 to-violet-600 px-4 py-2 rounded-md text-white cursor-pointer"
@@ -35,7 +40,8 @@ const LandingPage = () => {
             Connecting Innovative Startups <br /> with Visionary Investors
           </h1>
           <p className="mt-6 text-gray-300 text-lg">
-            Discover funding opportunities or invest in groundbreaking ideas through our intelligent matchmaking platform.
+            Discover funding opportunities or invest in groundbreaking ideas
+            through our intelligent matchmaking platform.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row gap-4">
             <button
@@ -51,11 +57,36 @@ const LandingPage = () => {
               Login
             </button>
             <a
-              href="#contact-team"
+              href="#contact"
               className="border border-purple-500 text-purple-300 px-6 py-3 rounded-md font-medium hover:bg-purple-500 hover:text-white transition"
             >
               Contact
             </a>
+          </div>
+        </section>
+
+        {/* Impact Numbers */}
+        <section className="px-4 py-20 flex justify-center bg-black/60">
+          <div className="max-w-6xl w-full text-center">
+            <h2 className="text-3xl font-bold mb-10">Our Impact</h2>
+            <div className="grid sm:grid-cols-4 gap-8">
+              <div>
+                <p className="text-4xl font-bold text-purple-400">500+</p>
+                <p className="text-sm text-gray-300">Startups Registered</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold text-purple-400">200+</p>
+                <p className="text-sm text-gray-300">Active Investors</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold text-purple-400">90%</p>
+                <p className="text-sm text-gray-300">Success Match Rate</p>
+              </div>
+              <div>
+                <p className="text-4xl font-bold text-purple-400">50+</p>
+                <p className="text-sm text-gray-300">Sectors Covered</p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -105,6 +136,45 @@ const LandingPage = () => {
           </div>
         </section>
 
+        {/* How It Works */}
+        <section
+          id="how-it-works"
+          className="px-4 py-20 flex justify-center bg-black/50"
+        >
+          <div className="max-w-5xl w-full text-center">
+            <h2 className="text-3xl font-bold mb-6">How Chatiao Works</h2>
+            <div className="grid sm:grid-cols-3 gap-8 text-left">
+              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
+                <h3 className="text-xl font-semibold mb-2">
+                  1. Create Your Profile
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Startups and Investors sign up and build detailed profiles,
+                  including sectors, funding needs, or investment interests.
+                </p>
+              </div>
+              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
+                <h3 className="text-xl font-semibold mb-2">
+                  2. AI Matchmaking
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Our AI recommends best-fit matches based on preferences,
+                  industry verticals, and funding stages.
+                </p>
+              </div>
+              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
+                <h3 className="text-xl font-semibold mb-2">
+                  3. Connect & Grow
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Connect through secure channels, schedule meetings, and begin
+                  collaborative innovation.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* About Section */}
         <section id="about" className="px-4 py-20 flex justify-center">
           <div className="max-w-4xl w-full text-center">
@@ -114,6 +184,62 @@ const LandingPage = () => {
               who are looking to fund the next big innovation. With an intuitive AI-based matchmaking system,
               Chatiao personalizes connections and accelerates the startup journey.
             </p>
+          </div>
+        </section>
+
+        {/* Blog Section */}
+        <section id="blog" className="px-4 py-20 flex justify-center">
+          <div className="max-w-6xl w-full">
+            <h2 className="text-3xl font-bold mb-6 text-center">
+              Latest from Our Blog
+            </h2>
+            <div className="grid sm:grid-cols-3 gap-6">
+              <div className="bg-white/10 p-4 rounded-lg border border-gray-500">
+                <h3 className="text-lg font-semibold mb-2">
+                  Why AI is Changing the Funding Game
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Explore how artificial intelligence is transforming
+                  early-stage startup investment with precision matchmaking.
+                </p>
+                <a
+                  href="#"
+                  className="text-purple-300 text-sm hover:underline mt-2 block"
+                >
+                  Read more →
+                </a>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg border border-gray-500">
+                <h3 className="text-lg font-semibold mb-2">
+                  Top 10 Sectors for 2025
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  From DeepTech to BioTech, find out which industries are
+                  getting the most investor attention.
+                </p>
+                <a
+                  href="#"
+                  className="text-purple-300 text-sm hover:underline mt-2 block"
+                >
+                  Read more →
+                </a>
+              </div>
+              <div className="bg-white/10 p-4 rounded-lg border border-gray-500">
+                <h3 className="text-lg font-semibold mb-2">
+                  Investor Tips for First-Time Founders
+                </h3>
+                <p className="text-gray-300 text-sm">
+                  Avoid common pitfalls and make your pitch irresistible to
+                  angel investors.
+                </p>
+                <a
+                  href="#"
+                  className="text-purple-300 text-sm hover:underline mt-2 block"
+                >
+                  Read more →
+                </a>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -134,7 +260,35 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Contact Section */}
+        {/* Partner Logos */}
+        <section className="px-4 py-16 flex justify-center bg-black/40">
+          <div className="max-w-5xl w-full text-center">
+            <h2 className="text-2xl font-bold mb-6">Trusted By</h2>
+            <div className="flex flex-wrap justify-center items-center gap-8 opacity-80">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg"
+                className="h-10"
+                alt="Microsoft"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg"
+                className="h-10"
+                alt="Google"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Sequoia_Capital_logo.svg"
+                className="h-10"
+                alt="Sequoia"
+              />
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/d/db/Y_Combinator_logo.svg"
+                className="h-10"
+                alt="Y Combinator"
+              />
+            </div>
+          </div>
+        </section>
+
         <section id="contact" className="px-4 py-20 flex justify-center">
           <div className="max-w-3xl w-full text-center">
             <h2 className="text-3xl font-bold mb-6">Contact Us</h2>
