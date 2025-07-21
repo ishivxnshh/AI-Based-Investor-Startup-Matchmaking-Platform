@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-
+import { toast } from 'react-toastify';
 const StartupForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -81,9 +81,14 @@ const StartupForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    // Remove any incorrect/legacy keys
+    localStorage.removeItem('hasFilledstartupForm'); // lowercase 's'
+    // Set the correct key and value
     localStorage.setItem('hasFilledStartupForm', 'true');
-    navigate('/startup-dashboard');
-    alert('Form submitted successfully!');
+    toast.success('Form submitted successfully!');
+    setTimeout(() => {
+     navigate('/startup-dashboard');
+   }, 1500);
   };
 
   const sectionVariants = {

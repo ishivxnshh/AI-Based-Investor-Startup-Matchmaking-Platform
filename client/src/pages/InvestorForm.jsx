@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
-
+import { toast } from 'react-toastify';
 const InvestorForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -83,9 +83,16 @@ const InvestorForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Form submitted:', formData);
+    // Remove any incorrect/legacy keys
+    localStorage.removeItem('hasFilledinvestorForm'); // lowercase 'i'
+    // Set the correct key and value
     localStorage.setItem('hasFilledInvestorForm', 'true');
-    navigate('/investor-dashboard');
-    alert('Form submitted successfully!');
+    // Debug log
+    console.log('After submit, hasFilledInvestorForm:', localStorage.getItem('hasFilledInvestorForm'));
+    toast.success('Form submitted successfully!');
+    setTimeout(() => {
+     navigate('/investor-dashboard');
+   }, 1500);
   };
 
   return (
