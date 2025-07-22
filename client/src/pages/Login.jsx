@@ -1,58 +1,59 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import AuthLayout from '../components/AuthLayout'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthLayout from '../components/AuthLayout';
+import axios from 'axios';
 
 const LoginPage = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const onSubmitHandler = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-  // Login.jsx
-const onSubmitHandler = async (e) => {
-  e.preventDefault()
-  try {
-    const response = await fetch('http://localhost:5000/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    })
-    if (response.ok) {
-      const user = await response.json();
+    try {
+      const response = await axios.post('http://localhost:5000/api/login', {
+        email,
+        password
+      });
+
+      const user = response.data;
       localStorage.setItem('currentUser', JSON.stringify(user));
-      const hasFilledForm = localStorage.getItem(`hasFilled${user.role}Form`) === 'true';
       
-      if (!hasFilledForm) {
+      // Redirect based on role and form status
+      if (!user.hasFilledForm) {
         navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
       } else {
         navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
       }
-      return
-    } else {
-      throw new Error('Backend login failed')
-    }
-  } catch (err) {
-    // Fallback: Authenticate using localStorage
-    const users = JSON.parse(localStorage.getItem('users') || '[]')
-    const user = users.find(u => u.email === email && u.password === password)
-    if (user) {
-      localStorage.setItem('currentUser', JSON.stringify(user))
-      const hasFilledForm = localStorage.getItem(`hasFilled${user.role}Form`) === 'true';
-      
-      if (!hasFilledForm) {
-        navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
+    } catch (err) {
+      if (err.response) {
+        if (err.response.status === 401) {
+          setError('Invalid email or password!');
+        } else {
+          setError('Login failed. Please try again.');
+        }
       } else {
-        navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
+        setError('Network error. Please check your connection.');
       }
-    } else {
-      alert('Invalid email or password!')
+    } finally {
+      setIsLoading(false);
     }
-  }
-}
+  };
 
   return (
     <AuthLayout>
       <h2 className='text-2xl font-semibold'>Login</h2>
+
+      {error && (
+        <div className='mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm'>
+          {error}
+        </div>
+      )}
 
       <form onSubmit={onSubmitHandler} className='flex flex-col gap-4'>
         <input
@@ -61,7 +62,7 @@ const onSubmitHandler = async (e) => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder='Email Address'
-          className='p-2 border border-gray-500 rounded-md text-black'
+          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
           required
         />
         <input
@@ -70,12 +71,26 @@ const onSubmitHandler = async (e) => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder='Password'
-          className='p-2 border border-gray-500 rounded-md text-black'
+          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
           required
         />
 
-        <button type='submit' className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md'>
-          Login
+        <button 
+          type='submit' 
+          className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md flex justify-center items-center'
+          disabled={isLoading}
+        >
+          {isLoading ? (
+            <>
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Logging in...
+            </>
+          ) : (
+            'Login'
+          )}
         </button>
       </form>
 
@@ -86,7 +101,7 @@ const onSubmitHandler = async (e) => {
 
       <div className='text-sm text-gray-300 mt-2'>
         <p>
-          Don’t have an account?{' '}
+          Don't have an account?{' '}
           <span
             className='text-violet-400 cursor-pointer underline'
             onClick={() => navigate('/Register')}
@@ -96,7 +111,7 @@ const onSubmitHandler = async (e) => {
         </p>
       </div>
     </AuthLayout>
-  )
-}
+  );
+};
 
-export default LoginPage
+export default LoginPage;

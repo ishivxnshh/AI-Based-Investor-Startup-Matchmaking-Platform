@@ -1,90 +1,55 @@
-import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import AuthLayout from '../components/AuthLayout'
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import AuthLayout from '../components/AuthLayout';
+import axios from 'axios';
 
 const Register = () => {
-  const navigate = useNavigate()
-
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     password: '',
     role: '',
-  })
-
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState('')
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setFormData({ ...formData, [name]: value })
-  }
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const onSubmitHandler = async (e) => {
-    e.preventDefault()
-    setIsLoading(true)
-    setError('')
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
 
-    // Basic validation
     if (!formData.fullName || !formData.email || !formData.password || !formData.role) {
-      setError('Please fill in all fields')
-      setIsLoading(false)
-      return
+      setError('Please fill in all fields');
+      setIsLoading(false);
+      return;
     }
 
     try {
-      // Try backend registration first
-      const response = await fetch('http://localhost:5000/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-      })
-
-      if (response.ok) {
-        const userData = await response.json()
-        
-        // Store user data and form status
-        localStorage.setItem('currentUser', JSON.stringify(userData))
-        localStorage.setItem(`hasFilled${formData.role}Form`, 'false')
-        
-        // Redirect based on role
-        navigate(formData.role === 'startup' ? '/startup-form' : '/investor-form')
-        return
-      } else {
-        const errorData = await response.json()
-        throw new Error(errorData.message || 'Registration failed')
-      }
+      const response = await axios.post('http://localhost:5000/api/register', formData);
+      const userData = response.data;
+      
+      localStorage.setItem('currentUser', JSON.stringify(userData));
+      navigate(formData.role === 'startup' ? '/startup-form' : '/investor-form');
     } catch (err) {
-      // Fallback to localStorage if backend fails
-      try {
-        const users = JSON.parse(localStorage.getItem('users')) || []
-        
-        // Check if email already exists - FIXED LINE
-        if (users.some(u => u.email === formData.email)) {
-          throw new Error('Email already registered')
+      if (err.response) {
+        if (err.response.status === 409) {
+          setError('Email already registered');
+        } else {
+          setError('Registration failed. Please try again.');
         }
-
-        // Add new user
-        const newUser = {
-          ...formData,
-          id: Date.now().toString(),
-          createdAt: new Date().toISOString()
-        }
-        
-        users.push(newUser)
-        localStorage.setItem('users', JSON.stringify(users))
-        localStorage.setItem('currentUser', JSON.stringify(newUser))
-        localStorage.setItem(`hasFilled${formData.role}Form`, 'false')
-        
-        // Redirect based on role
-        navigate(formData.role === 'startup' ? '/startup-form' : '/investor-form')
-      } catch (localStorageError) {
-        setError(localStorageError.message || 'Registration failed. Please try again.')
+      } else {
+        setError('Network error. Please check your connection.');
       }
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <AuthLayout>
@@ -103,7 +68,7 @@ const Register = () => {
           value={formData.fullName}
           onChange={handleChange}
           placeholder='Full Name'
-          className='p-2 border border-gray-500 rounded-md text-black'
+          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
           required
         />
         <input
@@ -112,7 +77,7 @@ const Register = () => {
           value={formData.email}
           onChange={handleChange}
           placeholder='Email Address'
-          className='p-2 border border-gray-500 rounded-md text-black'
+          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
           required
         />
         <input
@@ -122,7 +87,7 @@ const Register = () => {
           onChange={handleChange}
           placeholder='Password (min 6 characters)'
           minLength={6}
-          className='p-2 border border-gray-500 rounded-md text-black'
+          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
           required
         />
         <select
@@ -130,7 +95,7 @@ const Register = () => {
           value={formData.role}
           onChange={handleChange}
           required
-          className='p-2 border border-gray-500 rounded-md text-black'
+          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
         >
           <option value='' disabled>Select your role</option>
           <option value='startup'>Startup</option>
@@ -180,7 +145,7 @@ const Register = () => {
         </p>
       </div>
     </AuthLayout>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
