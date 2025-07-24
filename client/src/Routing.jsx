@@ -13,6 +13,8 @@ import InvestorDashboard from './pages/InvestorDashboard'
 import StartupsSearch from './pages/StartupsSearch'
 import InvestorProfileSettings from './pages/InvestorProfileSettings'
 import StartupsDetails from './pages/StartupsDetails'
+import InvestorSearch from './pages/InvestorSearch'
+import InvestorDetails from './pages/InvestorDetails'
 
 const Routing = () => {
   return (
@@ -31,6 +33,9 @@ const Routing = () => {
       <Route path="/chat" element={<ChatPage />} />
       <Route path="/startupssearch" element={<StartupsSearch />} />
       <Route path="/startupsdetails/:id" element={<StartupsDetails />} />
+      {/* New investor routes */}
+      <Route path="/investor-search" element={<InvestorSearch />} />
+      <Route path="/investordetails/:id" element={<InvestorDetails />} />
     </Routes>
   )
 }

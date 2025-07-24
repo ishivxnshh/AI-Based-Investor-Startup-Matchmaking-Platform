@@ -3,18 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 
 const featuredInvestors = [
-  { name: 'John Doe', focus: 'Fintech, SaaS, Seed-Stage', desc: 'Angel investor with a focus on early-stage technology startups.' },
-  { name: 'Jane Smith', focus: 'Healthtech, Series A', desc: 'Venture capitalist passionate about healthcare innovation.' },
-  { name: 'Alex Lee', focus: 'Edtech, Angel', desc: 'Edtech specialist investing in early-stage education startups.' },
-  { name: 'Priya Patel', focus: 'E-commerce, Series B', desc: 'E-commerce expert with a track record of scaling online brands.' },
-  { name: 'Carlos Gomez', focus: 'AgriTech, Seed', desc: 'Investing in sustainable agriculture and food tech startups.' },
-  { name: 'Linda Wang', focus: 'AI, DeepTech', desc: 'AI and deep tech investor supporting breakthrough innovation.' },
+  { id: 1, name: 'John Doe', focus: 'Fintech, SaaS, Seed-Stage', desc: 'Angel investor with a focus on early-stage technology startups.' },
+  { id: 2, name: 'Jane Smith', focus: 'Healthtech, Series A', desc: 'Venture capitalist passionate about healthcare innovation.' },
+  { id: 3, name: 'Alex Lee', focus: 'Edtech, Angel', desc: 'Edtech specialist investing in early-stage education startups.' },
+  { id: 4, name: 'Priya Patel', focus: 'E-commerce, Series B', desc: 'E-commerce expert with a track record of scaling online brands.' },
+  { id: 5, name: 'Carlos Gomez', focus: 'AgriTech, Seed', desc: 'Investing in sustainable agriculture and food tech startups.' },
+  { id: 6, name: 'Linda Wang', focus: 'AI, DeepTech', desc: 'AI and deep tech investor supporting breakthrough innovation.' },
 ];
 
 const StartupDashboard = () => {
   const navigate = useNavigate();
-  const [showModal, setShowModal] = useState(false);
-  const [selectedInvestor, setSelectedInvestor] = useState('');
   // Dropdown menu state
   const [showDropdown, setShowDropdown] = useState(false)
   const handleDropdownToggle = () => setShowDropdown((prev) => !prev)
@@ -22,12 +20,6 @@ const StartupDashboard = () => {
     localStorage.removeItem('currentUser')
     navigate('/login')
   }
-
-  const openMeetingModal = (name) => {
-    setSelectedInvestor(name);
-    setShowModal(true);
-  };
-  const closeMeetingModal = () => setShowModal(false);
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -42,7 +34,7 @@ const StartupDashboard = () => {
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">
             <button onClick={() => navigate('/startup-dashboard')} className="hover:text-purple-300">Home</button>
-            <button onClick={() => navigate('/startup-dashboard')} className="hover:text-purple-300">Explore Investors</button>
+            <button onClick={() => navigate('/investor-search')} className="hover:text-purple-300">Explore Investors</button>
             <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
               <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
             </button>
@@ -79,7 +71,12 @@ const StartupDashboard = () => {
         <section className="text-center py-20 px-4">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">Connect. Invest. Grow.</h1>
           <p className="text-2xl md:text-3xl text-gray-300 mb-8">Find investors. Apply for meetings.</p>
-          <button className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-lg" onClick={() => setShowModal(true)}>Browse Investors</button>
+          <button 
+            className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-lg" 
+            onClick={() => navigate('/investor-search')}
+          >
+            Browse Investors
+          </button>
         </section>
 
         {/* Features Section */}
@@ -117,7 +114,12 @@ const StartupDashboard = () => {
                   <h3 className="text-2xl font-semibold mb-2 text-white">{inv.name}</h3>
                   <p className="text-lg text-indigo-200 mb-3">{inv.focus}</p>
                   <p className="text-gray-200 text-center mb-6">{inv.desc}</p>
-                  <button className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition" onClick={() => openMeetingModal(inv.name)}>Apply for Meeting</button>
+                  <button 
+                    className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition" 
+                    onClick={() => navigate(`/investordetails/${inv.id}`)}
+                  >
+                    View Profile
+                  </button>
                 </div>
               ))}
             </div>
@@ -128,36 +130,13 @@ const StartupDashboard = () => {
         <section className="text-center py-20 px-4 bg-white/10">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">Ready to connect?</h2>
           <p className="text-xl md:text-2xl text-gray-200 mb-8">Apply for a meeting with your selected investor now.</p>
-          <button className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-lg" onClick={() => setShowModal(true)}>Start Application</button>
+          <button 
+            className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-lg" 
+            onClick={() => navigate('/investor-search')}
+          >
+            Start Application
+          </button>
         </section>
-
-        {/* Meeting Modal */}
-        {showModal && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
-            <div className="bg-white text-gray-900 rounded-xl p-8 max-w-md w-full relative">
-              <button className="absolute top-2 right-2 text-2xl text-gray-400 hover:text-gray-700" onClick={closeMeetingModal}>&times;</button>
-              <h3 className="text-2xl font-bold mb-4">Apply for a Meeting</h3>
-              <p className="text-gray-700 mb-6">Please fill out the form below to request a meeting with the investor.</p>
-              <form onSubmit={e => {e.preventDefault(); closeMeetingModal(); alert('Application submitted!')}}>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Investor Name:</label>
-                  <input type="text" value={selectedInvestor} readOnly className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-100" />
-                </div>
-                <div className="mb-4">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Your Company Name:</label>
-                  <input type="text" required className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="e.g., My Startup Inc." />
-                </div>
-                <div className="mb-6">
-                  <label className="block text-gray-700 text-sm font-bold mb-2">Message:</label>
-                  <textarea required rows={5} className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="Briefly describe your interest and what you'd like to discuss." />
-                </div>
-                <div className="flex justify-end">
-                  <button type="submit" className="bg-black text-white px-6 py-2 rounded-full font-semibold hover:bg-gray-800 transition">Submit Application</button>
-                </div>
-              </form>
-            </div>
-          </div>
-        )}
 
         {/* Footer */}
         <footer className="bg-black/70 py-12 px-4 shadow-inner mt-12">
