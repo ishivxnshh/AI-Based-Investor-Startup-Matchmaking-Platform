@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 const InvestorForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -80,19 +81,27 @@ const InvestorForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Remove any incorrect/legacy keys
-    localStorage.removeItem('hasFilledinvestorForm'); // lowercase 'i'
-    // Set the correct key and value
-    localStorage.setItem('hasFilledInvestorForm', 'true');
-    // Debug log
-    console.log('After submit, hasFilledInvestorForm:', localStorage.getItem('hasFilledInvestorForm'));
-    toast.success('Form submitted successfully!');
-    setTimeout(() => {
-     navigate('/investor-dashboard');
-   }, 1500);
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user) return toast.error('User not logged in');
+
+    try {
+      await axios.post('http://localhost:5000/api/forms/investor-form', {
+        ...formData,
+        userId: user._id
+      });
+
+      // update localStorage
+      localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
+      toast.success('Form submitted successfully!');
+      setTimeout(() => {
+        navigate('/investor-dashboard');
+      }, 1500);
+    } catch (err) {
+      console.error(err);
+      toast.error('Submission failed. Please try again.');
+    }
   };
 
   return (

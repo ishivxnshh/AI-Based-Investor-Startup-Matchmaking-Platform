@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
+import axios from 'axios';
 const StartupForm = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -78,21 +79,27 @@ const StartupForm = () => {
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Remove any incorrect/legacy keys
-    localStorage.removeItem('hasFilledstartupForm'); // lowercase 's'
-    // Set the correct key and value
-    localStorage.setItem('hasFilledStartupForm', 'true');
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const user = JSON.parse(localStorage.getItem('currentUser'));
+  if (!user) return toast.error('User not logged in');
+
+  const payload = { ...formData, userId: user._id };
+
+  try {
+    await axios.post('http://localhost:5000/api/forms/startup-form', payload);  
+    localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
     toast.success('Form submitted successfully!');
-    setTimeout(() => {
-     navigate('/startup-dashboard');
-   }, 1500);
-  };
+    setTimeout(() => navigate('/startup-dashboard'), 1500);
+  } catch (err) {
+    toast.error('Submission failed');
+    console.error(err);
+  }
+};
 
   const sectionVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
 
