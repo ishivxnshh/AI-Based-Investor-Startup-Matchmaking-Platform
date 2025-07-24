@@ -1,27 +1,99 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 
-const mockInvestor = {
-  id: 1,
-  name: 'John Doe',
-  focus: 'Fintech, SaaS, Seed-Stage',
-  description: 'Angel investor with a focus on early-stage technology startups.',
-  industry: 'fintech',
-  location: 'San Francisco, CA',
-  minInvestment: 50000,
-  maxInvestment: 500000,
-  pastInvestments: ['Startup A', 'Startup B', 'Startup C'],
-  investmentCriteria: 'Looking for early-stage tech startups with strong founding teams',
-  about: 'Experienced angel investor with 10+ years in venture capital. Specializes in fintech and SaaS companies.',
-  contact: 'john.doe@example.com'
-};
+const mockInvestors = [
+  {
+    id: 1,
+    name: 'John Doe',
+    focus: 'Fintech, SaaS, Seed-Stage',
+    description: 'Angel investor with a focus on early-stage technology startups.',
+    industry: 'fintech',
+    location: 'San Francisco, CA',
+    minInvestment: 50000,
+    maxInvestment: 500000,
+    pastInvestments: ['Startup A', 'Startup B', 'Startup C'],
+    investmentCriteria: 'Looking for early-stage tech startups with strong founding teams',
+    about: 'Experienced angel investor with 10+ years in venture capital. Specializes in fintech and SaaS companies.',
+    contact: 'john.doe@example.com'
+  },
+  {
+    id: 2,
+    name: 'Jane Smith',
+    focus: 'Healthtech, Series A',
+    description: 'Venture capitalist passionate about healthcare innovation.',
+    industry: 'healthtech',
+    location: 'New York, NY',
+    minInvestment: 100000,
+    maxInvestment: 1000000,
+    pastInvestments: ['Health Startup X', 'MedTech Y', 'Clinic Z'],
+    investmentCriteria: 'Seeking innovative healthtech solutions with clinical validation',
+    about: 'Former healthcare executive now investing in transformative health technologies.',
+    contact: 'jane.smith@example.com'
+  },
+  {
+    id: 3,
+    name: 'Alex Lee',
+    focus: 'Edtech, Angel',
+    description: 'Edtech specialist investing in early-stage education startups.',
+    industry: 'edtech',
+    location: 'Boston, MA',
+    minInvestment: 25000,
+    maxInvestment: 250000,
+    pastInvestments: ['EduApp 1', 'Learning Platform 2', 'Tutor Service 3'],
+    investmentCriteria: 'Passionate about education technology that improves accessibility',
+    about: 'Educator turned investor with a focus on scalable learning solutions.',
+    contact: 'alex.lee@example.com'
+  },
+  {
+    id: 4,
+    name: 'Priya Patel',
+    focus: 'E-commerce, Series B',
+    description: 'E-commerce expert with a track record of scaling online brands.',
+    industry: 'ecommerce',
+    location: 'Seattle, WA',
+    minInvestment: 200000,
+    maxInvestment: 2000000,
+    pastInvestments: ['Fashion Hub', 'Gadget Store', 'Home Essentials'],
+    investmentCriteria: 'Looking for e-commerce brands with strong unit economics',
+    about: 'Former Amazon executive now investing in next-gen e-commerce platforms.',
+    contact: 'priya.patel@example.com'
+  },
+  {
+    id: 5,
+    name: 'Carlos Gomez',
+    focus: 'AgriTech, Seed',
+    description: 'Investing in sustainable agriculture and food tech startups.',
+    industry: 'agritech',
+    location: 'Austin, TX',
+    minInvestment: 50000,
+    maxInvestment: 500000,
+    pastInvestments: ['FarmTech', 'Sustainable Foods', 'AgriAI'],
+    investmentCriteria: 'Seeking solutions for sustainable food production',
+    about: 'Agricultural engineer focused on technology solutions for farming.',
+    contact: 'carlos.gomez@example.com'
+  },
+  {
+    id: 6,
+    name: 'Linda Wang',
+    focus: 'AI, DeepTech',
+    description: 'AI and deep tech investor supporting breakthrough innovation.',
+    industry: 'ai',
+    location: 'Palo Alto, CA',
+    minInvestment: 100000,
+    maxInvestment: 1500000,
+    pastInvestments: ['Neural Networks Inc', 'Quantum Computing Co', 'AI Robotics'],
+    investmentCriteria: 'Looking for groundbreaking AI research with commercial potential',
+    about: 'PhD in Computer Science with focus on machine learning applications.',
+    contact: 'linda.wang@example.com'
+  }
+];
 
 function InvestorDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // In a real app, you would fetch the investor data based on the ID
-  const investor = mockInvestor;
+  // Find the investor based on the ID from URL params
+  const investor = mockInvestors.find(inv => inv.id === parseInt(id)) || mockInvestors[0];
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
