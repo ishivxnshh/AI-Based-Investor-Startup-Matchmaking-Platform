@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 import { toast } from 'react-toastify';
@@ -41,6 +41,18 @@ const InvestorForm = () => {
     preferredCommunication: '',
     comments: ''
   });
+
+  // Prefill fullName and email from localStorage's currentUser
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        fullName: user.fullName || '',
+        email: user.email || '',
+      }));
+    }
+  }, []);
 
   const investorTypes = [
     'Angel', 'VC', 'PE', 'Family Office', 'Corporate', 'Syndicate', 'HNI', 'Other'
@@ -432,6 +444,7 @@ const InvestorForm = () => {
                         name="hasInvestedBefore"
                         value="Yes"
                         onChange={handleChange}
+                        checked={formData.hasInvestedBefore === 'Yes'}
                         className="h-4 w-4 text-violet-400 focus:ring-violet-400 border-white/20"
                       />
                       <label htmlFor="investedYes" className="ml-2 block text-sm text-white">
@@ -444,7 +457,11 @@ const InvestorForm = () => {
                         id="investedNo"
                         name="hasInvestedBefore"
                         value="No"
-                        onChange={handleChange}
+                        onChange={e => {
+                          handleChange(e);
+                          setFormData(prev => ({ ...prev, numberOfInvestments: '' }));
+                        }}
+                        checked={formData.hasInvestedBefore === 'No'}
                         className="h-4 w-4 text-violet-400 focus:ring-violet-400 border-white/20"
                       />
                       <label htmlFor="investedNo" className="ml-2 block text-sm text-white">
@@ -466,7 +483,8 @@ const InvestorForm = () => {
                     min="0"
                     value={formData.numberOfInvestments}
                     onChange={handleChange}
-                    className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400"
+                    disabled={formData.hasInvestedBefore !== 'Yes'}
+                    className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400 disabled:opacity-50 disabled:cursor-not-allowed"
                   />
                 </div>
 

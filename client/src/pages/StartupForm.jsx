@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
@@ -48,6 +48,18 @@ const StartupForm = () => {
     operatingMarkets: [],
     expansionPlan: ''
   });
+
+  // Prefill founderNames and email from localStorage's currentUser
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        founderNames: user.fullName || '',
+        email: user.email || '',
+      }));
+    }
+  }, []);
 
   const industries = ['Fintech', 'HealthTech', 'AI/ML', 'Web3', 'EdTech', 'E-commerce', 'SaaS', 'IoT', 'CleanTech', 'Other'];
   const businessModels = ['B2B', 'B2C', 'B2G', 'Marketplace', 'SaaS', 'Other'];
