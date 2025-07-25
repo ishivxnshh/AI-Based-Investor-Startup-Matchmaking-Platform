@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import assets from '../assets/assets'
 import startupsData from '../startups.js'
@@ -32,6 +32,16 @@ const InvestorDashboard = () => {
     }
   }, [])
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (logoutMenuRef.current && !logoutMenuRef.current.contains(event.target)) {
+        setShowLogoutMenu(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       {/* Background Layer */}
@@ -45,7 +55,7 @@ const InvestorDashboard = () => {
             <img src={assets.logo} alt="Logo" className="w-10 h-10" />
             <span className="text-2xl font-bold">Chatiao</span>
           </div>
-          <nav className="flex items-center gap-6 text-sm font-medium">
+          <nav className="flex items-center gap-6 text-sm font-medium relative">
             <button onClick={() => navigate('/investor-dashboard')} className="hover:text-purple-300">Home</button>
             <button onClick={() => navigate('/startupssearch')} className="hover:text-purple-300">Startups</button>
             <button onClick={() => navigate('/investor-profile-settings')} className="hover:text-purple-300">Profile Settings</button>

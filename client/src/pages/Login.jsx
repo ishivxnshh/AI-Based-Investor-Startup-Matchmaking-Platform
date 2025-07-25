@@ -94,11 +94,6 @@ const LoginPage = () => {
         </button>
       </form>
 
-      <div className='flex items-center gap-2 text-sm text-gray-400 mt-2'>
-        <input type='checkbox' required />
-        <p>I agree to the terms & privacy policy.</p>
-      </div>
-
       <div className='text-sm text-gray-300 mt-2'>
         <p>
           Don't have an account?{' '}

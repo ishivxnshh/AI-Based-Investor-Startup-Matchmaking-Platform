@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import axios from 'axios';
 
 const industries = [
   { label: 'All', value: 'all' },
@@ -12,26 +13,36 @@ const industries = [
   { label: 'AgriTech', value: 'agritech' },
 ];
 
-const mockInvestors = [
-  { id: 1, name: 'John Doe', focus: 'Fintech, SaaS, Seed-Stage', description: 'Angel investor with a focus on early-stage technology startups.', industry: 'fintech' },
-  { id: 2, name: 'Jane Smith', focus: 'Healthtech, Series A', description: 'Venture capitalist passionate about healthcare innovation.', industry: 'healthtech' },
-  { id: 3, name: 'Alex Lee', focus: 'Edtech, Angel', description: 'Edtech specialist investing in early-stage education startups.', industry: 'edtech' },
-  { id: 4, name: 'Priya Patel', focus: 'E-commerce, Series B', description: 'E-commerce expert with a track record of scaling online brands.', industry: 'ecommerce' },
-  { id: 5, name: 'Carlos Gomez', focus: 'AgriTech, Seed', description: 'Investing in sustainable agriculture and food tech startups.', industry: 'agritech' },
-  { id: 6, name: 'Linda Wang', focus: 'AI, DeepTech', description: 'AI and deep tech investor supporting breakthrough innovation.', industry: 'ai' },
-];
-
 function InvestorSearch() {
   const [search, setSearch] = useState('');
   const [industry, setIndustry] = useState('all');
+  const [investors, setInvestors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const filteredInvestors = mockInvestors.filter((investor) => {
-    const matchesIndustry = industry === 'all' || investor.industry === industry;
+  useEffect(() => {
+    const fetchInvestors = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await axios.get('http://localhost:5000/api/forms/investor-form');
+        setInvestors(res.data);
+      } catch (err) {
+        setError('Failed to load investors.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchInvestors();
+  }, []);
+
+  const filteredInvestors = investors.filter((investor) => {
+    const matchesIndustry = industry === 'all' || (investor.preferredIndustries && investor.preferredIndustries.includes(industry));
     const matchesSearch =
-      investor.name.toLowerCase().includes(search.toLowerCase()) ||
-      investor.focus.toLowerCase().includes(search.toLowerCase()) ||
-      investor.description.toLowerCase().includes(search.toLowerCase());
+      (investor.fullName && investor.fullName.toLowerCase().includes(search.toLowerCase())) ||
+      (investor.investorType && investor.investorType.toLowerCase().includes(search.toLowerCase())) ||
+      (investor.organization && investor.organization.toLowerCase().includes(search.toLowerCase()));
     return matchesIndustry && matchesSearch;
   });
 
@@ -92,29 +103,35 @@ function InvestorSearch() {
         <section className="investors-grid py-12">
           <div className="container mx-auto px-4">
             <h2 className="section-title text-3xl font-semibold mb-8 text-white">Featured Investors</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredInvestors.map((investor) => (
-                <div key={investor.id} className="investor-card bg-white/10 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer overflow-hidden">
-                  <div className="card-image h-48 flex items-center justify-center bg-gradient-to-r from-indigo-400 to-purple-500 text-white text-2xl font-bold">
-                    {investor.name.split(' ').map(word => word[0]).join('')}
-                  </div>
-                  <div className="card-content p-6">
-                    <div className="card-title text-xl font-semibold mb-2 text-white">{investor.name}</div>
-                    <div className="card-focus text-purple-300 mb-2">{investor.focus}</div>
-                    <div className="card-description text-gray-300 mb-4">{investor.description}</div>
-                    <div className="card-meta flex justify-between items-center mb-4">
-                      <span className="industry-tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{investor.industry}</span>
+            {loading ? (
+              <div className="text-center text-lg text-gray-300">Loading investors...</div>
+            ) : error ? (
+              <div className="text-center text-lg text-red-400">{error}</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredInvestors.map((investor) => (
+                  <div key={investor._id} className="investor-card bg-white/10 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer overflow-hidden">
+                    <div className="card-image h-48 flex items-center justify-center bg-gradient-to-r from-indigo-400 to-purple-500 text-white text-2xl font-bold">
+                      {investor.fullName ? investor.fullName.split(' ').map(word => word[0]).join('') : 'I'}
                     </div>
-                    <button
-                      onClick={() => navigate(`/investordetails/${investor.id}`)}
-                      className="view-details-btn w-full bg-indigo-700 text-white py-2 rounded-lg font-semibold hover:bg-indigo-900 transition block text-center mt-2"
-                    >
-                      View Profile
-                    </button>
+                    <div className="card-content p-6">
+                      <div className="card-title text-xl font-semibold mb-2 text-white">{investor.fullName}</div>
+                      <div className="card-focus text-purple-300 mb-2">{investor.investorType}</div>
+                      <div className="card-description text-gray-300 mb-4">{investor.organization}</div>
+                      <div className="card-meta flex justify-between items-center mb-4">
+                        <span className="industry-tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{investor.preferredIndustries && investor.preferredIndustries.join(', ')}</span>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/investordetails/${investor._id}`)}
+                        className="view-details-btn w-full bg-indigo-700 text-white py-2 rounded-lg font-semibold hover:bg-indigo-900 transition block text-center mt-2"
+                      >
+                        View Profile
+                      </button>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </div>

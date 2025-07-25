@@ -29,3 +29,22 @@ export const submitInvestorForm = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getAllInvestors = async (req, res) => {
+  try {
+    const investors = await InvestorForm.find();
+    res.json(investors);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getInvestorById = async (req, res) => {
+  try {
+    const investor = await InvestorForm.findById(req.params.id);
+    if (!investor) return res.status(404).json({ message: 'Investor not found' });
+    res.json(investor);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
