@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
 import axios from 'axios';
@@ -9,6 +9,47 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [googleLoaded, setGoogleLoaded] = useState(false);
+
+  // Hardcoded Google Client ID
+  const GOOGLE_CLIENT_ID = '234645810155-hpj7jvdnf64l923uimgkbpac13u4f9v.apps.googleusercontent.com';
+
+  useEffect(() => {
+    // Load Google SDK
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.defer = true;
+    script.onload = () => {
+      setGoogleLoaded(true);
+      initializeGoogleSignIn();
+    };
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const initializeGoogleSignIn = () => {
+    if (window.google) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse
+      });
+      
+      window.google.accounts.id.renderButton(
+        document.getElementById('googleSignInContainer'),
+        { 
+          theme: 'outline', 
+          size: 'large',
+          text: 'signin_with',
+          shape: 'rectangular',
+          width: '100%'
+        }
+      );
+    }
+  };
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
@@ -24,7 +65,6 @@ const LoginPage = () => {
       const user = response.data;
       localStorage.setItem('currentUser', JSON.stringify(user));
       
-      // Redirect based on role and form status
       if (!user.hasFilledForm) {
         navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
       } else {
@@ -45,9 +85,33 @@ const LoginPage = () => {
     }
   };
 
+  const handleGoogleResponse = async (response) => {
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const authResponse = await axios.post('http://localhost:5000/api/google-auth', {
+        token: response.credential
+      });
+
+      const user = authResponse.data;
+      localStorage.setItem('currentUser', JSON.stringify(user));
+      
+      if (!user.hasFilledForm) {
+        navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
+      } else {
+        navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
+      }
+    } catch (err) {
+      setError('Google authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <AuthLayout>
-      <h2 className='text-2xl font-semibold'>Login</h2>
+      <h2 className='text-2xl font-semibold mb-6'>Login</h2>
 
       {error && (
         <div className='mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm'>
@@ -55,29 +119,42 @@ const LoginPage = () => {
         </div>
       )}
 
-      <form onSubmit={onSubmitHandler} className='flex flex-col gap-4'>
-        <input
-          name='email'
-          type='email'
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder='Email Address'
-          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
-          required
-        />
-        <input
-          name='password'
-          type='password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder='Password'
-          className='p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
-          required
-        />
+      <form onSubmit={onSubmitHandler} className='flex flex-col gap-4 mb-4'>
+        <div>
+          <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+            Email Address
+          </label>
+          <input
+            id='email'
+            name='email'
+            type='email'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder='Enter your email'
+            className='w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
+            required
+          />
+        </div>
+
+        <div>
+          <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
+            Password
+          </label>
+          <input
+            id='password'
+            name='password'
+            type='password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder='Enter your password'
+            className='w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
+            required
+          />
+        </div>
 
         <button 
           type='submit' 
-          className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md flex justify-center items-center'
+          className='w-full py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md flex justify-center items-center'
           disabled={isLoading}
         >
           {isLoading ? (
@@ -94,16 +171,25 @@ const LoginPage = () => {
         </button>
       </form>
 
-      <div className='text-sm text-gray-300 mt-2'>
-        <p>
-          Don't have an account?{' '}
-          <span
-            className='text-violet-400 cursor-pointer underline'
-            onClick={() => navigate('/Register')}
-          >
-            Sign up
-          </span>
-        </p>
+      <div className="flex items-center my-6">
+        <div className="flex-grow border-t border-gray-300"></div>
+        <span className="mx-4 text-gray-500">or</span>
+        <div className="flex-grow border-t border-gray-300"></div>
+      </div>
+
+      {/* Google Sign-In Button */}
+      {googleLoaded && (
+        <div id="googleSignInContainer" className="w-full"></div>
+      )}
+
+      <div className='text-sm text-center text-gray-600'>
+        Don't have an account?{' '}
+        <span
+          className='text-violet-500 cursor-pointer font-medium'
+          onClick={() => navigate('/register')}
+        >
+          Sign up
+        </span>
       </div>
     </AuthLayout>
   );
