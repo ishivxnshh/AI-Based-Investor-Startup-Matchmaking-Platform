@@ -12,7 +12,7 @@ const LoginPage = () => {
   const [googleLoaded, setGoogleLoaded] = useState(false);
 
   // Hardcoded Google Client ID
-  const GOOGLE_CLIENT_ID = '234645810155-hpj7jvdnf64l923uimgkbpac13u4f9v.apps.googleusercontent.com';
+  const GOOGLE_CLIENT_ID = '234645810155-l657kinkpo3nv1hq21v8ug3120fl968d.apps.googleusercontent.com';
 
   useEffect(() => {
     // Load Google SDK
@@ -32,14 +32,25 @@ const LoginPage = () => {
   }, []);
 
   const initializeGoogleSignIn = () => {
-    if (window.google) {
+    if (!window.google) {
+      setTimeout(initializeGoogleSignIn, 100);
+      return;
+    }
+
+    const container = document.getElementById('googleSignInContainer');
+    if (!container) {
+      setTimeout(initializeGoogleSignIn, 100);
+      return;
+    }
+
+    try {
       window.google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleGoogleResponse
       });
       
       window.google.accounts.id.renderButton(
-        document.getElementById('googleSignInContainer'),
+        container,
         { 
           theme: 'outline', 
           size: 'large',
@@ -48,6 +59,8 @@ const LoginPage = () => {
           width: '100%'
         }
       );
+    } catch (err) {
+      console.error('Google Sign-In initialization error:', err);
     }
   };
 
@@ -178,9 +191,7 @@ const LoginPage = () => {
       </div>
 
       {/* Google Sign-In Button */}
-      {googleLoaded && (
-        <div id="googleSignInContainer" className="w-full"></div>
-      )}
+      <div id="googleSignInContainer" className="w-full"></div>
 
       <div className='text-sm text-center text-gray-600'>
         Don't have an account?{' '}
