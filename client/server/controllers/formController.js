@@ -48,3 +48,22 @@ export const getInvestorById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const getAllStartups = async (req, res) => {
+  try {
+    const startups = await StartupForm.find();
+    res.json(startups);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const getStartupById = async (req, res) => {
+  try {
+    const startup = await StartupForm.findById(req.params.id);
+    if (!startup) return res.status(404).json({ message: 'Startup not found' });
+    res.json(startup);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

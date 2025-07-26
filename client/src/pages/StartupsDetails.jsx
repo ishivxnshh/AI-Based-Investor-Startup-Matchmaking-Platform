@@ -1,20 +1,37 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
-import startupsData from '../startups.js';
+import { useParams, useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 function StartupsDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const startup = startupsData.find(s => s.id === parseInt(id));
+  const [startup, setStartup] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
 
-  if (!startup) {
-    return <div className="p-8 text-center text-xl">Startup not found.</div>;
+  useEffect(() => {
+    const fetchStartup = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await axios.get(`http://localhost:5000/api/forms/startup-form/${id}`);
+        setStartup(res.data);
+      } catch (err) {
+        setError('Failed to load startup details.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStartup();
+  }, [id]);
+
+  if (loading) {
+    return <div className="text-center text-lg text-gray-300 min-h-screen flex items-center justify-center">Loading startup details...</div>;
   }
-
-  // Calculate funding progress
-  const goal = parseFloat(startup.fundingGoal.replace(/[^\d.]/g, ''));
-  const raised = parseFloat(startup.raised.replace(/[^\d.]/g, ''));
-  const percent = Math.min(100, Math.round((raised / goal) * 100));
+  if (error || !startup) {
+    return <div className="text-center text-lg text-red-400 min-h-screen flex items-center justify-center">{error || 'Startup not found.'}</div>;
+  }
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -23,7 +40,7 @@ function StartupsDetails() {
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
         <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/') }>
+          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/investor-dashboard')}>
             <img src={assets.logo} alt="Logo" className="w-10 h-10" />
             <span className="text-2xl font-bold">Chatiao</span>
           </div>
@@ -41,7 +58,7 @@ function StartupsDetails() {
           <div className="container mx-auto">
             <button onClick={() => navigate('/investor-dashboard')} className="text-indigo-300 hover:underline mr-2 bg-transparent">Home</button>
             <span className="text-gray-400">/</span>
-            <span className="ml-2 text-white font-semibold">{startup.name}</span>
+            <span className="ml-2 text-white font-semibold">{startup.startupName}</span>
           </div>
         </div>
 
@@ -51,26 +68,26 @@ function StartupsDetails() {
             {/* Main Info */}
             <div className="md:col-span-2">
               <div className="startup-logo w-20 h-20 bg-gradient-to-r from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center text-white font-bold text-3xl mb-6">
-                {startup.name.split(' ').map(word => word[0]).join('')}
+                {startup.startupName ? startup.startupName.split(' ').map(word => word[0]).join('') : 'S'}
               </div>
-              <div className="startup-title text-3xl font-bold mb-2 text-white">{startup.name}</div>
-              <div className="startup-tagline text-lg text-gray-300 mb-6">{startup.description}</div>
+              <div className="startup-title text-3xl font-bold mb-2 text-white">{startup.startupName}</div>
+              <div className="startup-tagline text-lg text-gray-300 mb-6">{startup.problemStatement}</div>
               <div className="hero-stats grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
                 <div className="stat-item text-center bg-white/10 rounded-lg p-4">
-                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.stage}</div>
+                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.startupStage}</div>
                   <div className="stat-label text-gray-300 mt-1">Stage</div>
                 </div>
                 <div className="stat-item text-center bg-white/10 rounded-lg p-4">
-                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.location}</div>
+                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.headquarters}</div>
                   <div className="stat-label text-gray-300 mt-1">Location</div>
                 </div>
                 <div className="stat-item text-center bg-white/10 rounded-lg p-4">
-                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.founded}</div>
-                  <div className="stat-label text-gray-300 mt-1">Founded</div>
+                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.teamSize}</div>
+                  <div className="stat-label text-gray-300 mt-1">Team Size</div>
                 </div>
                 <div className="stat-item text-center bg-white/10 rounded-lg p-4">
-                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.investors}</div>
-                  <div className="stat-label text-gray-300 mt-1">Investors</div>
+                  <div className="stat-value text-xl font-bold text-indigo-300">{startup.monthlyRevenue}</div>
+                  <div className="stat-label text-gray-300 mt-1">Monthly Revenue</div>
                 </div>
               </div>
             </div>
@@ -78,20 +95,16 @@ function StartupsDetails() {
             <div className="investment-card bg-white/10 border-2 border-gray-700 rounded-xl p-8 shadow-md sticky top-8">
               <div className="investment-title text-lg font-semibold mb-4 text-white">Investment Opportunity</div>
               <div className="funding-progress mb-6">
-                <div className="progress-bar w-full h-2 bg-gray-700 rounded mb-2 overflow-hidden">
-                  <div className="progress-fill h-full bg-gradient-to-r from-green-400 to-green-700" style={{ width: percent + '%' }}></div>
-                </div>
                 <div className="funding-stats flex justify-between mb-2">
                   <div className="funding-stat text-center">
-                    <div className="funding-value text-lg font-bold text-white">{startup.raised}</div>
-                    <div className="funding-label text-gray-300 text-xs">Raised</div>
+                    <div className="funding-value text-lg font-bold text-white">{startup.fundingAmount}</div>
+                    <div className="funding-label text-gray-300 text-xs">Funding Needed</div>
                   </div>
                   <div className="funding-stat text-center">
-                    <div className="funding-value text-lg font-bold text-white">{startup.fundingGoal}</div>
-                    <div className="funding-label text-gray-300 text-xs">Goal</div>
+                    <div className="funding-value text-lg font-bold text-white">{startup.fundingRoundType}</div>
+                    <div className="funding-label text-gray-300 text-xs">Round Type</div>
                   </div>
                 </div>
-                <div className="text-xs text-gray-300 text-right">{percent}% funded</div>
               </div>
               <button className="interest-btn w-full bg-gradient-to-r from-indigo-700 to-indigo-900 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition mb-2">Express Interest</button>
               <div className="investment-info text-xs text-gray-300 text-center">No commitment required. Expressing interest helps us connect you with the startup.</div>
@@ -101,39 +114,44 @@ function StartupsDetails() {
 
         {/* Content Sections */}
         <section className="content-section bg-white/10 my-8 p-8 rounded-xl shadow-md container mx-auto">
-          <div className="section-title text-2xl font-semibold mb-4 text-white">Team</div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {startup.team.map(member => (
-              <div key={member.name} className="bg-white/10 rounded-lg p-4 flex flex-col items-center">
-                <div className="w-12 h-12 bg-gradient-to-r from-indigo-400 to-purple-500 text-white rounded-full flex items-center justify-center text-lg font-bold mb-2">{member.initials}</div>
-                <div className="font-semibold text-white">{member.name}</div>
-                <div className="text-xs text-gray-300">{member.role}</div>
-              </div>
-            ))}
-          </div>
-          <div className="section-title text-2xl font-semibold mb-4 text-white">Financials</div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white/10 rounded-lg p-4 text-center">
-              <div className="text-lg font-bold text-indigo-300">{startup.financials.revenue}</div>
-              <div className="text-xs text-gray-300 mt-1">Revenue</div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4 text-center">
-              <div className="text-lg font-bold text-indigo-300">{startup.financials.growth}</div>
-              <div className="text-xs text-gray-300 mt-1">Growth</div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4 text-center">
-              <div className="text-lg font-bold text-indigo-300">{startup.financials.valuation}</div>
-              <div className="text-xs text-gray-300 mt-1">Valuation</div>
-            </div>
-            <div className="bg-white/10 rounded-lg p-4 text-center">
-              <div className="text-lg font-bold text-indigo-300">{startup.financials.burnRate}</div>
-              <div className="text-xs text-gray-300 mt-1">Burn Rate</div>
-            </div>
-          </div>
+          <div className="section-title text-2xl font-semibold mb-4 text-white">About</div>
+          <div className="section-content text-gray-200 mb-8">{startup.productDescription}</div>
+          
+          <div className="section-title text-2xl font-semibold mb-4 text-white">Problem Statement</div>
+          <div className="section-content text-gray-200 mb-8">{startup.problemStatement}</div>
+          
           <div className="section-title text-2xl font-semibold mb-4 text-white">Business Model</div>
           <div className="section-content text-gray-200 mb-8">{startup.businessModel}</div>
-          <div className="section-title text-2xl font-semibold mb-4 text-white">Market Opportunity</div>
-          <div className="section-content text-gray-200">{startup.marketOpportunity}</div>
+          
+          <div className="section-title text-2xl font-semibold mb-4 text-white">Industry</div>
+          <div className="section-content text-gray-200 mb-8">{startup.industry && startup.industry.join(', ')}</div>
+          
+          <div className="section-title text-2xl font-semibold mb-4 text-white">Team</div>
+          <div className="section-content text-gray-200 mb-8">
+            <p><strong>Founders:</strong> {startup.founderNames}</p>
+            <p><strong>Team Size:</strong> {startup.teamSize}</p>
+            <p><strong>Number of Founders:</strong> {startup.numberOfFounders}</p>
+          </div>
+          
+          <div className="section-title text-2xl font-semibold mb-4 text-white">Traction</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white/10 rounded-lg p-4 text-center">
+              <div className="text-lg font-bold text-indigo-300">{startup.monthlyRevenue}</div>
+              <div className="text-xs text-gray-300 mt-1">Monthly Revenue</div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4 text-center">
+              <div className="text-lg font-bold text-indigo-300">{startup.activeUsers}</div>
+              <div className="text-xs text-gray-300 mt-1">Active Users</div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4 text-center">
+              <div className="text-lg font-bold text-indigo-300">{startup.growthRate}</div>
+              <div className="text-xs text-gray-300 mt-1">Growth Rate</div>
+            </div>
+            <div className="bg-white/10 rounded-lg p-4 text-center">
+              <div className="text-lg font-bold text-indigo-300">{startup.customerRetention}</div>
+              <div className="text-xs text-gray-300 mt-1">Customer Retention</div>
+            </div>
+          </div>
         </section>
       </div>
       {/* Footer */}

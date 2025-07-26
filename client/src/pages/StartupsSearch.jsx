@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import startupsData from '../startups.js';
 import assets from '../assets/assets';
+import axios from 'axios';
 
 const industries = [
   { label: 'All', value: 'all' },
@@ -16,13 +16,33 @@ const industries = [
 function StartupsSearch() {
   const [search, setSearch] = useState('');
   const [industry, setIndustry] = useState('all');
+  const [startups, setStartups] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const filteredStartups = startupsData.filter((startup) => {
-    const matchesIndustry = industry === 'all' || startup.industry === industry;
+  useEffect(() => {
+    const fetchStartups = async () => {
+      setLoading(true);
+      setError('');
+      try {
+        const res = await axios.get('http://localhost:5000/api/forms/startup-form');
+        setStartups(res.data);
+      } catch (err) {
+        setError('Failed to load startups.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStartups();
+  }, []);
+
+  const filteredStartups = startups.filter((startup) => {
+    const matchesIndustry = industry === 'all' || (startup.industry && startup.industry.includes(industry));
     const matchesSearch =
-      startup.name.toLowerCase().includes(search.toLowerCase()) ||
-      startup.description.toLowerCase().includes(search.toLowerCase());
+      (startup.startupName && startup.startupName.toLowerCase().includes(search.toLowerCase())) ||
+      (startup.industry && startup.industry.join(' ').toLowerCase().includes(search.toLowerCase())) ||
+      (startup.problemStatement && startup.problemStatement.toLowerCase().includes(search.toLowerCase()));
     return matchesIndustry && matchesSearch;
   });
 
@@ -83,33 +103,35 @@ function StartupsSearch() {
         <section className="startups-grid py-12">
           <div className="container mx-auto px-4">
             <h2 className="section-title text-3xl font-semibold mb-8 text-white">Featured Startups</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredStartups.map((startup) => (
-                <div key={startup.id} className="startup-card bg-white/10 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer overflow-hidden">
-                  <div className="card-image h-48 flex items-center justify-center bg-gradient-to-r from-indigo-400 to-purple-500 text-white text-2xl font-bold">
-                    {startup.name.split(' ').map(word => word[0]).join('')}
-                  </div>
-                  <div className="card-content p-6">
-                    <div className="card-title text-xl font-semibold mb-2 text-white">{startup.name}</div>
-                    <div className="card-description text-gray-300 mb-4">{startup.description}</div>
-                    <div className="card-meta flex justify-between items-center mb-4">
-                      <span className="funding-goal bg-blue-50 text-blue-700 px-3 py-1 rounded-full text-xs font-medium">Goal: {startup.fundingGoal}</span>
-                      <span className="industry-tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{startup.industry}</span>
+            {loading ? (
+              <div className="text-center text-lg text-gray-300">Loading startups...</div>
+            ) : error ? (
+              <div className="text-center text-lg text-red-400">{error}</div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {filteredStartups.map((startup) => (
+                  <div key={startup._id} className="startup-card bg-white/10 rounded-xl shadow-md hover:shadow-xl transition cursor-pointer overflow-hidden">
+                    <div className="card-image h-48 flex items-center justify-center bg-gradient-to-r from-indigo-400 to-purple-500 text-white text-2xl font-bold">
+                      {startup.startupName ? startup.startupName.split(' ').map(word => word[0]).join('') : 'S'}
                     </div>
-                    <div className="card-stats flex gap-4 text-sm text-gray-400 mb-4">
-                      <span className="stat">{startup.stage}</span>
-                      <span className="stat">{startup.location}</span>
+                    <div className="card-content p-6">
+                      <div className="card-title text-xl font-semibold mb-2 text-white">{startup.startupName}</div>
+                      <div className="card-stage text-purple-300 mb-2">{startup.startupStage}</div>
+                      <div className="card-description text-gray-300 mb-4">{startup.problemStatement}</div>
+                      <div className="card-meta flex justify-between items-center mb-4">
+                        <span className="industry-tag bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">{startup.industry && startup.industry.join(', ')}</span>
+                      </div>
+                      <button
+                        onClick={() => navigate(`/startupsdetails/${startup._id}`)}
+                        className="view-details-btn w-full bg-indigo-700 text-white py-2 rounded-lg font-semibold hover:bg-indigo-900 transition block text-center mt-2"
+                      >
+                        View Details
+                      </button>
                     </div>
-                    <button
-                      onClick={() => navigate(`/startupsdetails/${startup.id}`)}
-                      className="view-details-btn w-full bg-indigo-700 text-white py-2 rounded-lg font-semibold hover:bg-indigo-900 transition block text-center mt-2"
-                    >
-                      View Details
-                    </button>
                   </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </div>
