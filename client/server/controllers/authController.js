@@ -11,11 +11,11 @@ export const registerUser = async (req, res) => {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    // Create new user
+    // Create new user (password will be hashed by the model middleware)
     const newUser = new User({
       fullName,
       email,
-      password, // Note: In production, you should hash this password
+      password, // Will be automatically hashed by the pre-save middleware
       role,
       hasFilledForm: false
     });
@@ -38,9 +38,17 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     
-    const user = await User.findOne({ email, password });
+    // Find user by email only
+    const user = await User.findOne({ email });
     
     if (!user) {
+      return res.status(401).json({ message: 'Invalid email or password' });
+    }
+
+    // Compare password securely
+    const isPasswordValid = await user.comparePassword(password);
+    
+    if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }
 
@@ -61,9 +69,9 @@ export const googleAuth = async (req, res) => {
     const { token } = req.body;
     
     // Verify the Google token and get user info
-    const googleResponse = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
+    const googleResponse = await axios.get(
+      `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
+    );
 
     const { email, name, picture } = googleResponse.data;
 
@@ -110,5 +118,32 @@ export const googleAuth = async (req, res) => {
       message: 'Google authentication failed',
       error: error.message 
     });
+  }
+};
+
+export const updateUserRole = async (req, res) => {
+  try {
+    const { email, role } = req.body;
+    if (!email || !role) {
+      return res.status(400).json({ message: 'Email and role are required.' });
+    }
+    const user = await User.findOneAndUpdate(
+      { email },
+      { role },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    res.json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      hasFilledForm: user.hasFilledForm,
+      avatar: user.avatar
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };

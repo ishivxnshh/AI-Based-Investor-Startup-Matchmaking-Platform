@@ -10,6 +10,9 @@ const LoginPage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [googleLoaded, setGoogleLoaded] = useState(false);
+  const [showRoleModal, setShowRoleModal] = useState(false);
+  const [googleUser, setGoogleUser] = useState(null);
+  const [selectedRole, setSelectedRole] = useState('');
 
   // Hardcoded Google Client ID
   const GOOGLE_CLIENT_ID = '234645810155-l657kinkpo3nv1hq21v8ug3120fl968d.apps.googleusercontent.com';
@@ -108,15 +111,45 @@ const LoginPage = () => {
       });
 
       const user = authResponse.data;
-      localStorage.setItem('currentUser', JSON.stringify(user));
-      
-      if (!user.hasFilledForm) {
-        navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
+      // If user is new or has default role, show role modal
+      if (!user.hasFilledForm && (!user.role || user.role === 'investor')) {
+        setGoogleUser(user);
+        setShowRoleModal(true);
       } else {
-        navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        if (!user.hasFilledForm) {
+          navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
+        } else {
+          navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
+        }
       }
     } catch (err) {
       setError('Google authentication failed. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRoleSubmit = async (e) => {
+    e.preventDefault();
+    if (!selectedRole || !googleUser) return;
+    setIsLoading(true);
+    setError('');
+    try {
+      const updateResponse = await axios.post('http://localhost:5000/api/update-role', {
+        email: googleUser.email,
+        role: selectedRole
+      });
+      const updatedUser = updateResponse.data;
+      localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+      setShowRoleModal(false);
+      if (!updatedUser.hasFilledForm) {
+        navigate(updatedUser.role === 'startup' ? '/startup-form' : '/investor-form');
+      } else {
+        navigate(updatedUser.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
+      }
+    } catch (err) {
+      setError('Failed to update role. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -202,6 +235,35 @@ const LoginPage = () => {
           Sign up
         </span>
       </div>
+
+      {/* Role selection modal for Google sign-in */}
+      {showRoleModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h3 className="text-lg font-semibold mb-4">Select Your Role</h3>
+            <form onSubmit={handleRoleSubmit} className="flex flex-col gap-4">
+              <select
+                name='role'
+                value={selectedRole}
+                onChange={e => setSelectedRole(e.target.value)}
+                required
+                className='p-2 border border-gray-300 rounded-md text-gray-800 bg-white'
+              >
+                <option value='' disabled>Select your role</option>
+                <option value='startup'>Startup</option>
+                <option value='investor'>Investor</option>
+              </select>
+              <button
+                type="submit"
+                className="py-2 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md"
+                disabled={isLoading || !selectedRole}
+              >
+                {isLoading ? 'Saving...' : 'Continue'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </AuthLayout>
   );
 };
