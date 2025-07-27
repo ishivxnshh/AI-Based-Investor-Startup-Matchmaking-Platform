@@ -49,6 +49,26 @@ export const getInvestorById = async (req, res) => {
   }
 };
 
+export const updateInvestorProfile = async (req, res) => {
+  try {
+    const { userId, ...updateData } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required.' });
+    }
+    const updatedInvestor = await InvestorForm.findOneAndUpdate(
+      { userId },
+      updateData,
+      { new: true, upsert: true }
+    );
+    if (!updatedInvestor) {
+      return res.status(404).json({ message: 'Investor profile not found.' });
+    }
+    res.json({ message: 'Investor profile updated successfully', investor: updatedInvestor });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const getAllStartups = async (req, res) => {
   try {
     const startups = await StartupForm.find();
@@ -64,6 +84,27 @@ export const getStartupById = async (req, res) => {
     if (!startup) return res.status(404).json({ message: 'Startup not found' });
     res.json(startup);
   } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateStartupProfile = async (req, res) => {
+  try {
+    const { userId, ...updateData } = req.body;
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required.' });
+    }
+    const updatedStartup = await StartupForm.findOneAndUpdate(
+      { userId },
+      updateData,
+      { new: true, upsert: true }
+    );
+    if (!updatedStartup) {
+      return res.status(404).json({ message: 'Startup profile not found.' });
+    }
+    res.json({ message: 'Startup profile updated successfully', startup: updatedStartup });
+  } catch (error) {
+    console.error('Error in updateStartupProfile:', error); // Log error for debugging
     res.status(500).json({ message: error.message });
   }
 };

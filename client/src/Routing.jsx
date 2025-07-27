@@ -16,6 +16,7 @@ import StartupsDetails from './pages/StartupsDetails'
 import InvestorSearch from './pages/InvestorSearch'
 import InvestorDetails from './pages/InvestorDetails'
 import ProtectedRoute from './components/ProtectedRoute';
+import StartupProfileSettings from './pages/StartupProfileSettings'
 
 const Routing = () => {
   return (
@@ -29,6 +30,7 @@ const Routing = () => {
       <Route path="/startup-dashboard" element={<ProtectedRoute allowedRoles={['startup']}><StartupDashboard /></ProtectedRoute>} />
       <Route path="/investor-dashboard" element={<ProtectedRoute allowedRoles={['investor']}><InvestorDashboard /></ProtectedRoute>} />
       <Route path="/investor-profile-settings" element={<ProtectedRoute><InvestorProfileSettings /></ProtectedRoute>} />
+      <Route path="/startup-profile-settings" element={<ProtectedRoute><StartupProfileSettings /></ProtectedRoute>} />
       <Route path="/matches" element={<ProtectedRoute><Matches /></ProtectedRoute>} />
       <Route path="/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
       <Route path="/startupssearch" element={<ProtectedRoute allowedRoles={['investor']}><StartupsSearch /></ProtectedRoute>} />
