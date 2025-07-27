@@ -157,97 +157,99 @@ const LoginPage = () => {
 
   return (
     <AuthLayout>
-      <h2 className='text-2xl font-semibold mb-6'>Login</h2>
+      <div className={showRoleModal ? 'filter blur-sm pointer-events-none transition duration-300' : 'transition duration-300'}>
+        <h2 className='text-2xl font-semibold mb-6'>Login</h2>
 
-      {error && (
-        <div className='mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm'>
-          {error}
+        {error && (
+          <div className='mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm'>
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={onSubmitHandler} className='flex flex-col gap-4 mb-4'>
+          <div>
+            <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
+              Email Address
+            </label>
+            <input
+              id='email'
+              name='email'
+              type='email'
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder='Enter your email'
+              className='w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
+              required
+            />
+          </div>
+
+          <div>
+            <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
+              Password
+            </label>
+            <input
+              id='password'
+              name='password'
+              type='password'
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder='Enter your password'
+              className='w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
+              required
+            />
+          </div>
+
+          <button 
+            type='submit' 
+            className='w-full py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md flex justify-center items-center'
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Logging in...
+              </>
+            ) : (
+              'Login'
+            )}
+          </button>
+        </form>
+
+        <div className="flex items-center my-6">
+          <div className="flex-grow border-t border-gray-300"></div>
+          <span className="mx-4 text-gray-500">or</span>
+          <div className="flex-grow border-t border-gray-300"></div>
         </div>
-      )}
 
-      <form onSubmit={onSubmitHandler} className='flex flex-col gap-4 mb-4'>
-        <div>
-          <label htmlFor='email' className='block text-sm font-medium text-gray-700 mb-1'>
-            Email Address
-          </label>
-          <input
-            id='email'
-            name='email'
-            type='email'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder='Enter your email'
-            className='w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
-            required
-          />
+        {/* Google Sign-In Button */}
+        <div id="googleSignInContainer" className="w-full"></div>
+
+        <div className='text-sm text-center text-gray-600'>
+          Don't have an account?{' '}
+          <span
+            className='text-violet-500 cursor-pointer font-medium'
+            onClick={() => navigate('/register')}
+          >
+            Sign up
+          </span>
         </div>
-
-        <div>
-          <label htmlFor='password' className='block text-sm font-medium text-gray-700 mb-1'>
-            Password
-          </label>
-          <input
-            id='password'
-            name='password'
-            type='password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder='Enter your password'
-            className='w-full p-2 border border-gray-300 rounded-md text-gray-800 placeholder-gray-500 bg-white'
-            required
-          />
-        </div>
-
-        <button 
-          type='submit' 
-          className='w-full py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md flex justify-center items-center'
-          disabled={isLoading}
-        >
-          {isLoading ? (
-            <>
-              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
-              Logging in...
-            </>
-          ) : (
-            'Login'
-          )}
-        </button>
-      </form>
-
-      <div className="flex items-center my-6">
-        <div className="flex-grow border-t border-gray-300"></div>
-        <span className="mx-4 text-gray-500">or</span>
-        <div className="flex-grow border-t border-gray-300"></div>
-      </div>
-
-      {/* Google Sign-In Button */}
-      <div id="googleSignInContainer" className="w-full"></div>
-
-      <div className='text-sm text-center text-gray-600'>
-        Don't have an account?{' '}
-        <span
-          className='text-violet-500 cursor-pointer font-medium'
-          onClick={() => navigate('/register')}
-        >
-          Sign up
-        </span>
       </div>
 
       {/* Role selection modal for Google sign-in */}
       {showRoleModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h3 className="text-lg font-semibold mb-4">Select Your Role</h3>
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-white/10 backdrop-blur-sm">
+          <div className="p-6 rounded-xl shadow-2xl w-80 bg-white/40 backdrop-blur-lg border border-white/30">
+            <h3 className="text-lg font-semibold mb-4 text-gray-800">Select Your Role</h3>
             <form onSubmit={handleRoleSubmit} className="flex flex-col gap-4">
               <select
                 name='role'
                 value={selectedRole}
                 onChange={e => setSelectedRole(e.target.value)}
                 required
-                className='p-2 border border-gray-300 rounded-md text-gray-800 bg-white'
+                className='p-2 border border-gray-300 rounded-md text-gray-800 bg-white/60 backdrop-blur'
               >
                 <option value='' disabled>Select your role</option>
                 <option value='startup'>Startup</option>
