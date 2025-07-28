@@ -12,6 +12,7 @@
     "start": "concurrently \"npm run server\" \"npm run dev\""
   },
   "dependencies": {
+    "@google/genai": "^1.11.0",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.10.0",
     "bcrypt": "^6.0.0",

@@ -100,30 +100,6 @@ const InvestorDashboard = () => {
           <p className="mt-2 text-gray-300 text-lg">
             Here you can track your investments, discover new startups, and manage your investor journey with Chatiao.
           </p>
-          {/* AI Assistant Section */}
-          <div className="mt-10 flex flex-col items-center justify-center gap-6 w-full max-w-2xl mx-auto bg-white/10 rounded-2xl p-8 shadow-lg border border-white/20">
-            <div className="flex items-center gap-4 mb-2">
-              <img src={assets.chat_icon} alt="AI Assistant" className="w-12 h-12 bg-indigo-700 rounded-full p-2" />
-              <span className="text-2xl font-bold text-white">AI Investor Assistant</span>
-            </div>
-            <p className="text-lg text-gray-200 mb-4 text-center">Ask our AI Assistant about startups, investment trends, or your portfolio. (Coming soon!)</p>
-            <div className="w-full flex flex-col md:flex-row gap-2 items-center">
-              <input
-                type="text"
-                className="flex-1 px-4 py-3 rounded-full bg-white/80 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                placeholder="Type your question... (AI coming soon)"
-                disabled
-              />
-              <button
-                className="bg-indigo-700 text-white px-6 py-3 rounded-full font-semibold hover:bg-indigo-800 transition flex items-center gap-2 opacity-60 cursor-not-allowed"
-                disabled
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-9.456 3.181a.75.75 0 00-.042 1.414l9.456 3.181a.75.75 0 00.99-.99l-3.181-9.456a.75.75 0 00-1.414-.042z" /></svg>
-                Ask AI
-              </button>
-            </div>
-            <div className="text-xs text-gray-400 mt-2">AI-powered answers and chat will be available soon.</div>
-          </div>
         </section>
 
         {/* Centered Startups Button */}
