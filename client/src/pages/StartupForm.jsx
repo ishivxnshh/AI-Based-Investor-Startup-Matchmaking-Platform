@@ -70,7 +70,7 @@ const StartupForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
-    
+
     if (type === 'checkbox') {
       if (name === 'previousStartupExperience') {
         setFormData(prev => ({ ...prev, [name]: checked }));
@@ -85,7 +85,25 @@ const StartupForm = () => {
         });
       }
     } else if (type === 'file') {
-      setFormData(prev => ({ ...prev, [name]: files[0] }));
+      const file = files[0];
+      if (file) {
+        // Validate file size (10MB limit)
+        if (file.size > 10 * 1024 * 1024) {
+          toast.error('File size must be less than 10MB');
+          e.target.value = ''; // Clear the input
+          return;
+        }
+
+        // Validate file type
+        const allowedTypes = ['application/pdf', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+        if (!allowedTypes.includes(file.type)) {
+          toast.error('Only PDF and PowerPoint files are allowed');
+          e.target.value = ''; // Clear the input
+          return;
+        }
+
+        setFormData(prev => ({ ...prev, [name]: file }));
+      }
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
@@ -97,10 +115,32 @@ const handleSubmit = async (e) => {
   const user = JSON.parse(localStorage.getItem('currentUser'));
   if (!user) return toast.error('User not logged in');
 
-  const payload = { ...formData, userId: user._id };
+  // Create FormData to handle file upload
+  const formDataToSend = new FormData();
+
+  // Add all form fields to FormData
+  Object.keys(formData).forEach(key => {
+    if (key === 'pitchDeck' && formData[key]) {
+      // Add file directly
+      formDataToSend.append('pitchDeck', formData[key]);
+    } else if (Array.isArray(formData[key])) {
+      // Handle arrays by converting to JSON string
+      formDataToSend.append(key, JSON.stringify(formData[key]));
+    } else if (formData[key] !== null && formData[key] !== '') {
+      // Add other fields as strings
+      formDataToSend.append(key, formData[key]);
+    }
+  });
+
+  // Add userId
+  formDataToSend.append('userId', user._id);
 
   try {
-    await axios.post('http://localhost:5000/api/forms/startup-form', payload);  
+    await axios.post('http://localhost:5000/api/forms/startup-form', formDataToSend, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
     localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
     toast.success('Form submitted successfully!');
     setTimeout(() => navigate('/startup-dashboard'), 1500);
@@ -587,10 +627,15 @@ const handleSubmit = async (e) => {
                     name="pitchDeck"
                     onChange={handleChange}
                     accept=".pdf,.ppt,.pptx"
-                    className="py-2 px-3 bg-white/5 border border-white/20 rounded-md text-sm text-white"
+                    className="py-2 px-3 bg-white/5 border border-white/20 rounded-md text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
                   />
                 </div>
-                <p className="mt-1 text-xs text-gray-300">Upload your pitch deck (PDF or PowerPoint)</p>
+                {formData.pitchDeck && (
+                  <p className="mt-1 text-xs text-green-300">
+                    Selected: {formData.pitchDeck.name} ({(formData.pitchDeck.size / 1024 / 1024).toFixed(2)} MB)
+                  </p>
+                )}
+                <p className="mt-1 text-xs text-gray-300">Upload your pitch deck (PDF or PowerPoint, max 10MB)</p>
               </div>
             </motion.section>
 

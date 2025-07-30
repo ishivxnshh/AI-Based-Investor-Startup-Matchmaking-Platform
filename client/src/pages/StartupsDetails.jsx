@@ -122,6 +122,42 @@ function StartupsDetails() {
           
           <div className="section-title text-2xl font-semibold mb-4 text-white">Business Model</div>
           <div className="section-content text-gray-200 mb-8">{startup.businessModel}</div>
+
+          {/* Pitch Deck Section */}
+          {startup.pitchDeck && (
+            <div className="mb-8">
+              <div className="section-title text-2xl font-semibold mb-4 text-white">Pitch Deck</div>
+              <div className="bg-white/5 border border-white/20 rounded-lg p-6">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center">
+                      <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <div className="text-white font-medium">{startup.pitchDeck.originalName}</div>
+                      <div className="text-gray-400 text-sm">
+                        {(startup.pitchDeck.size / 1024 / 1024).toFixed(2)} MB •
+                        Uploaded {new Date(startup.pitchDeck.uploadedAt).toLocaleDateString()}
+                      </div>
+                    </div>
+                  </div>
+                  <a
+                    href={`http://localhost:5000/api/forms/startup-form/${startup._id}/pitch-deck`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-4 py-2 rounded-lg hover:from-purple-600 hover:to-violet-700 transition flex items-center space-x-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <span>Download</span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          )}
           
           <div className="section-title text-2xl font-semibold mb-4 text-white">Industry</div>
           <div className="section-content text-gray-200 mb-8">{startup.industry && startup.industry.join(', ')}</div>

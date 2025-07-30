@@ -1,6 +1,8 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import AIPitchFeedback from '../components/AIPitchFeedback';
+import axios from 'axios';
 
 const featuredInvestors = [
   { id: 1, name: 'John Doe', focus: 'Fintech, SaaS, Seed-Stage', desc: 'Angel investor with a focus on early-stage technology startups.' },
@@ -14,12 +16,47 @@ const featuredInvestors = [
 const StartupDashboard = () => {
   const navigate = useNavigate();
   // Dropdown menu state
-  const [showDropdown, setShowDropdown] = useState(false)
-  const handleDropdownToggle = () => setShowDropdown((prev) => !prev)
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [showAIFeedback, setShowAIFeedback] = useState(false);
+  const [startupData, setStartupData] = useState(null);
+
+  const handleDropdownToggle = () => setShowDropdown((prev) => !prev);
   const handleLogout = () => {
-    localStorage.removeItem('currentUser')
-    navigate('/login')
-  }
+    localStorage.removeItem('currentUser');
+    navigate('/login');
+  };
+
+  // Fetch startup data for AI analysis
+  useEffect(() => {
+    const fetchStartupData = async () => {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (user && user._id) {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/forms/startup-form/user/${user._id}`);
+          setStartupData(response.data);
+        } catch (error) {
+          console.error('Failed to fetch startup data:', error);
+          // If no startup data found, that's okay - user hasn't filled the form yet
+          setStartupData(null);
+        }
+      }
+    };
+    fetchStartupData();
+  }, []);
+
+  const handleAIFeedback = () => {
+    if (!startupData) {
+      alert('Please complete your startup profile first to get AI feedback.');
+      navigate('/startup-profile-settings');
+      return;
+    }
+    if (!startupData.pitchDeck) {
+      alert('Please upload a pitch deck first to get AI feedback. You can do this by filling out the startup form.');
+      navigate('/startup-form');
+      return;
+    }
+    setShowAIFeedback(true);
+  };
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -71,36 +108,24 @@ const StartupDashboard = () => {
         <section className="text-center py-20 px-4">
           <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">Connect. Invest. Grow.</h1>
           <p className="text-2xl md:text-3xl text-gray-300 mb-8">Find investors. Apply for meetings.</p>
-          <button 
-            className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-lg" 
-            onClick={() => navigate('/investor-search')}
-          >
-            Browse Investors
-          </button>
 
-          {/* AI Assistant Section */}
-          <div className="mt-12 flex flex-col items-center justify-center gap-6 max-w-2xl mx-auto bg-white/10 rounded-2xl p-8 shadow-lg border border-white/20">
-            <div className="flex items-center gap-4 mb-2">
-              <img src={assets.chat_icon} alt="AI Assistant" className="w-12 h-12 bg-indigo-700 rounded-full p-2" />
-              <span className="text-2xl font-bold text-white">AI Startup Assistant</span>
-            </div>
-            <p className="text-lg text-gray-200 mb-4 text-center">Ask our AI Assistant anything about investors, funding, or your startup journey. (Coming soon!)</p>
-            <div className="w-full flex flex-col md:flex-row gap-2 items-center">
-              <input
-                type="text"
-                className="flex-1 px-4 py-3 rounded-full bg-white/80 text-black placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-400"
-                placeholder="Type your question... (AI coming soon)"
-                disabled
-              />
-              <button
-                className="bg-indigo-700 text-white px-6 py-3 rounded-full font-semibold hover:bg-indigo-800 transition flex items-center gap-2 opacity-60 cursor-not-allowed"
-                disabled
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-9.456 3.181a.75.75 0 00-.042 1.414l9.456 3.181a.75.75 0 00.99-.99l-3.181-9.456a.75.75 0 00-1.414-.042z" /></svg>
-                Ask AI
-              </button>
-            </div>
-            <div className="text-xs text-gray-400 mt-2">AI-powered answers and chat will be available soon.</div>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <button
+              className="bg-black text-white px-8 py-3 rounded-full font-semibold hover:bg-gray-800 transition text-lg"
+              onClick={() => navigate('/investor-search')}
+            >
+              Browse Investors
+            </button>
+
+            <button
+              className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-3 rounded-full font-semibold hover:from-purple-600 hover:to-violet-700 transition text-lg flex items-center space-x-2"
+              onClick={handleAIFeedback}
+            >
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+              <span>AI Pitch Feedback</span>
+            </button>
           </div>
         </section>
 
@@ -193,6 +218,14 @@ const StartupDashboard = () => {
           <div className="text-center text-gray-400 mt-8">© {new Date().getFullYear()} Chatiao. All rights reserved.</div>
         </footer>
       </div>
+
+      {/* AI Pitch Feedback Modal */}
+      {showAIFeedback && startupData && (
+        <AIPitchFeedback
+          startupId={startupData._id}
+          onClose={() => setShowAIFeedback(false)}
+        />
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import assets from '../assets/assets';
 import axios from 'axios';
+import AIPitchFeedback from '../components/AIPitchFeedback';
 
 const industries = [
   'Fintech', 'AI', 'HealthTech', 'EdTech', 'E-commerce', 'SaaS', 
@@ -49,14 +50,18 @@ const StartupProfileSettings = () => {
     equityOffering: '',
     headquarters: '',
     operatingMarkets: [],
-    expansionPlan: ''
+    expansionPlan: '',
+    pitchDeck: null
   });
   const [loading, setLoading] = useState(false);
+  const [showAIFeedback, setShowAIFeedback] = useState(false);
+  const [uploadingPitchDeck, setUploadingPitchDeck] = useState(false);
+  const [newPitchDeck, setNewPitchDeck] = useState(null);
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'));
     if (user && user._id) {
-      axios.get(`http://localhost:5000/api/forms/startup-form/${user._id}`)
+      axios.get(`http://localhost:5000/api/forms/startup-form/user/${user._id}`)
         .then(res => {
           if (res.data) {
             setProfile(prev => ({
@@ -144,6 +149,66 @@ const StartupProfileSettings = () => {
       alert('Failed to update profile');
     }
     setLoading(false);
+  };
+
+  const handlePitchDeckChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB');
+        e.target.value = '';
+        return;
+      }
+
+      // Validate file type
+      const allowedTypes = ['application/pdf', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
+      if (!allowedTypes.includes(file.type)) {
+        alert('Only PDF and PowerPoint files are allowed');
+        e.target.value = '';
+        return;
+      }
+
+      setNewPitchDeck(file);
+    }
+  };
+
+  const handlePitchDeckUpload = async () => {
+    if (!newPitchDeck) return;
+
+    const user = JSON.parse(localStorage.getItem('currentUser'));
+    if (!user || !user._id) {
+      alert('User not logged in');
+      return;
+    }
+
+    setUploadingPitchDeck(true);
+
+    const formData = new FormData();
+    formData.append('pitchDeck', newPitchDeck);
+    formData.append('userId', user._id);
+
+    try {
+      const response = await axios.put('http://localhost:5000/api/forms/startup-form/pitch-deck', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Update the profile with new pitch deck info
+      setProfile(prev => ({
+        ...prev,
+        pitchDeck: response.data.pitchDeck
+      }));
+
+      setNewPitchDeck(null);
+      alert('Pitch deck updated successfully!');
+    } catch (error) {
+      console.error('Failed to upload pitch deck:', error);
+      alert('Failed to upload pitch deck. Please try again.');
+    }
+
+    setUploadingPitchDeck(false);
   };
 
   return (
@@ -326,10 +391,129 @@ const StartupProfileSettings = () => {
               <label className="block mb-1 text-gray-200">Expansion Plan</label>
               <textarea name="expansionPlan" value={profile.expansionPlan} onChange={handleProfileChange} className="w-full p-2 rounded bg-[#232347]/80 border border-violet-400 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-violet-500" rows={2} placeholder="Describe your expansion plans" />
             </div>
-            <div className="flex justify-center mt-8">
+
+            {/* Pitch Deck Section */}
+            <div>
+              <label className="block mb-1 text-gray-200">Pitch Deck</label>
+
+              {profile.pitchDeck ? (
+                <div className="bg-white/5 border border-white/20 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="text-white font-medium">{profile.pitchDeck.originalName}</div>
+                        <div className="text-gray-400 text-sm">
+                          {profile.pitchDeck.size ? (profile.pitchDeck.size / 1024 / 1024).toFixed(2) : '0.00'} MB •
+                          Uploaded {profile.pitchDeck.uploadedAt ? new Date(profile.pitchDeck.uploadedAt).toLocaleDateString() : 'Unknown date'}
+                        </div>
+                      </div>
+                    </div>
+                    <a
+                      href={`http://localhost:5000/api/forms/startup-form/${profile._id}/pitch-deck`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-3 py-1 rounded text-sm hover:from-purple-600 hover:to-violet-700 transition flex items-center space-x-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>Download</span>
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-white/5 border border-white/20 rounded-lg p-4 mb-4 text-center">
+                  <div className="text-gray-400 mb-2">No pitch deck uploaded</div>
+                </div>
+              )}
+
+              {/* Upload/Update Pitch Deck */}
+              <div className="bg-white/5 border border-white/20 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-white font-medium">
+                    {profile.pitchDeck ? 'Update Pitch Deck' : 'Upload Pitch Deck'}
+                  </span>
+                </div>
+
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="file"
+                    id="pitchDeckUpload"
+                    accept=".pdf,.ppt,.pptx"
+                    onChange={handlePitchDeckChange}
+                    className="hidden"
+                  />
+                  <label
+                    htmlFor="pitchDeckUpload"
+                    className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white cursor-pointer hover:bg-white/20 transition flex items-center space-x-2"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                    </svg>
+                    <span>Choose File</span>
+                  </label>
+
+                  {newPitchDeck && (
+                    <div className="flex-1 flex items-center justify-between">
+                      <div className="text-sm text-gray-300">
+                        {newPitchDeck.name} ({(newPitchDeck.size / 1024 / 1024).toFixed(2)} MB)
+                      </div>
+                      <button
+                        onClick={handlePitchDeckUpload}
+                        disabled={uploadingPitchDeck}
+                        className="bg-gradient-to-r from-green-500 to-green-600 text-white px-4 py-2 rounded-lg hover:from-green-600 hover:to-green-700 transition disabled:opacity-50 flex items-center space-x-2"
+                      >
+                        {uploadingPitchDeck ? (
+                          <>
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <span>Uploading...</span>
+                          </>
+                        ) : (
+                          <>
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                            </svg>
+                            <span>Upload</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <p className="text-xs text-gray-400 mt-2">
+                  Upload your pitch deck (PDF or PowerPoint, max 10MB)
+                </p>
+              </div>
+            </div>
+            <div className="flex justify-center mt-8 space-x-4">
               <button type="submit" className="px-8 py-3 bg-gradient-to-r from-purple-500 to-violet-700 text-white font-bold rounded-lg shadow-lg hover:from-purple-600 hover:to-violet-800 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2 transition text-lg flex items-center gap-2" disabled={loading}>
                 {loading ? 'Saving...' : 'Save Profile'}
               </button>
+
+              {profile._id && profile.pitchDeck && (
+                <button
+                  type="button"
+                  onClick={() => setShowAIFeedback(true)}
+                  className="px-8 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-bold rounded-lg shadow-lg hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition text-lg flex items-center gap-2"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  AI Pitch Feedback
+                </button>
+              )}
+
+              {profile._id && !profile.pitchDeck && (
+                <div className="text-center text-gray-400 text-sm">
+                  Upload a pitch deck in the startup form to get AI feedback
+                </div>
+              )}
             </div>
           </form>
         </section>
@@ -337,6 +521,14 @@ const StartupProfileSettings = () => {
       <footer className="text-center text-sm py-6 bg-black/70 border-t border-gray-700 relative z-10">
         © {new Date().getFullYear()} Chatiao. All rights reserved.
       </footer>
+
+      {/* AI Pitch Feedback Modal */}
+      {showAIFeedback && profile._id && (
+        <AIPitchFeedback
+          startupId={profile._id}
+          onClose={() => setShowAIFeedback(false)}
+        />
+      )}
     </div>
   );
 };

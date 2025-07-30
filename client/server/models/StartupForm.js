@@ -31,6 +31,13 @@ const StartupFormSchema = new mongoose.Schema({
   headquarters: String,
   operatingMarkets: [String],
   expansionPlan: String,
+  pitchDeck: {
+    filename: String,
+    originalName: String,
+    path: String,
+    size: Number,
+    uploadedAt: { type: Date, default: Date.now }
+  },
   createdAt: { type: Date, default: Date.now }
 });
 
