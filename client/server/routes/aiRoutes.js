@@ -1,5 +1,5 @@
 import express from 'express';
-import { analyzePitch, chatWithAI } from '../controllers/aiController.js';
+import { analyzePitch, chatWithAI, findMatches } from '../controllers/aiController.js';
 
 const router = express.Router();
 
@@ -19,5 +19,8 @@ router.post('/analyze/:startupId', analyzePitch);
 
 // Chat with AI
 router.post('/chat', chatWithAI);
+
+// AI Matchmaking - Find matches for current user
+router.post('/matches/:userId', findMatches);
 
 export default router;

@@ -330,6 +330,174 @@ Please provide helpful startup and investment advice. Keep your response convers
 
     return await this.callGroqAPI(prompt);
   }
+
+  // AI Matchmaking Methods
+  async findMatchesForStartup(startupProfile, allInvestors) {
+    const prompt = this.createStartupMatchingPrompt(startupProfile, allInvestors);
+    return await this.callGroqAPI(prompt);
+  }
+
+  async findMatchesForInvestor(investorProfile, allStartups) {
+    const prompt = this.createInvestorMatchingPrompt(investorProfile, allStartups);
+    return await this.callGroqAPI(prompt);
+  }
+
+  createStartupMatchingPrompt(startup, investors) {
+    return `
+As an expert investment matchmaker and startup advisor, analyze this startup profile and suggest the most compatible investors from the available pool.
+
+## 🚀 STARTUP PROFILE TO MATCH:
+**Company:** ${startup.startupName || 'Not specified'}
+**Industry:** ${Array.isArray(startup.industry) ? startup.industry.join(', ') : startup.industry || 'Not specified'}
+**Stage:** ${startup.startupStage || 'Not specified'}
+**Funding Amount:** ${startup.fundingAmount || 'Not specified'}
+**Funding Round:** ${startup.fundingRoundType || 'Not specified'}
+**Location:** ${startup.headquarters || 'Not specified'}
+**Operating Markets:** ${Array.isArray(startup.operatingMarkets) ? startup.operatingMarkets.join(', ') : startup.operatingMarkets || 'Not specified'}
+**Business Model:** ${startup.businessModel || 'Not specified'}
+**Problem Statement:** ${startup.problemStatement || 'Not specified'}
+**Product Description:** ${startup.productDescription || 'Not specified'}
+**Tech Stack:** ${startup.techStack || 'Not specified'}
+**Team Size:** ${startup.teamSize || 'Not specified'}
+**Team Skills:** ${Array.isArray(startup.teamSkills) ? startup.teamSkills.join(', ') : startup.teamSkills || 'Not specified'}
+**Monthly Revenue:** ${startup.monthlyRevenue || 'Not specified'}
+**Growth Rate:** ${startup.growthRate || 'Not specified'}
+**Use of Funds:** ${Array.isArray(startup.useOfFunds) ? startup.useOfFunds.join(', ') : startup.useOfFunds || 'Not specified'}
+
+## 💼 AVAILABLE INVESTORS TO ANALYZE:
+${investors.map((investor, index) => `
+**Investor ${index + 1}:**
+- Name: ${investor.fullName || 'Not specified'}
+- Organization: ${investor.organization || 'Not specified'}
+- Type: ${investor.investorType || 'Not specified'}
+- Preferred Industries: ${Array.isArray(investor.preferredIndustries) ? investor.preferredIndustries.join(', ') : investor.preferredIndustries || 'Not specified'}
+- Preferred Stages: ${Array.isArray(investor.preferredStages) ? investor.preferredStages.join(', ') : investor.preferredStages || 'Not specified'}
+- Ticket Size: ${investor.ticketSize || 'Not specified'}
+- Preferred Geographies: ${Array.isArray(investor.preferredGeographies) ? investor.preferredGeographies.join(', ') : investor.preferredGeographies || 'Not specified'}
+- Investment Model: ${investor.investmentModel || 'Not specified'}
+- Risk Appetite: ${investor.riskAppetite || 'Not specified'}
+- Investment Horizon: ${investor.investmentHorizon || 'Not specified'}
+- Previous Investments: ${investor.numberOfInvestments || 'Not specified'}
+- Portfolio Highlights: ${investor.portfolioHighlights || 'Not specified'}
+- ESG Interest: ${investor.esgInterest || 'Not specified'}
+- Co-Investment Interest: ${investor.coInvestmentInterest || 'Not specified'}
+`).join('\n')}
+
+## 📊 ANALYSIS REQUIREMENTS:
+
+Please analyze each investor and provide a ranked list of the TOP 5 MOST COMPATIBLE matches. For each match, provide:
+
+1. **Compatibility Score** (1-100)
+2. **Match Reasoning** (detailed explanation)
+3. **Key Alignment Points**
+4. **Potential Concerns**
+5. **Recommendation Level** (Highly Recommended / Recommended / Consider)
+
+## 📋 OUTPUT FORMAT:
+
+**🎯 TOP INVESTOR MATCHES FOR ${startup.startupName || 'THIS STARTUP'}**
+
+**Match 1: [Investor Name] - Score: [X]/100**
+- **Organization:** [Organization Name]
+- **Investor Type:** [Type]
+- **Recommendation:** [Level]
+- **Why This Match Works:**
+  • [Key alignment point 1]
+  • [Key alignment point 2]
+  • [Key alignment point 3]
+- **Potential Concerns:**
+  • [Concern 1 if any]
+  • [Concern 2 if any]
+- **Next Steps:** [Specific advice for approaching this investor]
+
+[Repeat for top 5 matches]
+
+**📈 OVERALL MATCHING INSIGHTS:**
+- Market trends favoring this startup
+- Investor landscape analysis
+- Strategic recommendations for fundraising approach
+
+Focus on practical, actionable insights that will help the startup approach the right investors with the right strategy.
+`;
+  }
+
+  createInvestorMatchingPrompt(investor, startups) {
+    return `
+As an expert investment matchmaker and venture capital advisor, analyze this investor profile and suggest the most compatible startups from the available pool.
+
+## 💼 INVESTOR PROFILE TO MATCH:
+**Name:** ${investor.fullName || 'Not specified'}
+**Organization:** ${investor.organization || 'Not specified'}
+**Type:** ${investor.investorType || 'Not specified'}
+**Preferred Industries:** ${Array.isArray(investor.preferredIndustries) ? investor.preferredIndustries.join(', ') : investor.preferredIndustries || 'Not specified'}
+**Preferred Stages:** ${Array.isArray(investor.preferredStages) ? investor.preferredStages.join(', ') : investor.preferredStages || 'Not specified'}
+**Ticket Size:** ${investor.ticketSize || 'Not specified'}
+**Preferred Geographies:** ${Array.isArray(investor.preferredGeographies) ? investor.preferredGeographies.join(', ') : investor.preferredGeographies || 'Not specified'}
+**Investment Model:** ${investor.investmentModel || 'Not specified'}
+**Risk Appetite:** ${investor.riskAppetite || 'Not specified'}
+**Investment Horizon:** ${investor.investmentHorizon || 'Not specified'}
+**Previous Investments:** ${investor.numberOfInvestments || 'Not specified'}
+**Portfolio Highlights:** ${investor.portfolioHighlights || 'Not specified'}
+**ESG Interest:** ${investor.esgInterest || 'Not specified'}
+**Co-Investment Interest:** ${investor.coInvestmentInterest || 'Not specified'}
+
+## 🚀 AVAILABLE STARTUPS TO ANALYZE:
+${startups.map((startup, index) => `
+**Startup ${index + 1}:**
+- Company: ${startup.startupName || 'Not specified'}
+- Industry: ${Array.isArray(startup.industry) ? startup.industry.join(', ') : startup.industry || 'Not specified'}
+- Stage: ${startup.startupStage || 'Not specified'}
+- Funding Amount: ${startup.fundingAmount || 'Not specified'}
+- Funding Round: ${startup.fundingRoundType || 'Not specified'}
+- Location: ${startup.headquarters || 'Not specified'}
+- Business Model: ${startup.businessModel || 'Not specified'}
+- Problem: ${startup.problemStatement || 'Not specified'}
+- Product: ${startup.productDescription || 'Not specified'}
+- Monthly Revenue: ${startup.monthlyRevenue || 'Not specified'}
+- Growth Rate: ${startup.growthRate || 'Not specified'}
+- Team Size: ${startup.teamSize || 'Not specified'}
+- Tech Stack: ${startup.techStack || 'Not specified'}
+`).join('\n')}
+
+## 📊 ANALYSIS REQUIREMENTS:
+
+Please analyze each startup and provide a ranked list of the TOP 5 MOST COMPATIBLE investment opportunities. For each match, provide:
+
+1. **Investment Score** (1-100)
+2. **Investment Thesis** (detailed explanation)
+3. **Key Attraction Points**
+4. **Risk Assessment**
+5. **Investment Recommendation** (Strong Buy / Buy / Consider / Pass)
+
+## 📋 OUTPUT FORMAT:
+
+**🎯 TOP STARTUP MATCHES FOR ${investor.fullName || 'THIS INVESTOR'}**
+
+**Match 1: [Startup Name] - Score: [X]/100**
+- **Industry:** [Industry]
+- **Stage:** [Stage]
+- **Funding Round:** [Round Type]
+- **Recommendation:** [Level]
+- **Investment Thesis:**
+  • [Key attraction point 1]
+  • [Key attraction point 2]
+  • [Key attraction point 3]
+- **Risk Assessment:**
+  • [Risk factor 1 if any]
+  • [Risk factor 2 if any]
+- **Strategic Value:** [How this fits investor's portfolio]
+- **Due Diligence Focus:** [Key areas to investigate]
+
+[Repeat for top 5 matches]
+
+**📈 PORTFOLIO STRATEGY INSIGHTS:**
+- Market opportunities analysis
+- Portfolio diversification benefits
+- Strategic investment recommendations
+
+Focus on investment potential, market timing, and strategic fit with the investor's portfolio and preferences.
+`;
+  }
 }
 
 export default new AIService();

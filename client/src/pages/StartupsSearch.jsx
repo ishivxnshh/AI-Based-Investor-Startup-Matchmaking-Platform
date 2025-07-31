@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 import axios from 'axios';
+import AIMatchingResults from '../components/AIMatchingResults';
 
 const industries = [
   { label: 'All', value: 'all' },
@@ -19,6 +20,10 @@ function StartupsSearch() {
   const [startups, setStartups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [aiMatching, setAiMatching] = useState(false);
+  const [aiMatches, setAiMatches] = useState(null);
+  const [showMatches, setShowMatches] = useState(false);
+  const [totalProfilesAnalyzed, setTotalProfilesAnalyzed] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -46,6 +51,29 @@ function StartupsSearch() {
     return matchesIndustry && matchesSearch;
   });
 
+  const handleAIMatching = async () => {
+    setAiMatching(true);
+    setError('');
+
+    try {
+      const user = JSON.parse(localStorage.getItem('currentUser'));
+      if (!user || !user._id) {
+        setError('Please log in to use AI matchmaking');
+        return;
+      }
+
+      const response = await axios.post(`http://localhost:5000/api/ai/matches/${user._id}`);
+      setAiMatches(response.data.matches);
+      setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed);
+      setShowMatches(true);
+    } catch (err) {
+      console.error('AI Matching failed:', err);
+      setError(err.response?.data?.message || 'AI matchmaking failed. Please try again.');
+    } finally {
+      setAiMatching(false);
+    }
+  };
+
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       {/* Background Layer */}
@@ -70,7 +98,7 @@ function StartupsSearch() {
         <section className="flex flex-col items-center justify-center text-center py-16 px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">Discover Investment Opportunities</h1>
           <p className="text-lg text-gray-300 mb-8">Explore the most promising startups and invest in the future with Chatiao.</p>
-          <div className="search-bar max-w-xl mx-auto flex bg-white rounded-full overflow-hidden shadow-lg">
+          <div className="search-bar max-w-xl mx-auto flex bg-white rounded-full overflow-hidden shadow-lg mb-6">
             <input
               type="text"
               className="flex-1 px-6 py-3 text-gray-700 outline-none"
@@ -80,6 +108,24 @@ function StartupsSearch() {
             />
             <button className="bg-indigo-700 text-white px-6 py-3 font-bold hover:bg-indigo-900 transition">Search</button>
           </div>
+
+          {/* AI Matchmaking Button */}
+          <button
+            onClick={handleAIMatching}
+            disabled={aiMatching}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-8 py-3 rounded-full font-bold hover:from-purple-700 hover:to-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+          >
+            {aiMatching ? (
+              <>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                AI Analyzing...
+              </>
+            ) : (
+              <>
+                🤖 Find My Perfect Startups with AI
+              </>
+            )}
+          </button>
         </section>
 
         {/* Filters */}
@@ -99,10 +145,22 @@ function StartupsSearch() {
           </div>
         </section>
 
+        {/* AI Matching Results Modal */}
+        {showMatches && aiMatches && (
+          <AIMatchingResults
+            matches={aiMatches}
+            userRole="investor"
+            onClose={() => setShowMatches(false)}
+            totalProfilesAnalyzed={totalProfilesAnalyzed}
+          />
+        )}
+
         {/* Startups Grid */}
         <section className="startups-grid py-12">
           <div className="container mx-auto px-4">
-            <h2 className="section-title text-3xl font-semibold mb-8 text-white">Featured Startups</h2>
+            <h2 className="section-title text-3xl font-semibold mb-8 text-white">
+              {showMatches ? 'All Startups' : 'Featured Startups'}
+            </h2>
             {loading ? (
               <div className="text-center text-lg text-gray-300">Loading startups...</div>
             ) : error ? (
