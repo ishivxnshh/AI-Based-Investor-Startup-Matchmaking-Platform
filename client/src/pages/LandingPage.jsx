@@ -276,12 +276,12 @@ const LandingPage = () => {
                 alt="Google"
               />
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Sequoia_Capital_logo.svg"
+                src="https://tse2.mm.bing.net/th/id/OIP.p8sW7kW_Bvuq5bJCiWOPxQHaEK?pid=Api&P=0&h=180"
                 className="h-10"
                 alt="Sequoia"
               />
               <img
-                src="https://upload.wikimedia.org/wikipedia/commons/d/db/Y_Combinator_logo.svg"
+                src="https://tse1.mm.bing.net/th/id/OIP.0Cqtm6Fi2SsTyufbOCOJRwAAAA?pid=Api&P=0&h=180"
                 className="h-10"
                 alt="Y Combinator"
               />

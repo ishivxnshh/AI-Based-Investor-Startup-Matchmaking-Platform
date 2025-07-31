@@ -60,7 +60,7 @@ const InvestorDashboard = () => {
             <button onClick={() => navigate('/startupssearch')} className="hover:text-purple-300">Startups</button>
             <button onClick={() => navigate('/investor-profile-settings')} className="hover:text-purple-300">Profile Settings</button>
             <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
-              <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
+              <img src="https://thumbs.dreamstime.com/b/live-chat-icon-web-button-gray-vector-illustration-isolated-white-background-118118848.jpg" alt="Chat" className="w-9 h-9 rounded-full" />
             </button>
           {/* Robot Icon Dropdown */}
           <div className="relative ml-4">
@@ -78,10 +78,7 @@ const InvestorDashboard = () => {
                   className="block w-full text-left px-4 py-2 hover:bg-indigo-100"
                   onClick={() => { setShowDropdown(false); navigate('/investor-profile-settings') }}
                 >Investor Profile</button>
-                <button
-                  className="block w-full text-left px-4 py-2 hover:bg-indigo-100"
-                  onClick={() => { setShowDropdown(false); navigate('/settings') }}
-                >Settings</button>
+                
                 <button
                   className="block w-full text-left px-4 py-2 hover:bg-indigo-100"
                   onClick={handleLogout}
