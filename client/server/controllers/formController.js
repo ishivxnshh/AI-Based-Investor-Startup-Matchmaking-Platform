@@ -1,6 +1,7 @@
 import StartupForm from '../models/StartupForm.js';
 import InvestorForm from '../models/InvestorForm.js';
 import User from '../models/User.js';
+import aiService from '../services/aiService.js';
 
 export const submitStartupForm = async (req, res) => {
   try {
@@ -87,6 +88,19 @@ export const getInvestorById = async (req, res) => {
   }
 };
 
+export const getInvestorByUserId = async (req, res) => {
+  try {
+    const investor = await InvestorForm.findOne({ userId: req.params.userId });
+    if (!investor) {
+      // Return empty object instead of 404 for profile settings
+      return res.json({});
+    }
+    res.json(investor);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateInvestorProfile = async (req, res) => {
   try {
     const { userId, ...updateData } = req.body;
@@ -142,6 +156,27 @@ export const updateStartupProfile = async (req, res) => {
     if (!userId) {
       return res.status(400).json({ message: 'User ID is required.' });
     }
+
+    // Parse array fields that were sent as JSON strings
+    const arrayFields = ['teamSkills', 'industry', 'useOfFunds', 'operatingMarkets'];
+    arrayFields.forEach(field => {
+      if (updateData[field] && typeof updateData[field] === 'string') {
+        try {
+          updateData[field] = JSON.parse(updateData[field]);
+        } catch (e) {
+          // If parsing fails, keep as string or set to empty array
+          updateData[field] = [];
+        }
+      }
+    });
+
+    // Convert boolean fields
+    if (updateData.previousStartupExperience === 'true') {
+      updateData.previousStartupExperience = true;
+    } else if (updateData.previousStartupExperience === 'false') {
+      updateData.previousStartupExperience = false;
+    }
+
     const updatedStartup = await StartupForm.findOneAndUpdate(
       { userId },
       updateData,
@@ -212,5 +247,83 @@ export const updatePitchDeck = async (req, res) => {
   } catch (error) {
     console.error('Error updating pitch deck:', error);
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getMatchedInvestors = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required.' });
+    }
+
+    // Get all investors first
+    const allInvestors = await InvestorForm.find();
+    if (allInvestors.length === 0) {
+      return res.status(404).json({ message: 'No investors found in the database.' });
+    }
+
+    // Get the startup profile
+    const startupProfile = await StartupForm.findOne({ userId });
+    
+    // If no startup profile exists, provide basic matches from available investors
+    if (!startupProfile) {
+      const basicMatches = allInvestors.slice(0, 5).map((investor, index) => ({
+        investor: investor,
+        score: 75 - (index * 5), // Basic scoring
+        reasoning: 'Profile incomplete - showing available investors',
+        alignmentPoints: ['Complete your profile for personalized matching', 'General investor availability'],
+        concerns: ['Profile needs completion for better matching'],
+        recommendation: index === 0 ? 'Consider' : 'Explore'
+      }));
+      
+      return res.json({
+        success: true,
+        matches: basicMatches,
+        message: 'Showing available investors. Complete your profile for AI-powered matching.'
+      });
+    }
+
+    console.log('Using AI service to find matches for startup:', startupProfile.startupName);
+    
+    // Use AI service to find matches with real startup data
+    const matchingResult = await aiService.getMatchedInvestorsForStartup(startupProfile, allInvestors);
+    
+    console.log('AI matching result:', matchingResult.success ? 'Success' : 'Failed');
+    
+    if (!matchingResult.success) {
+      console.error('AI matching failed:', matchingResult.error);
+      // Return fallback matches if AI fails, but still use real investor data
+      const fallbackMatches = allInvestors.slice(0, 5).map((investor, index) => ({
+        investor: investor,
+        score: 80 - (index * 8),
+        reasoning: 'AI analysis temporarily unavailable',
+        alignmentPoints: ['Industry match', 'Stage alignment', 'Geographic fit'],
+        concerns: [],
+        recommendation: index === 0 ? 'Recommended' : 'Consider'
+      }));
+      
+      return res.json({
+        success: true,
+        matches: fallbackMatches,
+        message: 'Using fallback matching due to AI service issues'
+      });
+    }
+
+    res.json({
+      success: true,
+      matches: matchingResult.matches,
+      message: matchingResult.error ? 
+        'AI-powered matches with fallback data' : 
+        'AI-powered investor matches retrieved successfully'
+    });
+
+  } catch (error) {
+    console.error('Error in getMatchedInvestors:', error);
+    res.status(500).json({ 
+      message: 'Failed to get matched investors',
+      error: error.message 
+    });
   }
 };

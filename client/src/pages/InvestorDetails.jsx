@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import Navbar from '../components/Navbar';
 
 function InvestorDetails() {
   const { id } = useParams();
@@ -39,19 +40,7 @@ function InvestorDetails() {
       <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
-        <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/startup-dashboard')}>
-            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
-            <span className="text-2xl font-bold">Chatiao</span>
-          </div>
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <button onClick={() => navigate('/startup-dashboard')} className="hover:text-purple-300">Home</button>
-            <button onClick={() => navigate('/investor-search')} className="hover:text-purple-300">Investors</button>
-            <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
-              <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
-            </button>
-          </nav>
-        </header>
+        <Navbar userType="startup" />
 
         {/* Breadcrumb */}
         <div className="breadcrumb bg-white/10 py-4 border-b border-gray-700 px-4">

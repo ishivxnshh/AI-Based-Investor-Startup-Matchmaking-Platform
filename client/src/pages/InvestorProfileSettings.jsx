@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import assets from '../assets/assets'
 import axios from 'axios'
+import Navbar from '../components/Navbar'
 
 const investorTypes = [
   'Angel', 'VC', 'PE', 'Family Office', 'Corporate', 'Syndicate', 'HNI', 'Other'
@@ -61,22 +62,17 @@ const InvestorProfileSettings = () => {
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     if (user && user._id) {
-      axios.get(`http://localhost:5000/api/forms/investor-form/${user._id}`)
+      axios.get(`http://localhost:5000/api/forms/investor-form/user/${user._id}`)
         .then(res => {
-          if (res.data) {
-            setProfile(prev => ({
-              ...prev,
-              ...res.data,
-              email: res.data.email || user.email || '' // Always prefill email
-            }))
-          } else {
-            setProfile(prev => ({
-              ...prev,
-              email: user.email || ''
-            }))
-          }
+          // Always set email from user data
+          setProfile(prev => ({
+            ...prev,
+            ...res.data,
+            email: user.email || '' // Always prefill email from user data
+          }))
         })
         .catch(() => {
+          // Fallback: just set email if request fails
           setProfile(prev => ({
             ...prev,
             email: user.email || ''
@@ -146,12 +142,7 @@ const InvestorProfileSettings = () => {
       <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
-        <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
-            <span className="text-2xl font-bold">Chatiao</span>
-          </div>
-        </header>
+        <Navbar userType="investor" />
         <section className="flex flex-col items-center justify-center text-center py-12 px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-2">Profile Settings</h1>
           <p className="mt-2 text-gray-300 text-lg">Update your investor profile details below.</p>

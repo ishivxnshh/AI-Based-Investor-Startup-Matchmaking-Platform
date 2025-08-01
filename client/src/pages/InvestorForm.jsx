@@ -117,16 +117,16 @@ const InvestorForm = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden">
-      {/* Background Layer - matching AuthLayout */}
-      <div
-        className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-cover bg-center blur-sm brightness-75"
-      ></div>
-
-      {/* Foreground Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
-        {/* Main Form Container */}
-        <div className="border-2 bg-white/10 backdrop-blur-2xl text-white border-white/20 p-8 rounded-lg shadow-lg w-full max-w-4xl">
+    <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+      {/* Background Layer */}
+      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      <div className="relative z-10 flex-1 w-full">
+        {/* Navbar */}
+        
+        {/* Foreground Content */}
+        <div className="flex items-center justify-center p-4">
+          {/* Main Form Container */}
+          <div className="border-2 bg-white/10 backdrop-blur-2xl text-white border-white/20 p-8 rounded-lg shadow-lg w-full max-w-4xl">
           <h1 className="text-3xl font-bold text-center mb-8 text-white">Investor Onboarding Form</h1>
           
           <form onSubmit={handleSubmit} className="space-y-8">
@@ -655,6 +655,7 @@ const InvestorForm = () => {
               </button>
             </div>
           </form>
+        </div>
         </div>
       </div>
     </div>

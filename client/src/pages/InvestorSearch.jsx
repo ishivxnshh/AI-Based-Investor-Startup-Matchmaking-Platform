@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import Navbar from '../components/Navbar';
 import axios from 'axios';
 import AIMatchingResults from '../components/AIMatchingResults';
 
 const industries = [
   { label: 'All', value: 'all' },
   { label: 'Fintech', value: 'fintech' },
-  { label: 'Healthtech', value: 'healthtech' },
-  { label: 'Edtech', value: 'edtech' },
-  { label: 'E-commerce', value: 'ecommerce' },
+  { label: 'HealthTech', value: 'healthtech' },
   { label: 'AI', value: 'ai' },
+  { label: 'EdTech', value: 'edtech' },
+  { label: 'E-commerce', value: 'ecommerce' },
+  { label: 'SaaS', value: 'saas' },
+  { label: 'Blockchain', value: 'blockchain' },
+  { label: 'CleanTech', value: 'cleantech' },
   { label: 'AgriTech', value: 'agritech' },
+  { label: 'Consumer', value: 'consumer' },
+  { label: 'Web3', value: 'web3' },
+  { label: 'IoT', value: 'iot' },
 ];
 
 function InvestorSearch() {
@@ -43,11 +50,24 @@ function InvestorSearch() {
   }, []);
 
   const filteredInvestors = investors.filter((investor) => {
-    const matchesIndustry = industry === 'all' || (investor.preferredIndustries && investor.preferredIndustries.includes(industry));
+    // Industry filter - check if any of the investor's preferred industries match the selected industry
+    const matchesIndustry = industry === 'all' || 
+      (investor.preferredIndustries && 
+       investor.preferredIndustries.some(invIndustry => 
+         invIndustry.toLowerCase().includes(industry.toLowerCase())
+       ));
+    
+    // Search filter - check name, type, and organization
+    const searchLower = search.toLowerCase();
     const matchesSearch =
-      (investor.fullName && investor.fullName.toLowerCase().includes(search.toLowerCase())) ||
-      (investor.investorType && investor.investorType.toLowerCase().includes(search.toLowerCase())) ||
-      (investor.organization && investor.organization.toLowerCase().includes(search.toLowerCase()));
+      (investor.fullName && investor.fullName.toLowerCase().includes(searchLower)) ||
+      (investor.investorType && investor.investorType.toLowerCase().includes(searchLower)) ||
+      (investor.organization && investor.organization.toLowerCase().includes(searchLower)) ||
+      (investor.preferredIndustries && 
+       investor.preferredIndustries.some(invIndustry => 
+         invIndustry.toLowerCase().includes(searchLower)
+       ));
+    
     return matchesIndustry && matchesSearch;
   });
 
@@ -62,13 +82,36 @@ function InvestorSearch() {
         return;
       }
 
-      const response = await axios.post(`http://localhost:5000/api/ai/matches/${user._id}`);
-      setAiMatches(response.data.matches);
-      setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed);
-      setShowMatches(true);
+      console.log('Attempting AI matching for user:', user._id);
+      
+      // Use the correct endpoint that works with startup profiles
+      const response = await axios.get(`http://localhost:5000/api/forms/matched-investors/${user._id}`);
+      
+      console.log('AI matching response:', response.data);
+      
+      if (response.data.success) {
+        setAiMatches(response.data.matches);
+        setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed || response.data.matches.length);
+        setShowMatches(true);
+      } else {
+        setError(response.data.message || 'AI matchmaking failed');
+      }
     } catch (err) {
       console.error('AI Matching failed:', err);
-      setError(err.response?.data?.message || 'AI matchmaking failed. Please try again.');
+      console.error('Error details:', {
+        message: err.message,
+        status: err.response?.status,
+        statusText: err.response?.statusText,
+        data: err.response?.data
+      });
+      
+      if (err.response?.status === 404) {
+        setError('Server endpoint not found. Please check if the server is running.');
+      } else if (err.code === 'ECONNREFUSED') {
+        setError('Cannot connect to server. Please ensure the server is running on port 5000.');
+      } else {
+        setError(err.response?.data?.message || 'AI matchmaking failed. Please try again.');
+      }
     } finally {
       setAiMatching(false);
     }
@@ -80,19 +123,7 @@ function InvestorSearch() {
       <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
-        <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/startup-dashboard')}>
-            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
-            <span className="text-2xl font-bold">Chatiao</span>
-          </div>
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <button onClick={() => navigate('/startup-dashboard')} className="hover:text-purple-300">Home</button>
-            <button className="hover:text-purple-300">Investors</button>
-            <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
-              <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
-            </button>
-          </nav>
-        </header>
+        <Navbar userType="startup" />
 
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center py-16 px-4 max-w-4xl mx-auto">

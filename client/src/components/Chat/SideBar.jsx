@@ -10,7 +10,7 @@ const SideBar = ({ selectedUser, setSelectedUser }) => {
     >
       <div className="pb-5">
         <div className="flex items-center justify-between">
-          <img src={assets.logo} alt="logo" className="max-w-40 object-contain" />
+          <span className="text-2xl font-bold text-white">Chatiao</span>
           
         </div>
 

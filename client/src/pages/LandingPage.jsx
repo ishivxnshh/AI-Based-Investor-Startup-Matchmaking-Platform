@@ -15,7 +15,6 @@ const LandingPage = () => {
         {/* Navbar */}
         <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-2">
-            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
             <span className="text-2xl font-bold">Chatiao</span>
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">

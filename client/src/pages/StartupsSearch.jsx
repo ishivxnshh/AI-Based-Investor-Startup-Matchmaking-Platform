@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import Navbar from '../components/Navbar';
 import axios from 'axios';
 import AIMatchingResults from '../components/AIMatchingResults';
 
@@ -43,10 +44,14 @@ function StartupsSearch() {
   }, []);
 
   const filteredStartups = startups.filter((startup) => {
-    const matchesIndustry = industry === 'all' || (startup.industry && startup.industry.includes(industry));
+    // Fix industry filtering - handle both array and string formats
+    const startupIndustries = Array.isArray(startup.industry) ? startup.industry : [startup.industry];
+    const matchesIndustry = industry === 'all' || 
+      startupIndustries.some(ind => ind && ind.toLowerCase().includes(industry.toLowerCase()));
+    
     const matchesSearch =
       (startup.startupName && startup.startupName.toLowerCase().includes(search.toLowerCase())) ||
-      (startup.industry && startup.industry.join(' ').toLowerCase().includes(search.toLowerCase())) ||
+      (startupIndustries && startupIndustries.join(' ').toLowerCase().includes(search.toLowerCase())) ||
       (startup.problemStatement && startup.problemStatement.toLowerCase().includes(search.toLowerCase()));
     return matchesIndustry && matchesSearch;
   });
@@ -63,12 +68,14 @@ function StartupsSearch() {
       }
 
       const response = await axios.post(`http://localhost:5000/api/ai/matches/${user._id}`);
+      console.log('AI matching response:', response.data);
       setAiMatches(response.data.matches);
       setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed);
       setShowMatches(true);
     } catch (err) {
       console.error('AI Matching failed:', err);
-      setError(err.response?.data?.message || 'AI matchmaking failed. Please try again.');
+      console.error('Error details:', err.response?.data);
+      setError(err.response?.data?.message || err.message || 'AI matchmaking failed. Please try again.');
     } finally {
       setAiMatching(false);
     }
@@ -80,19 +87,7 @@ function StartupsSearch() {
       <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
-        <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 cursor-pointer" onClick={() => navigate('/') }>
-            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
-            <span className="text-2xl font-bold">Chatiao</span>
-          </div>
-          <nav className="flex items-center gap-6 text-sm font-medium">
-            <button onClick={() => navigate('/investor-dashboard')} className="hover:text-purple-300">Home</button>
-            <button className="hover:text-purple-300">Startups</button>
-            <button onClick={() => navigate('/chat')} className="ml-4 p-2 rounded-full hover:bg-indigo-800 transition flex items-center" title="Chat">
-              <img src={assets.chat_icon} alt="Chat" className="w-8 h-8" />
-            </button>
-          </nav>
-        </header>
+        <Navbar userType="investor" />
 
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center py-16 px-4 max-w-4xl mx-auto">

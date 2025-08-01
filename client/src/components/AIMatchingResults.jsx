@@ -123,19 +123,37 @@ const AIMatchingResults = ({ matches, userRole, onClose, totalProfilesAnalyzed }
   };
 
   // Fetch actual profile data from MongoDB
-  const fetchProfileData = useCallback(async (parsedMatches) => {
+  const fetchProfileData = useCallback(async (matches) => {
     try {
-      const profilePromises = parsedMatches.map(async (match) => {
+      console.log('Fetching profile data for matches:', matches);
+      
+      const profilePromises = matches.map(async (match) => {
         try {
           let response;
+          
+          // Handle new structured format with investor objects
+          if (match.investor && match.investor._id) {
+            // This is already a structured match with investor data
+            return {
+              ...match,
+              profileData: match.investor,
+              profileType: 'investor',
+              score: match.score || 0,
+              reasoning: match.reasoning || '',
+              alignmentPoints: match.alignmentPoints || [],
+              concerns: match.concerns || [],
+              recommendation: match.recommendation || 'Consider'
+            };
+          }
+          
+          // Handle legacy format with just name/type
           if (userRole === 'startup') {
             // Fetch investor profiles
             response = await axios.get('http://localhost:5000/api/forms/investor-form');
             const investor = response.data.find(inv => {
               // Try multiple matching strategies
               return isMatch(inv.fullName, match.name) ||
-                     isMatch(inv.organization, match.name) ||
-                     isMatch(inv.fullName, match.organization) ||
+                     (inv.organization && isMatch(inv.organization, match.name)) ||
                      (match.organization && isMatch(inv.organization, match.organization));
             });
             return investor ? { ...match, profileData: investor, profileType: 'investor' } : match;
@@ -151,7 +169,7 @@ const AIMatchingResults = ({ matches, userRole, onClose, totalProfilesAnalyzed }
             return startup ? { ...match, profileData: startup, profileType: 'startup' } : match;
           }
         } catch (error) {
-          console.error('Error fetching profile for:', match.name, error);
+          console.error('Error fetching profile for:', match.name || match.investor?.fullName, error);
           return match;
         }
       });
@@ -166,8 +184,22 @@ const AIMatchingResults = ({ matches, userRole, onClose, totalProfilesAnalyzed }
 
   useEffect(() => {
     const loadProfiles = async () => {
-      if (!matches || matches.trim() === '') {
+      // Handle both array and string formats for matches
+      if (!matches || (Array.isArray(matches) && matches.length === 0) || (typeof matches === 'string' && matches.trim() === '')) {
         console.log('No matches provided');
+        setLoading(false);
+        return;
+      }
+
+      // If matches is already an array (structured data), use it directly
+      if (Array.isArray(matches)) {
+        console.log('Using structured matches data:', matches);
+        setLoading(true);
+        
+        const profilesWithData = await fetchProfileData(matches);
+        console.log('Profiles with data:', profilesWithData);
+        setProfileCards(profilesWithData);
+        setInsights([]); // No insights for structured data
         setLoading(false);
         return;
       }

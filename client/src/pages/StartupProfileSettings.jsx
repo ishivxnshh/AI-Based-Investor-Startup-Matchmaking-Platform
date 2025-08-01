@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import assets from '../assets/assets';
 import axios from 'axios';
 import AIPitchFeedback from '../components/AIPitchFeedback';
+import Navbar from '../components/Navbar';
 
 const industries = [
   'Fintech', 'AI', 'HealthTech', 'EdTech', 'E-commerce', 'SaaS', 
@@ -64,11 +65,16 @@ const StartupProfileSettings = () => {
       axios.get(`http://localhost:5000/api/forms/startup-form/user/${user._id}`)
         .then(res => {
           if (res.data) {
-            setProfile(prev => ({
-              ...prev,
+            // Ensure arrays are properly handled
+            const data = {
               ...res.data,
+              teamSkills: Array.isArray(res.data.teamSkills) ? res.data.teamSkills : [],
+              industry: Array.isArray(res.data.industry) ? res.data.industry : [],
+              useOfFunds: Array.isArray(res.data.useOfFunds) ? res.data.useOfFunds : [],
+              operatingMarkets: Array.isArray(res.data.operatingMarkets) ? res.data.operatingMarkets : [],
               email: res.data.email || user.email || ''
-            }));
+            };
+            setProfile(data);
           } else {
             setProfile(prev => ({
               ...prev,
@@ -117,6 +123,7 @@ const StartupProfileSettings = () => {
       setLoading(false);
       return;
     }
+
     // Check if at least one field (other than email) is filled
     const fieldsToCheck = { ...profile };
     delete fieldsToCheck.email;
@@ -129,6 +136,7 @@ const StartupProfileSettings = () => {
       setLoading(false);
       return;
     }
+
     // Normalize previousStartupExperience for backend
     let normalizedProfile = { ...profile };
     if (normalizedProfile.previousStartupExperience === '') {
@@ -138,15 +146,27 @@ const StartupProfileSettings = () => {
     } else if (normalizedProfile.previousStartupExperience === 'false') {
       normalizedProfile.previousStartupExperience = false;
     }
+
     try {
-      await axios.put('http://localhost:5000/api/forms/startup-form', {
+      const response = await axios.put('http://localhost:5000/api/forms/startup-form', {
         ...normalizedProfile,
         userId: user._id
       });
-      localStorage.setItem('currentUser', JSON.stringify({ ...user, ...normalizedProfile }));
-      alert('Profile updated!');
+      
+      // Update the profile with the response data to ensure consistency
+      if (response.data && response.data.startup) {
+        setProfile(prev => ({
+          ...prev,
+          ...response.data.startup,
+          _id: response.data.startup._id
+        }));
+      }
+      
+      localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
+      alert('Profile updated successfully!');
     } catch (err) {
-      alert('Failed to update profile');
+      console.error('Error updating profile:', err);
+      alert('Failed to update profile. Please try again.');
     }
     setLoading(false);
   };
@@ -217,12 +237,7 @@ const StartupProfileSettings = () => {
       <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
-        <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
-          <div className="flex items-center gap-2 cursor-pointer">
-            <img src={assets.logo} alt="Logo" className="w-10 h-10" />
-            <span className="text-2xl font-bold">Chatiao</span>
-          </div>
-        </header>
+        <Navbar userType="startup" />
         <section className="flex flex-col items-center justify-center text-center py-12 px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-2">Startup Profile Settings</h1>
           <p className="mt-2 text-gray-300 text-lg">Update your startup profile details below.</p>
@@ -277,8 +292,8 @@ const StartupProfileSettings = () => {
             <div>
               <label className="block mb-1 text-gray-200">Previous Startup Experience?</label>
               <div className="flex gap-4 mt-2">
-                <label className="flex items-center gap-1 cursor-pointer"><input type="radio" name="previousStartupExperience" value="true" checked={profile.previousStartupExperience === 'true'} onChange={handleProfileChange} className="accent-violet-500" /> Yes</label>
-                <label className="flex items-center gap-1 cursor-pointer"><input type="radio" name="previousStartupExperience" value="false" checked={profile.previousStartupExperience === 'false'} onChange={handleProfileChange} className="accent-violet-500" /> No</label>
+                <label className="flex items-center gap-1 cursor-pointer"><input type="radio" name="previousStartupExperience" value="true" checked={profile.previousStartupExperience === true || profile.previousStartupExperience === 'true'} onChange={handleProfileChange} className="accent-violet-500" /> Yes</label>
+                <label className="flex items-center gap-1 cursor-pointer"><input type="radio" name="previousStartupExperience" value="false" checked={profile.previousStartupExperience === false || profile.previousStartupExperience === 'false'} onChange={handleProfileChange} className="accent-violet-500" /> No</label>
               </div>
             </div>
             <div>
