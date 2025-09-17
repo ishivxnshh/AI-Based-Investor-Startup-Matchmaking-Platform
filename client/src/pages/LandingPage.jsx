@@ -35,31 +35,48 @@ const LandingPage = () => {
 
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center py-24 px-4 max-w-4xl mx-auto">
-          <h1 className="text-4xl sm:text-5xl font-bold leading-tight">
-            Connecting Innovative Startups <br /> with Visionary Investors
-          </h1>
-          <p className="mt-6 text-gray-300 text-lg">
-            Discover funding opportunities or invest in groundbreaking ideas
-            through our intelligent matchmaking platform.
-          </p>
-          <div className="mt-8 flex flex-col sm:flex-row gap-4">
+          <div className="animate-fade-in-up">
+            <h1 className="text-responsive-xl font-bold leading-tight text-gradient mb-6">
+              Connecting Innovative Startups <br /> with Visionary Investors
+            </h1>
+            <p className="mt-6 text-gray-300 text-lg max-w-2xl mx-auto leading-relaxed">
+              Discover funding opportunities or invest in groundbreaking ideas
+              through our intelligent AI-powered matchmaking platform.
+            </p>
+          </div>
+          <div className="mt-8 flex flex-col sm:flex-row gap-4 animate-slide-in-right">
             <button
               onClick={() => navigate('/register')}
-              className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-3 rounded-md font-medium"
+              className="btn-primary hover-lift"
             >
-              Join Now
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Join Now
+              </span>
             </button>
             <button
               onClick={() => navigate('/login')}
-              className="border border-gray-400 px-6 py-3 rounded-md font-medium"
+              className="btn-outline hover-lift"
             >
-              Login
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
+                </svg>
+                Login
+              </span>
             </button>
             <a
               href="#contact"
-              className="border border-purple-500 text-purple-300 px-6 py-3 rounded-md font-medium hover:bg-purple-500 hover:text-white transition"
+              className="btn-secondary hover-lift"
             >
-              Contact
+              <span className="flex items-center gap-2">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                </svg>
+                Contact
+              </span>
             </a>
           </div>
         </section>
@@ -67,23 +84,35 @@ const LandingPage = () => {
         {/* Impact Numbers */}
         <section className="px-4 py-20 flex justify-center bg-black/60">
           <div className="max-w-6xl w-full text-center">
-            <h2 className="text-3xl font-bold mb-10">Our Impact</h2>
+            <h2 className="text-3xl font-bold mb-10 animate-fade-in-up">Our Impact</h2>
             <div className="grid sm:grid-cols-4 gap-8">
-              <div>
-                <p className="text-4xl font-bold text-purple-400">500+</p>
-                <p className="text-sm text-gray-300">Startups Registered</p>
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <div className="text-4xl font-bold text-purple-400 mb-2">500+</div>
+                <div className="text-sm text-gray-300">Startups Registered</div>
+                <div className="w-full bg-purple-500/20 rounded-full h-1 mt-3">
+                  <div className="bg-purple-500 h-1 rounded-full" style={{ width: '85%' }}></div>
+                </div>
               </div>
-              <div>
-                <p className="text-4xl font-bold text-purple-400">200+</p>
-                <p className="text-sm text-gray-300">Active Investors</p>
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                <div className="text-4xl font-bold text-purple-400 mb-2">200+</div>
+                <div className="text-sm text-gray-300">Active Investors</div>
+                <div className="w-full bg-purple-500/20 rounded-full h-1 mt-3">
+                  <div className="bg-purple-500 h-1 rounded-full" style={{ width: '70%' }}></div>
+                </div>
               </div>
-              <div>
-                <p className="text-4xl font-bold text-purple-400">90%</p>
-                <p className="text-sm text-gray-300">Success Match Rate</p>
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                <div className="text-4xl font-bold text-purple-400 mb-2">90%</div>
+                <div className="text-sm text-gray-300">Success Match Rate</div>
+                <div className="w-full bg-purple-500/20 rounded-full h-1 mt-3">
+                  <div className="bg-purple-500 h-1 rounded-full" style={{ width: '90%' }}></div>
+                </div>
               </div>
-              <div>
-                <p className="text-4xl font-bold text-purple-400">50+</p>
-                <p className="text-sm text-gray-300">Sectors Covered</p>
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <div className="text-4xl font-bold text-purple-400 mb-2">50+</div>
+                <div className="text-sm text-gray-300">Sectors Covered</div>
+                <div className="w-full bg-purple-500/20 rounded-full h-1 mt-3">
+                  <div className="bg-purple-500 h-1 rounded-full" style={{ width: '75%' }}></div>
+                </div>
               </div>
             </div>
           </div>
@@ -141,34 +170,67 @@ const LandingPage = () => {
           className="px-4 py-20 flex justify-center bg-black/50"
         >
           <div className="max-w-5xl w-full text-center">
-            <h2 className="text-3xl font-bold mb-6">How Chatiao Works</h2>
+            <h2 className="text-3xl font-bold mb-6 animate-fade-in-up">How Chatiao Works</h2>
             <div className="grid sm:grid-cols-3 gap-8 text-left">
-              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
-                <h3 className="text-xl font-semibold mb-2">
-                  1. Create Your Profile
-                </h3>
-                <p className="text-gray-300 text-sm">
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    1
+                  </div>
+                  <h3 className="text-xl font-semibold">
+                    Create Your Profile
+                  </h3>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed">
                   Startups and Investors sign up and build detailed profiles,
                   including sectors, funding needs, or investment interests.
                 </p>
+                <div className="mt-4 flex items-center text-purple-400 text-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  Quick & Easy Setup
+                </div>
               </div>
-              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
-                <h3 className="text-xl font-semibold mb-2">
-                  2. AI Matchmaking
-                </h3>
-                <p className="text-gray-300 text-sm">
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    2
+                  </div>
+                  <h3 className="text-xl font-semibold">
+                    AI Matchmaking
+                  </h3>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed">
                   Our AI recommends best-fit matches based on preferences,
                   industry verticals, and funding stages.
                 </p>
+                <div className="mt-4 flex items-center text-purple-400 text-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                  Smart Algorithm
+                </div>
               </div>
-              <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
-                <h3 className="text-xl font-semibold mb-2">
-                  3. Connect & Grow
-                </h3>
-                <p className="text-gray-300 text-sm">
+              <div className="card card-hover animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    3
+                  </div>
+                  <h3 className="text-xl font-semibold">
+                    Connect & Grow
+                  </h3>
+                </div>
+                <p className="text-gray-300 text-sm leading-relaxed">
                   Connect through secure channels, schedule meetings, and begin
                   collaborative innovation.
                 </p>
+                <div className="mt-4 flex items-center text-purple-400 text-sm">
+                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                  </svg>
+                  Build Relationships
+                </div>
               </div>
             </div>
           </div>

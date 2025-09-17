@@ -1,142 +1,227 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import RedisStore from 'connect-redis';
+import rateLimit from 'express-rate-limit';
+import slowDown from 'express-slow-down';
+import mongoSanitize from 'express-mongo-sanitize';
+import xss from 'xss-clean';
+import hpp from 'hpp';
+import 'express-async-errors';
 import dotenv from 'dotenv';
-import path from 'path';
-import { fileURLToPath } from 'url';
+import { createServer } from 'http';
+import { Server } from 'socket.io';
+import { createClient } from 'redis';
 
-// Load environment variables from the correct location
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-dotenv.config({ path: path.join(__dirname, '..', '.env') });
+// Import routes
+import authRoutes from './routes/auth.js';
+import userRoutes from './routes/users.js';
+import startupRoutes from './routes/startups.js';
+import investorRoutes from './routes/investors.js';
+import matchRoutes from './routes/matches.js';
+import chatRoutes from './routes/chat.js';
+import aiRoutes from './routes/ai.js';
+import uploadRoutes from './routes/upload.js';
+import notificationRoutes from './routes/notifications.js';
 
-import connectDB from './config/db.js';
-import authRoutes from './routes/authRoutes.js';
-import formRoutes from './routes/formRoutes.js';  // ✅ New import
-import aiRoutes from './routes/aiRoutes.js';  // ✅ Add AI routes import
-import aiService from './services/aiService.js';
-import StartupForm from './models/StartupForm.js';
+// Import middleware
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFound } from './middleware/notFound.js';
+import { logger } from './utils/logger.js';
+
+// Import database connection
+import { connectDB } from './config/database.js';
+
+// Load environment variables
+dotenv.config();
 
 const app = express();
+const server = createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    credentials: true
+  }
+});
 
-// Middleware
-app.use(cors());
-app.use(express.json());
+// Redis is optional - using memory store for simplicity
 
-// Serve uploaded files statically
-app.use('/uploads', express.static('uploads'));
-
-// Database connection
+// Connect to database
 connectDB();
 
-// Test endpoint - place this before other routes
-app.get('/api/test', (req, res) => {
-  res.json({ message: 'Server is running!' });
+// Trust proxy for rate limiting
+app.set('trust proxy', 1);
+
+// Security middleware
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      scriptSrc: ["'self'"],
+      connectSrc: ["'self'", "https://api.openai.com", "https://generativelanguage.googleapis.com"]
+    }
+  }
+}));
+
+// CORS configuration
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
+// Body parsing middleware
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+app.use(cookieParser());
+
+// Compression middleware
+app.use(compression());
+
+// Logging middleware
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan('combined'));
+}
+
+// Data sanitization middleware
+app.use(mongoSanitize());
+app.use(xss());
+app.use(hpp());
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: {
+    error: 'Too many requests from this IP, please try again later.',
+    retryAfter: 15
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 
-// Test AI routes endpoint
-app.get('/api/ai/test', (req, res) => {
-  res.json({ message: 'AI routes are working!' });
+// Speed limiter
+const speedLimiter = slowDown({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  delayAfter: 50, // allow 50 requests per 15 minutes, then...
+  delayMs: 500 // begin adding 500ms of delay per request above 50
 });
 
-// Analyze endpoint
-app.post('/api/ai/analyze/:startupId', async (req, res) => {
-  try {
-    const { startupId } = req.params;
-    console.log('Analyze pitch deck called with startupId:', startupId);
-    console.log('Request params:', req.params);
-    console.log('Request body:', req.body);
-    
-    // Get startup data by _id (not userId)
-    const startup = await StartupForm.findById(startupId);
-    console.log('Found startup:', startup ? 'Yes' : 'No');
-    console.log('Startup data:', startup ? {
-      _id: startup._id,
-      startupName: startup.startupName,
-      userId: startup.userId,
-      hasPitchDeck: !!startup.pitchDeck,
-      pitchDeckPath: startup.pitchDeck?.path
-    } : 'No startup found');
-    
-    // Let's also check if there are any startups in the database
-    const allStartups = await StartupForm.find({});
-    console.log('All startups in database:', allStartups.map(s => ({
-      _id: s._id,
-      startupName: s.startupName,
-      userId: s.userId
-    })));
-    
-    if (!startup) {
-      console.log('Startup not found for _id:', startupId);
-      return res.status(404).json({
-        success: false,
-        error: 'Startup not found'
-      });
-    }
+app.use('/api/', limiter);
+app.use('/api/', speedLimiter);
 
-    // Check if pitch deck exists
-    if (!startup.pitchDeck || !startup.pitchDeck.path) {
-      console.log('No pitch deck found for startup');
-      return res.status(400).json({
-        success: false,
-        error: 'No pitch deck uploaded for this startup'
-      });
-    }
+// Session configuration
+const sessionConfig = {
+  secret: 'your-session-secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  }
+};
 
-    console.log('Pitch deck found:', startup.pitchDeck);
+app.use(session(sessionConfig));
 
-    // Prepare pitch deck info for analysis
-    const pitchDeckInfo = {
-      startupName: startup.startupName,
-      path: startup.pitchDeck.path,
-      originalName: startup.pitchDeck.originalName || startup.pitchDeck.path.split('/').pop() || 'pitch-deck.pdf'
-    };
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV,
+    version: process.env.npm_package_version || '1.0.0'
+  });
+});
 
-    console.log('Pitch deck info for analysis:', pitchDeckInfo);
+// API routes
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/startups', startupRoutes);
+app.use('/api/investors', investorRoutes);
+app.use('/api/matches', matchRoutes);
+app.use('/api/chat', chatRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/upload', uploadRoutes);
+app.use('/api/notifications', notificationRoutes);
 
-    // Analyze the pitch deck
-    const result = await aiService.analyzePitchDeck(pitchDeckInfo);
-    
-    if (result.success) {
-      console.log('AI analysis successful');
-      res.json({
-        success: true,
-        analysis: result.text
-      });
-    } else {
-      console.log('AI analysis failed:', result.error);
-      throw new Error(result.error);
-    }
-  } catch (error) {
-    console.error('Error analyzing pitch deck:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to analyze pitch deck',
-      message: error.message
+// Socket.IO connection handling
+io.on('connection', (socket) => {
+  logger.info(`User connected: ${socket.id}`);
+
+  // Join user to their room
+  socket.on('join-room', (userId) => {
+    socket.join(userId);
+    logger.info(`User ${userId} joined room`);
+  });
+
+  // Handle chat messages
+  socket.on('send-message', (data) => {
+    const { recipientId, message, senderId } = data;
+    socket.to(recipientId).emit('receive-message', {
+      senderId,
+      message,
+      timestamp: new Date().toISOString()
     });
-  }
+  });
+
+  // Handle typing indicators
+  socket.on('typing', (data) => {
+    const { recipientId, isTyping } = data;
+    socket.to(recipientId).emit('user-typing', {
+      senderId: socket.id,
+      isTyping
+    });
+  });
+
+  // Handle disconnect
+  socket.on('disconnect', () => {
+    logger.info(`User disconnected: ${socket.id}`);
+  });
 });
 
-// Routes
-app.use('/api', authRoutes);         // For /api/register and /api/login
-app.use('/api/forms', formRoutes);   // ✅ For /api/forms/startup-form and investor-form
-app.use('/api/ai', aiRoutes);        // ✅ For AI functionality including chat
+// Make io accessible to routes
+app.set('io', io);
 
-// Debug: List all AI routes
-console.log('AI Routes loaded:');
-aiRoutes.stack.forEach((r) => {
-  if (r.route && r.route.path) {
-    console.log(`  ${Object.keys(r.route.methods)} ${r.route.path}`);
-  }
+// 404 handler
+app.use(notFound);
+
+// Error handling middleware
+app.use(errorHandler);
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    logger.info('Process terminated');
+    process.exit(0);
+  });
 });
 
-const PORT = 5000;
-
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log('Available routes:');
-  console.log('- GET /api/test');
-  console.log('- GET /api/ai/test');
-  console.log('- POST /api/ai/analyze/:startupId');
-  console.log('- POST /api/ai/chat');
-  console.log('GROQ_API_KEY loaded:', process.env.GROQ_API_KEY ? 'Yes' : 'No');
+process.on('SIGINT', () => {
+  logger.info('SIGINT received, shutting down gracefully');
+  server.close(() => {
+    logger.info('Process terminated');
+    process.exit(0);
+  });
 });
+
+const PORT = process.env.PORT || 5000;
+
+server.listen(PORT, () => {
+  logger.info(`Server running on port ${PORT} in ${process.env.NODE_ENV} mode`);
+  logger.info(`Health check available at http://localhost:${PORT}/health`);
+});
+
+export default app;

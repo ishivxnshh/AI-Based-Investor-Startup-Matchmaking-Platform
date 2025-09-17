@@ -1,13 +1,18 @@
-import Routing from './Routing'
-import { ToastContainer } from 'react-toastify';
+import React from 'react';
+import Routing from './Routing';
+import ErrorBoundary from './components/ErrorBoundary';
+import { ToastContainer } from './components/Toast';
 import 'react-toastify/dist/ReactToastify.css';
+
 const App = () => {
   return (
-    <>
-    <Routing />
-    <ToastContainer/>
-    </>
-  )
-}
+    <ErrorBoundary>
+      <div className="App">
+        <Routing />
+        <ToastContainer />
+      </div>
+    </ErrorBoundary>
+  );
+};
 
-export default App
+export default App;
