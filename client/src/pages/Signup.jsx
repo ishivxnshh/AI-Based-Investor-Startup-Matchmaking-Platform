@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
-import axios from 'axios';
+import useApi from '../hooks/useApi';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { post, loading, error } = useApi();
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -12,8 +13,7 @@ const Register = () => {
     role: '',
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [localError, setLocalError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -22,33 +22,35 @@ const Register = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    setError('');
+    setLocalError('');
 
     if (!formData.fullName || !formData.email || !formData.password || !formData.role) {
-      setError('Please fill in all fields');
-      setIsLoading(false);
+      setLocalError('Please fill in all fields');
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/register', formData);
-      const userData = response.data;
+      const response = await post('/auth/register', formData, {
+        showSuccess: true,
+        successMessage: 'Account created successfully!',
+        showError: false
+      });
       
-      localStorage.setItem('currentUser', JSON.stringify(userData));
+      // Store the user data and token
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+      localStorage.setItem('token', response.token);
+      
       navigate(formData.role === 'startup' ? '/startup-form' : '/investor-form');
     } catch (err) {
-      if (err.response) {
-        if (err.response.status === 409) {
-          setError('Email already registered');
-        } else {
-          setError('Registration failed. Please try again.');
-        }
+      console.error('Registration error:', err);
+      
+      if (err.response?.status === 409) {
+        setLocalError('Email already registered. Please use a different email or try logging in.');
+      } else if (err.response?.data?.error) {
+        setLocalError(err.response.data.error);
       } else {
-        setError('Network error. Please check your connection.');
+        setLocalError('Registration failed. Please try again.');
       }
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -56,9 +58,9 @@ const Register = () => {
     <AuthLayout>
       <h2 className='text-2xl font-semibold'>Sign Up</h2>
 
-      {error && (
+      {(error || localError) && (
         <div className='mb-4 p-2 bg-red-100 text-red-700 rounded-md text-sm'>
-          {error}
+          {localError || error}
         </div>
       )}
 
@@ -124,9 +126,9 @@ const Register = () => {
         <button 
           type='submit' 
           className='py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white rounded-md flex justify-center items-center'
-          disabled={isLoading}
+          disabled={loading}
         >
-          {isLoading ? (
+          {loading ? (
             <>
               <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>

@@ -227,7 +227,6 @@ const startupSchema = new mongoose.Schema({
 });
 
 // Indexes
-startupSchema.index({ userId: 1 });
 startupSchema.index({ industry: 1 });
 startupSchema.index({ startupStage: 1 });
 startupSchema.index({ fundingAmount: 1 });

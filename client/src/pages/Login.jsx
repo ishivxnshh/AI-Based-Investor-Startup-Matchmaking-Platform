@@ -3,50 +3,50 @@ import { useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { useToast, ToastMessages } from '../components/Toast';
-import axios from 'axios';
+import useApi from '../hooks/useApi';
 
 const LoginPage = () => {
   const navigate = useNavigate();
   const toast = useToast();
+  const { post, loading } = useApi();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
     setError('');
 
     // Basic validation
     if (!email || !password) {
       setError('Please fill in all fields');
-      setIsLoading(false);
       return;
     }
 
     if (!email.includes('@')) {
       setError('Please enter a valid email address');
-      setIsLoading(false);
       return;
     }
 
     try {
-      const response = await axios.post('http://localhost:5000/api/login', {
+      const response = await post('/auth/login', {
         email: email.trim().toLowerCase(),
         password
+      }, {
+        showSuccess: true,
+        successMessage: ToastMessages.LOGIN_SUCCESS,
+        showError: false
       });
 
-      const user = response.data;
-      localStorage.setItem('currentUser', JSON.stringify(user));
+      // Store the user data and token
+      localStorage.setItem('currentUser', JSON.stringify(response.user));
+      localStorage.setItem('token', response.token);
       
-      toast.success(ToastMessages.LOGIN_SUCCESS);
-      
-      if (!user.hasFilledForm) {
-        navigate(user.role === 'startup' ? '/startup-form' : '/investor-form');
+      if (!response.user.hasFilledForm) {
+        navigate(response.user.role === 'startup' ? '/startup-form' : '/investor-form');
       } else {
-        navigate(user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
+        navigate(response.user.role === 'startup' ? '/startup-dashboard' : '/investor-dashboard');
       }
     } catch (err) {
       let errorMessage = ToastMessages.LOGIN_ERROR;
@@ -71,8 +71,6 @@ const LoginPage = () => {
       
       setError(errorMessage);
       toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -142,9 +140,9 @@ const LoginPage = () => {
           <button 
             type='submit' 
             className='btn-primary w-full focus-ring'
-            disabled={isLoading}
+            disabled={loading}
           >
-            {isLoading ? (
+            {loading ? (
               <LoadingSpinner size="small" text="Logging in..." />
             ) : (
               <span className="flex items-center justify-center gap-2">

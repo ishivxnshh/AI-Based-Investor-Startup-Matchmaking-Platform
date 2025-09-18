@@ -230,7 +230,6 @@ const investorSchema = new mongoose.Schema({
 });
 
 // Indexes
-investorSchema.index({ userId: 1 });
 investorSchema.index({ investmentFocus: 1 });
 investorSchema.index({ investmentStage: 1 });
 investorSchema.index({ preferredIndustries: 1 });
