@@ -62,9 +62,9 @@ const StartupForm = () => {
     }
   }, []);
 
-  const industries = ['Fintech', 'HealthTech', 'AI/ML', 'Web3', 'EdTech', 'E-commerce', 'SaaS', 'IoT', 'CleanTech', 'Other'];
+  const industries = ['Finance', 'Healthcare', 'AI/ML', 'Blockchain', 'Education', 'E-commerce', 'SaaS', 'IoT', 'Energy', 'Other'];
   const businessModels = ['B2B', 'B2C', 'B2G', 'Marketplace', 'SaaS', 'Other'];
-  const startupStages = ['Idea', 'MVP', 'Early Traction', 'Growth', 'Scale-up'];
+  const startupStages = ['Idea', 'MVP', 'Early Stage', 'Growth Stage', 'Scale Stage'];
   const teamSkillsOptions = ['Tech', 'Marketing', 'Sales', 'Operations', 'Finance', 'Product', 'Design', 'Data Science'];
   const useOfFundsOptions = ['Hiring', 'Tech Development', 'Marketing', 'Operations', 'Expansion', 'R&D', 'Customer Acquisition'];
   const fundingRoundTypes = ['Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C+'];
@@ -116,6 +116,27 @@ const handleSubmit = async (e) => {
   const user = JSON.parse(localStorage.getItem('currentUser'));
   if (!user) return toast.error('User not logged in');
 
+  // Client-side validation
+  if (formData.problemStatement.length < 50) {
+    toast.error('Problem statement must be at least 50 characters long');
+    return;
+  }
+  
+  if (formData.productDescription.length < 50) {
+    toast.error('Product description must be at least 50 characters long');
+    return;
+  }
+  
+  if (!formData.startupName || formData.startupName.length < 2) {
+    toast.error('Startup name must be at least 2 characters long');
+    return;
+  }
+  
+  if (!formData.fundingAmount || isNaN(formData.fundingAmount)) {
+    toast.error('Please enter a valid funding amount');
+    return;
+  }
+
   // Create FormData to handle file upload
   const formDataToSend = new FormData();
 
@@ -124,30 +145,60 @@ const handleSubmit = async (e) => {
     if (key === 'pitchDeck' && formData[key]) {
       // Add file directly
       formDataToSend.append('pitchDeck', formData[key]);
-    } else if (Array.isArray(formData[key])) {
-      // Handle arrays by converting to JSON string
-      formDataToSend.append(key, JSON.stringify(formData[key]));
+    } else if (key === 'industry' && Array.isArray(formData[key])) {
+      // Handle industry array - take the first selected industry
+      if (formData[key].length > 0) {
+        formDataToSend.append('industry', formData[key][0]);
+      }
+    } else if (key === 'teamSkills' && Array.isArray(formData[key])) {
+      // Handle team skills array
+      formDataToSend.append('teamSkills', JSON.stringify(formData[key]));
+    } else if (key === 'useOfFunds' && Array.isArray(formData[key])) {
+      // Handle use of funds array
+      formDataToSend.append('useOfFunds', JSON.stringify(formData[key]));
+    } else if (key === 'operatingMarkets' && Array.isArray(formData[key])) {
+      // Handle operating markets array
+      formDataToSend.append('operatingMarkets', JSON.stringify(formData[key]));
     } else if (formData[key] !== null && formData[key] !== '') {
       // Add other fields as strings
       formDataToSend.append(key, formData[key]);
     }
   });
 
-  // Add userId
-  formDataToSend.append('userId', user._id);
-
   try {
-    await axios.post('http://localhost:5000/api/forms/startup-form', formDataToSend, {
+    const token = localStorage.getItem('token');
+    
+    // Debug: Log what we're sending
+    console.log('Form data being sent:', formData);
+    console.log('Token:', token ? 'Present' : 'Missing');
+    
+    // Debug: Log FormData contents
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(`${key}:`, value);
+    }
+    
+    await axios.post('http://localhost:5000/api/startups', formDataToSend, {
       headers: {
         'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${token}`,
       },
     });
     localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
     toast.success('Form submitted successfully!');
     setTimeout(() => navigate('/startup-dashboard'), 1500);
   } catch (err) {
-    toast.error('Submission failed');
-    console.error(err);
+    console.error('Form submission error:', err);
+    
+    if (err.response?.data?.details) {
+      // Show specific validation errors
+      const errors = err.response.data.details;
+      const errorMessages = errors.map(error => error.msg).join(', ');
+      toast.error(`Validation failed: ${errorMessages}`);
+    } else if (err.response?.data?.error) {
+      toast.error(err.response.data.error);
+    } else {
+      toast.error('Submission failed. Please check your form data.');
+    }
   }
 };
 
@@ -371,8 +422,11 @@ const handleSubmit = async (e) => {
                     required
                     rows="4"
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400"
-                    placeholder="Describe the problem your startup is addressing"
+                    placeholder="Describe the problem your startup is addressing (minimum 50 characters)"
                   />
+                  <p className="text-xs text-gray-300 mt-1">
+                    {formData.problemStatement.length}/50 characters minimum
+                  </p>
                 </div>
                 
                 <div>
@@ -384,8 +438,11 @@ const handleSubmit = async (e) => {
                     required
                     rows="4"
                     className="w-full px-3 py-2 bg-white/5 border border-white/20 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-violet-400"
-                    placeholder="Explain your product or service in detail"
+                    placeholder="Explain your product or service in detail (minimum 50 characters)"
                   />
+                  <p className="text-xs text-gray-300 mt-1">
+                    {formData.productDescription.length}/50 characters minimum
+                  </p>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

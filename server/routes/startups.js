@@ -175,8 +175,14 @@ router.post('/', protect, authorize('startup'), [
     .withMessage('Product description must be between 50 and 2000 characters')
 ], async (req, res) => {
   try {
+    // Debug: Log what we're receiving
+    console.log('Request body:', req.body);
+    console.log('Request user:', req.user);
+    console.log('Request headers:', req.headers);
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('Validation errors:', errors.array());
       return res.status(400).json({
         success: false,
         error: 'Validation failed',
