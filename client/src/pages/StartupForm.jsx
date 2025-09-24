@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 
@@ -110,6 +109,8 @@ const StartupForm = () => {
     }
   };
 
+
+
 const handleSubmit = async (e) => {
   e.preventDefault();
 
@@ -137,52 +138,42 @@ const handleSubmit = async (e) => {
     return;
   }
 
-  // Create FormData to handle file upload
-  const formDataToSend = new FormData();
+  // Validate industry selection
+  if (!formData.industry || formData.industry.length === 0) {
+    toast.error('Please select at least one industry');
+    return;
+  }
 
-  // Add all form fields to FormData
-  Object.keys(formData).forEach(key => {
-    if (key === 'pitchDeck' && formData[key]) {
-      // Add file directly
-      formDataToSend.append('pitchDeck', formData[key]);
-    } else if (key === 'industry' && Array.isArray(formData[key])) {
-      // Handle industry array - take the first selected industry
-      if (formData[key].length > 0) {
-        formDataToSend.append('industry', formData[key][0]);
-      }
-    } else if (key === 'teamSkills' && Array.isArray(formData[key])) {
-      // Handle team skills array
-      formDataToSend.append('teamSkills', JSON.stringify(formData[key]));
-    } else if (key === 'useOfFunds' && Array.isArray(formData[key])) {
-      // Handle use of funds array
-      formDataToSend.append('useOfFunds', JSON.stringify(formData[key]));
-    } else if (key === 'operatingMarkets' && Array.isArray(formData[key])) {
-      // Handle operating markets array
-      formDataToSend.append('operatingMarkets', JSON.stringify(formData[key]));
-    } else if (formData[key] !== null && formData[key] !== '') {
-      // Add other fields as strings
-      formDataToSend.append(key, formData[key]);
-    }
-  });
+  // Prepare data for backend - MATCH BACKEND SCHEMA EXACTLY
+  const backendData = {
+    startupName: formData.startupName,
+    email: formData.email,
+    industry: formData.industry[0], // Backend expects single string, take first selection
+    startupStage: formData.startupStage,
+    fundingAmount: parseFloat(formData.fundingAmount),
+    problemStatement: formData.problemStatement,
+    productDescription: formData.productDescription,
+    // Add missing required fields
+    headquarters: formData.headquarters || 'Not specified',
+    fundingRoundType: formData.fundingRoundType || 'Pre-Seed',
+    businessModel: formData.businessModel || 'Other',
+    founderBackground: formData.founderBackground || 'Not specified',
+    teamSize: parseInt(formData.teamSize) || 1,
+    numberOfFounders: parseInt(formData.numberOfFounders) || 1
+  };
 
   try {
     const token = localStorage.getItem('token');
     
-    // Debug: Log what we're sending
-    console.log('Form data being sent:', formData);
-    console.log('Token:', token ? 'Present' : 'Missing');
+    console.log('Sending data to backend:', backendData);
     
-    // Debug: Log FormData contents
-    for (let [key, value] of formDataToSend.entries()) {
-      console.log(`${key}:`, value);
-    }
-    
-    await axios.post('http://localhost:5000/api/startups', formDataToSend, {
+  await axios.post('http://localhost:5000/api/startups', backendData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        'Content-Type': 'application/json', // Change to JSON
         'Authorization': `Bearer ${token}`,
       },
     });
+
     localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
     toast.success('Form submitted successfully!');
     setTimeout(() => navigate('/startup-dashboard'), 1500);
@@ -190,7 +181,6 @@ const handleSubmit = async (e) => {
     console.error('Form submission error:', err);
     
     if (err.response?.data?.details) {
-      // Show specific validation errors
       const errors = err.response.data.details;
       const errorMessages = errors.map(error => error.msg).join(', ');
       toast.error(`Validation failed: ${errorMessages}`);

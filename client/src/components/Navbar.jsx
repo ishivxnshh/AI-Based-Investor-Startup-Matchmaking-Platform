@@ -58,7 +58,7 @@ const Navbar = ({ userType = 'startup' }) => {
         <div className="w-8 h-8 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center">
           <span className="text-white font-bold text-sm">C</span>
         </div>
-        <span className="text-2xl font-bold text-white text-gradient">Chatiao</span>
+        <span className="text-2xl font-bold text-white text-gradient">VentureBridge</span>
       </div>
       <nav className="flex items-center gap-6 text-sm font-medium relative" role="navigation" aria-label="Main navigation">
         <button 

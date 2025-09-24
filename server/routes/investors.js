@@ -1,10 +1,58 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
+import multer from 'multer';
 import Investor from '../models/Investor.js';
 import { protect, authorize, checkOwnership } from '../middleware/auth.js';
 import { logger } from '../utils/logger.js';
 
 const router = express.Router();
+const upload = multer();
+
+// Normalize fields that may arrive as strings when using FormData
+const coerceRequestBody = (req) => {
+  // Numbers
+  const numericPaths = [
+    'investmentSize.min',
+    'investmentSize.max',
+    'portfolioSize',
+    'averageDealSize',
+    'totalInvested',
+    'yearsOfExperience'
+  ];
+
+  numericPaths.forEach((path) => {
+    const segments = path.split('.');
+    let obj = req.body;
+    for (let i = 0; i < segments.length - 1; i++) {
+      obj = obj?.[segments[i]];
+      if (!obj) return;
+    }
+    const key = segments[segments.length - 1];
+    if (obj && typeof obj[key] === 'string' && obj[key] !== '') {
+      const parsed = Number(obj[key]);
+      if (!Number.isNaN(parsed)) obj[key] = parsed;
+    }
+  });
+
+  // Arrays that may be provided as comma-separated strings
+  const arrayFields = ['preferredIndustries', 'investmentStage', 'previousInvestments', 'notableExits', 'expertise', 'certifications'];
+  arrayFields.forEach((field) => {
+    const value = req.body[field];
+    if (value !== undefined && !Array.isArray(value)) {
+      if (typeof value === 'string') {
+        req.body[field] = value
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+      }
+    }
+  });
+};
+
+const normalizeFormData = (req, res, next) => {
+  coerceRequestBody(req);
+  next();
+};
 
 // @desc    Get all investors
 // @route   GET /api/investors
@@ -110,7 +158,8 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Create investor profile
 // @route   POST /api/investors
 // @access  Private
-router.post('/', protect, authorize('investor'), [
+// Accept multipart/form-data without files as well as JSON
+router.post('/', protect, authorize('investor'), upload.none(), normalizeFormData, [
   body('organization')
     .trim()
     .isLength({ min: 2, max: 100 })
@@ -191,7 +240,8 @@ router.post('/', protect, authorize('investor'), [
 // @desc    Update investor profile
 // @route   PUT /api/investors/:id
 // @access  Private
-router.put('/:id', protect, authorize('investor'), checkOwnership(Investor), [
+// Accept multipart/form-data without files as well as JSON
+router.put('/:id', protect, authorize('investor'), checkOwnership(Investor), upload.none(), normalizeFormData, [
   body('organization')
     .optional()
     .trim()

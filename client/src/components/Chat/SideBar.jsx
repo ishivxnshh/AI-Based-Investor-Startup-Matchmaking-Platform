@@ -10,7 +10,7 @@ const SideBar = ({ selectedUser, setSelectedUser }) => {
     >
       <div className="pb-5">
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-white">Chatiao</span>
+          <span className="text-2xl font-bold text-white">VentureBridge</span>
           
         </div>
 

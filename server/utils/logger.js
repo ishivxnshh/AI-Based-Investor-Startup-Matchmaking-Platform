@@ -15,7 +15,7 @@ const logger = winston.createLogger({
     errors({ stack: true }),
     json()
   ),
-  defaultMeta: { service: 'chatiao-server' },
+  defaultMeta: { service: 'venturebridge-server' },
   transports: [
     // Write all logs with level 'error' and below to 'error.log'
     new winston.transports.File({ 

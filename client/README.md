@@ -1,4 +1,4 @@
-# Chatiao Client - AI-Powered Investor-Startup Matchmaking Platform
+# VentureBridge Client - AI-Powered Investor-Startup Matchmaking Platform
 
 A modern, responsive React application that connects innovative startups with visionary investors through AI-powered matchmaking.
 
@@ -262,8 +262,8 @@ netlify deploy --prod --dir=dist
 
 ### Docker
 ```bash
-docker build -t chatiao-client .
-docker run -p 3000:3000 chatiao-client
+docker build -t venturebridge-client .
+docker run -p 3000:3000 venturebridge-client
 ```
 
 ## 🤝 Contributing
@@ -302,4 +302,4 @@ For support and questions:
 
 ---
 
-**Built with ❤️ by the Chatiao Team**
+**Built with ❤️ by the VentureBridge Team**

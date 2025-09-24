@@ -1,5 +1,5 @@
 {
-  "name": "chatiao-server",
+  "name": "venturebridge-server",
   "version": "1.0.0",
   "description": "Backend server for AI-Based Investor-Startup Matchmaking Platform",
   "main": "index.js",
@@ -21,7 +21,7 @@
     "funding",
     "entrepreneurship"
   ],
-  "author": "Chatiao Team",
+  "author": "VentureBridge Team",
   "license": "MIT",
   "dependencies": {
     "@google/generative-ai": "^0.21.0",

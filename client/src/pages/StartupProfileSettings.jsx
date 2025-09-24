@@ -534,7 +534,7 @@ const StartupProfileSettings = () => {
         </section>
       </div>
       <footer className="text-center text-sm py-6 bg-black/70 border-t border-gray-700 relative z-10">
-        © {new Date().getFullYear()} Chatiao. All rights reserved.
+        © {new Date().getFullYear()} VentureBridge. All rights reserved.
       </footer>
 
       {/* AI Pitch Feedback Modal */}

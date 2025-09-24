@@ -5,7 +5,7 @@ const connectDB = async () => {
   try {
     console.log('MONGODB_URI:', process.env.MONGODB_URI);
     console.log('NODE_ENV:', process.env.NODE_ENV);
-    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/chatiao', {
+    const conn = await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/venturebridge', {
       // Additional options for MongoDB Atlas
       maxPoolSize: 10, // Maintain up to 10 socket connections
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds

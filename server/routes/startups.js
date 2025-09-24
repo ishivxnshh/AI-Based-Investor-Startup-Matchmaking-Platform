@@ -42,6 +42,32 @@ const upload = multer({
   }
 });
 
+// Helper to normalize fields that may arrive as strings when using FormData
+const coerceRequestBody = (req) => {
+  // Numbers
+  const numberFields = ['numberOfFounders', 'teamSize', 'fundingAmount', 'fundingRaised', 'equityOffering'];
+  numberFields.forEach((field) => {
+    if (req.body[field] !== undefined && typeof req.body[field] === 'string' && req.body[field] !== '') {
+      const parsed = Number(req.body[field]);
+      if (!Number.isNaN(parsed)) req.body[field] = parsed;
+    }
+  });
+
+  // Arrays that may be provided as comma-separated strings
+  const arrayFields = ['founderNames', 'linkedinProfiles', 'teamSkills', 'techStack', 'operatingMarkets'];
+  arrayFields.forEach((field) => {
+    const value = req.body[field];
+    if (value !== undefined && !Array.isArray(value)) {
+      if (typeof value === 'string') {
+        req.body[field] = value
+          .split(',')
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+      }
+    }
+  });
+};
+
 // @desc    Get all startups
 // @route   GET /api/startups
 // @access  Private
@@ -141,7 +167,8 @@ router.get('/:id', protect, async (req, res) => {
 // @desc    Create startup profile
 // @route   POST /api/startups
 // @access  Private
-router.post('/', protect, authorize('startup'), [
+// Accept multipart/form-data without files as well as JSON
+router.post('/', protect, authorize('startup'), upload.none(), [
   body('startupName')
     .trim()
     .isLength({ min: 2, max: 100 })
@@ -175,6 +202,7 @@ router.post('/', protect, authorize('startup'), [
     .withMessage('Product description must be between 50 and 2000 characters')
 ], async (req, res) => {
   try {
+    coerceRequestBody(req);
     // Debug: Log what we're receiving
     console.log('Request body:', req.body);
     console.log('Request user:', req.user);
@@ -228,7 +256,8 @@ router.post('/', protect, authorize('startup'), [
 // @desc    Update startup profile
 // @route   PUT /api/startups/:id
 // @access  Private
-router.put('/:id', protect, authorize('startup'), checkOwnership(Startup), [
+// Accept multipart/form-data without files as well as JSON
+router.put('/:id', protect, authorize('startup'), checkOwnership(Startup), upload.none(), [
   body('startupName')
     .optional()
     .trim()
@@ -256,6 +285,7 @@ router.put('/:id', protect, authorize('startup'), checkOwnership(Startup), [
     .withMessage('Product description must be between 50 and 2000 characters')
 ], async (req, res) => {
   try {
+    coerceRequestBody(req);
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({

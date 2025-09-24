@@ -92,7 +92,7 @@ function StartupsSearch() {
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center py-16 px-4 max-w-4xl mx-auto">
           <h1 className="text-4xl sm:text-5xl font-bold leading-tight mb-4">Discover Investment Opportunities</h1>
-          <p className="text-lg text-gray-300 mb-8">Explore the most promising startups and invest in the future with Chatiao.</p>
+          <p className="text-lg text-gray-300 mb-8">Explore the most promising startups and invest in the future with VentureBridge.</p>
           <div className="search-bar max-w-xl mx-auto flex bg-white rounded-full overflow-hidden shadow-lg mb-6">
             <input
               type="text"
@@ -190,7 +190,7 @@ function StartupsSearch() {
       </div>
       {/* Footer */}
       <footer className="text-center text-sm py-6 bg-black/70 border-t border-gray-700 relative z-10">
-        © {new Date().getFullYear()} Chatiao. All rights reserved.
+        © {new Date().getFullYear()} VentureBridge. All rights reserved.
       </footer>
     </div>
   );
