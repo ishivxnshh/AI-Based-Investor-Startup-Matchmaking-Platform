@@ -1,11 +1,11 @@
 import React from 'react';
 
 const avatarSizes = {
-  sm: 'w-8 h-8 text-xs',
-  md: 'w-10 h-10 text-sm',
-  lg: 'w-12 h-12 text-base',
-  xl: 'w-16 h-16 text-xl',
-  '2xl': 'w-20 h-20 text-2xl',
+  sm: 'w-12 h-12 text-sm',
+  md: 'w-16 h-16 text-base',
+  lg: 'w-20 h-20 text-lg',
+  xl: 'w-24 h-24 text-xl',
+  '2xl': 'w-32 h-32 text-2xl',
 };
 
 const Avatar = ({ 
@@ -52,7 +52,7 @@ const AvatarGroup = ({ children, max = 3, className = '' }) => {
         </div>
       ))}
       {remaining > 0 && (
-        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-white text-sm font-semibold ring-2 ring-gray-900">
+        <div className="w-16 h-16 rounded-full bg-gray-700 flex items-center justify-center text-white text-base font-semibold ring-2 ring-gray-900">
           +{remaining}
         </div>
       )}

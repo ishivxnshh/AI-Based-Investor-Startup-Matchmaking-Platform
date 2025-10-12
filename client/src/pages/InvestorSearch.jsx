@@ -38,8 +38,8 @@ function InvestorSearch() {
       setLoading(true);
       setError('');
       try {
-        const res = await axios.get('http://localhost:5000/api/forms/investor-form');
-        setInvestors(res.data);
+        const res = await axios.get('http://localhost:5000/api/investors');
+        setInvestors(res.data.data || []);
       } catch (err) {
         setError('Failed to load investors.');
       } finally {
@@ -85,13 +85,13 @@ function InvestorSearch() {
       console.log('Attempting AI matching for user:', user._id);
       
       // Use the correct endpoint that works with startup profiles
-      const response = await axios.get(`http://localhost:5000/api/forms/matched-investors/${user._id}`);
+      const response = await axios.get(`http://localhost:5000/api/matches/startup`);
       
       console.log('AI matching response:', response.data);
       
       if (response.data.success) {
-        setAiMatches(response.data.matches);
-        setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed || response.data.matches.length);
+        setAiMatches(response.data.data);
+        setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed || response.data.data.length);
         setShowMatches(true);
       } else {
         setError(response.data.message || 'AI matchmaking failed');

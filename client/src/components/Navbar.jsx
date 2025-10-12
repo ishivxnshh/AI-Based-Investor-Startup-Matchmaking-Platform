@@ -69,7 +69,7 @@ const Navbar = ({ userType = 'startup' }) => {
           onKeyDown={(e) => e.key === 'Enter' && navigate(getDashboardPath())}
           aria-label="Go to dashboard"
         >
-          <img src={assets.logo} alt="VentureBridge" className="h-10 transition-transform group-hover:scale-105" />
+          <img src={assets.logo} alt="VentureBridge" className="h-14 transition-transform group-hover:scale-105" />
         </div>
       <nav className="flex items-center gap-6 text-sm font-medium relative" role="navigation" aria-label="Main navigation">
         <button 
@@ -119,7 +119,7 @@ const Navbar = ({ userType = 'startup' }) => {
             aria-haspopup="true"
             aria-label="Open user menu"
           >
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center ring-2 ring-purple-400/30 group-hover:ring-purple-400/60 transition-all">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center ring-2 ring-purple-400/30 group-hover:ring-purple-400/60 transition-all">
               <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
@@ -132,7 +132,7 @@ const Navbar = ({ userType = 'startup' }) => {
             <div className="absolute right-0 mt-3 w-56 bg-gray-800/95 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl z-50 animate-scale-in overflow-hidden">
               <div className="p-3 border-b border-purple-500/20 bg-gradient-to-r from-purple-500/10 to-violet-500/10">
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center">
+                  <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full flex items-center justify-center">
                     <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                     </svg>

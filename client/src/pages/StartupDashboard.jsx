@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
 import AIPitchFeedback from '../components/AIPitchFeedback';
-import AIChatModal from '../components/AIChatModal';
+import AIMatchmaking from '../components/AIMatchmaking';
+import EntityList from '../components/EntityList';
 import Navbar from '../components/Navbar';
-import { Card, Button, Badge, Skeleton } from '../components/ui';
+import { Card, Button, Badge, Skeleton, Tabs, Tab } from '../components/ui';
 import axios from 'axios';
 
 const featuredInvestors = [
@@ -28,17 +29,22 @@ const StartupDashboard = () => {
     users: '0',
     growth: '0%'
   });
+  const [activeTab, setActiveTab] = useState('ai-matchmaking');
   const [monthlyUpdate, setMonthlyUpdate] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [dragOver, setDragOver] = useState(false);
   const [userName, setUserName] = useState('');
   const [aiFeedbackKeyPoints, setAiFeedbackKeyPoints] = useState([]);
   const [aiAnalysisLoading, setAiAnalysisLoading] = useState(false);
-  const [showAIChat, setShowAIChat] = useState(false);
 
   // Calculate profile completeness based on startup form data
   const calculateProfileCompleteness = (data) => {
-    if (!data) return 0;
+    if (!data) {
+      console.log('⚠️ No data provided to calculateProfileCompleteness');
+      return 0;
+    }
+
+    console.log('🔍 Calculating completeness for data:', Object.keys(data));
 
     const requiredFields = [
       'startupName',
@@ -79,44 +85,103 @@ const StartupDashboard = () => {
 
     // Check required fields
     requiredFields.forEach(field => {
-      if (data[field]) {
-        if (Array.isArray(data[field])) {
-          if (data[field].length > 0) completedRequired++;
-        } else if (typeof data[field] === 'boolean') {
-          completedRequired++; // Boolean fields are considered complete if they exist
-        } else if (data[field].toString().trim() !== '') {
-          completedRequired++;
-        }
+      const hasValue = data[field] && (
+        Array.isArray(data[field])
+          ? data[field].length > 0
+          : (() => {
+              const value = data[field].toString().trim();
+              // Handle special cases for metrics that might have default values
+              if (field === 'monthlyRevenue') {
+                return value !== '$0' && value !== '0' && value !== '';
+              }
+              if (field === 'activeUsers') {
+                return value !== '0' && value !== '';
+              }
+              if (field === 'customerRetention') {
+                return value !== '0%' && value !== '0' && value !== '';
+              }
+              if (field === 'growthRate') {
+                return value !== '0%' && value !== '0' && value !== '';
+              }
+              // For funding fields, 0 is a valid value (means no funding yet)
+              if (field === 'fundingAmount' || field === 'fundingRaised') {
+                return value !== '' && value !== '0';
+              }
+              // For other fields, just check if not empty
+              return value !== '';
+            })()
+      );
+      if (hasValue) {
+        completedRequired++;
+        console.log(`✅ Required field completed: ${field} = "${data[field]}"`);
+      } else {
+        console.log(`❌ Required field missing/empty: ${field} = "${data[field]}"`);
       }
     });
 
     // Check optional fields
     optionalFields.forEach(field => {
-      if (data[field]) {
-        if (Array.isArray(data[field])) {
-          if (data[field].length > 0) completedOptional++;
-        } else if (typeof data[field] === 'boolean') {
-          completedOptional++;
-        } else if (data[field].toString().trim() !== '') {
-          completedOptional++;
-        }
+      const hasValue = data[field] && (
+        Array.isArray(data[field])
+          ? data[field].length > 0
+          : (() => {
+              const value = data[field].toString().trim();
+              // Handle special cases for metrics that might have default values
+              if (field === 'monthlyRevenue') {
+                return value !== '$0' && value !== '0' && value !== '';
+              }
+              if (field === 'activeUsers') {
+                return value !== '0' && value !== '';
+              }
+              if (field === 'customerRetention') {
+                return value !== '0%' && value !== '0' && value !== '';
+              }
+              if (field === 'growthRate') {
+                return value !== '0%' && value !== '0' && value !== '';
+              }
+              // For funding fields, 0 is a valid value (means no funding yet)
+              if (field === 'fundingAmount' || field === 'fundingRaised') {
+                return value !== '' && value !== '0';
+              }
+              // For other fields, just check if not empty
+              return value !== '';
+            })()
+      );
+      if (hasValue) {
+        completedOptional++;
+        console.log(`✅ Optional field completed: ${field} = "${data[field]}"`);
+      } else {
+        console.log(`⚪ Optional field missing/empty: ${field} = "${data[field]}"`);
       }
     });
 
     // Calculate percentage: 70% weight for required fields, 30% for optional fields
     const requiredPercentage = (completedRequired / requiredFields.length) * 70;
     const optionalPercentage = (completedOptional / optionalFields.length) * 30;
-    
-    return Math.round(requiredPercentage + optionalPercentage);
+
+    const total = Math.round(requiredPercentage + optionalPercentage);
+    console.log(`📊 Completeness: ${completedRequired}/${requiredFields.length} required (${Math.round(requiredPercentage)}%) + ${completedOptional}/${optionalFields.length} optional (${Math.round(optionalPercentage)}%) = ${total}%`);
+
+    return total;
   };
 
   // Update traction metrics from startup data
   const updateTractionMetrics = (data) => {
     if (data) {
+      // Handle string values that might have $ or % symbols
+      const cleanMonthlyRevenue = data.monthlyRevenue ?
+        (data.monthlyRevenue === '$0' || data.monthlyRevenue === '0' ? '$0' : data.monthlyRevenue) : '$0';
+
+      const cleanActiveUsers = data.activeUsers ?
+        (data.activeUsers === '0' ? '0' : data.activeUsers) : '0';
+
+      const cleanGrowthRate = data.growthRate ?
+        (data.growthRate === '0%' || data.growthRate === '0' ? '0%' : data.growthRate) : '0%';
+
       setTractionMetrics({
-        mrr: data.monthlyRevenue || '$0',
-        users: data.activeUsers || '0',
-        growth: data.growthRate || '0%'
+        mrr: cleanMonthlyRevenue,
+        users: cleanActiveUsers,
+        growth: cleanGrowthRate
       });
     }
   };
@@ -205,21 +270,43 @@ const StartupDashboard = () => {
       const user = JSON.parse(localStorage.getItem('currentUser'));
       if (user && user._id) {
         try {
-          const response = await axios.get(`http://localhost:5000/api/forms/startup-form/user/${user._id}`);
-          const data = response.data;
-          setStartupData(data);
-          
+          console.log('🔍 Fetching startup data for user:', user._id);
+          console.log('📝 User role:', user.role);
+
+          const response = await axios.get(`http://localhost:5000/api/startups/user/${user._id}`);
+          console.log('✅ Startup data response:', response.data);
+
+          // Handle MongoDB ObjectId format
+          const data = response.data.data || response.data;
+          console.log('📋 Processed data:', data);
+
+          // Clean up MongoDB ObjectId format if needed
+          const cleanData = {
+            ...data,
+            _id: data._id?.$oid || data._id,
+            userId: data.userId?.$oid || data.userId
+          };
+
+          setStartupData(cleanData);
+
           // Calculate and set profile completeness
-          const completeness = calculateProfileCompleteness(data);
+          const completeness = calculateProfileCompleteness(cleanData);
+          console.log('📊 Profile completeness calculated:', completeness, '%');
+
           setProfileCompleteness(completeness);
-          
+
           // Update traction metrics with real data
-          updateTractionMetrics(data);
+          updateTractionMetrics(cleanData);
         } catch (error) {
-          console.error('Failed to fetch startup data:', error);
+          console.error('❌ Failed to fetch startup data:', error);
+          console.error('🔍 Error response:', error.response?.data);
+          console.error('🔍 Error status:', error.response?.status);
+
           setStartupData(null);
           setProfileCompleteness(0);
         }
+      } else {
+        console.log('⚠️ No user found in localStorage');
       }
     };
     fetchStartupData();
@@ -291,7 +378,7 @@ const StartupDashboard = () => {
       if (user && user._id) {
         setLoadingMatches(true);
         try {
-          const response = await axios.get(`http://localhost:5000/api/forms/matched-investors/${user._id}`);
+          const response = await axios.get(`http://localhost:5000/api/matches/startup`);
           if (response.data.success) {
             setMatchedInvestors(response.data.matches);
           } else {
@@ -418,283 +505,497 @@ const StartupDashboard = () => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
-      <div className="relative z-10 flex-1 w-full">
-        {/* Navbar */}
-        <Navbar userType="startup" />
 
-        {/* Dashboard Content */}
-        <div className="max-w-7xl mx-auto px-6 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold mb-2">Welcome back, {userName || 'Founder'}! 👋</h1>
-            <p className="text-gray-300">Here's what's happening with your startup today</p>
-          </div>
+        <Tabs value={activeTab} onChange={setActiveTab} className="mb-8">
+          <Tab value="dashboard" className="px-4 py-2">Dashboard</Tab>
+          <Tab value="investors" className="px-4 py-2">Investor Directory</Tab>
+          <Tab value="ai-matchmaking" className="px-4 py-2">AI Matchmaking</Tab>
+        </Tabs>
 
-          {/* Main Dashboard Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            {/* Profile Completeness */}
-            <Card variant="gradient" hover>
-              <Card.Header>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center text-2xl">📊</div>
-                  <Card.Title>Profile Completeness</Card.Title>
-                </div>
-              </Card.Header>
-              <Card.Content>
-                <div className="mb-6">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm text-gray-300">Completion</span>
-                    <Badge variant={profileCompleteness === 100 ? 'success' : 'warning'} size="lg">
-                      {profileCompleteness}%
-                    </Badge>
+        {activeTab === 'dashboard' && (
+          <div className="space-y-8">
+            {/* Main Dashboard Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Profile Completeness */}
+              <Card variant="gradient" hover>
+                <Card.Header>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center text-2xl">📊</div>
+                    <Card.Title>Profile Completeness</Card.Title>
                   </div>
-                  <div className="progress-bar">
-                    <div 
-                      className="progress-fill"
-                      style={{ width: `${profileCompleteness}%` }}
-                    ></div>
-                  </div>
-                </div>
-                <Button
-                  fullWidth
-                  onClick={() => navigate('/startup-profile-settings')}
-                  icon={
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  }
-                >
-                  Complete Profile
-                </Button>
-              </Card.Content>
-            </Card>
-
-            {/* Traction Metrics */}
-            <Card variant="gradient" hover>
-              <Card.Header>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-2xl">📈</div>
-                  <Card.Title>Traction Metrics</Card.Title>
-                </div>
-              </Card.Header>
-              <Card.Content>
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
-                    <span className="text-gray-300 font-medium">Monthly Revenue</span>
-                    <Badge variant="success" size="lg">{tractionMetrics.mrr}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
-                    <span className="text-gray-300 font-medium">Active Users</span>
-                    <Badge variant="info" size="lg">{tractionMetrics.users}</Badge>
-                  </div>
-                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
-                    <span className="text-gray-300 font-medium">Growth Rate</span>
-                    <Badge variant="success" size="lg">{tractionMetrics.growth}</Badge>
-                  </div>
-                </div>
-              </Card.Content>
-            </Card>
-
-            {/* Matched Investors */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white text-sm">🎯</div>
-                <h3 className="text-xl font-semibold">Matched Investors</h3>
-              </div>
-              <p className="text-gray-300 mb-6">Based on your profile and industry focus</p>
-              
-              {loadingMatches ? (
-                <div className="space-y-4 mb-6">
-                  <div className="animate-pulse">
-                    <div className="bg-purple-600/20 rounded-lg p-4 text-center">
-                      <div className="w-12 h-12 bg-gray-600 rounded-full mx-auto mb-3"></div>
-                      <div className="h-4 bg-gray-600 rounded mb-2"></div>
-                      <div className="h-3 bg-gray-600 rounded mb-2"></div>
-                      <div className="h-6 bg-gray-600 rounded w-20 mx-auto"></div>
+                </Card.Header>
+                <Card.Content>
+                  <div className="mb-6">
+                    <div className="flex justify-between items-center mb-3">
+                      <span className="text-sm text-gray-300">Completion</span>
+                      <Badge variant={profileCompleteness === 100 ? 'success' : 'warning'} size="lg">
+                        {profileCompleteness}%
+                      </Badge>
+                    </div>
+                    <div className="w-full bg-gray-700 rounded-full h-2.5">
+                      <div 
+                        className={`h-2.5 rounded-full ${profileCompleteness === 100 ? 'bg-green-500' : 'bg-purple-500'}`}
+                        style={{ width: `${profileCompleteness}%` }}
+                      ></div>
                     </div>
                   </div>
-                </div>
-              ) : matchedInvestors.length > 0 ? (
-                <div className="space-y-4 mb-6">
-                  {matchedInvestors.slice(0, 3).map((match, index) => (
-                    <div key={index} className="bg-purple-600/20 rounded-lg p-4 text-center hover:bg-purple-600/30 transition">
-                      <div className="w-12 h-12 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold">
-                        {getInvestorInitials(match.investor)}
-                      </div>
-                      <div className="font-semibold text-white">{match.investor.fullName || 'Unknown Investor'}</div>
-                      <div className="text-sm text-gray-400 mb-2">{getInvestorOrganization(match.investor)}</div>
-                      <div className="bg-green-600/50 text-green-300 px-3 py-1 rounded-full text-sm font-semibold">
-                        {match.score}% Match
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8">
-                  <div className="text-gray-400 mb-4">No investors available</div>
-                  <div className="text-sm text-gray-500">There are currently no investors in the database. Complete your profile to be ready when investors join the platform.</div>
-                </div>
-              )}
-              
-            <button
-              className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-              onClick={() => navigate('/investor-search')}
-            >
-              View All Matches
-            </button>
-            </div>
+                  <Button 
+                    variant="primary" 
+                    className="w-full"
+                    onClick={() => navigate('/startup-onboarding')}
+                  >
+                    Complete Profile
+                  </Button>
+                </Card.Content>
+              </Card>
 
-            {/* AI Pitch Feedback */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white text-sm">🤖</div>
-                <h3 className="text-xl font-semibold">AI Pitch Feedback</h3>
-              </div>
-              <div className="space-y-4 mb-6">
-                {aiAnalysisLoading ? (
-                  <div className="flex items-center justify-center py-4">
-                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
-                    <span className="ml-3 text-gray-300 text-sm">Analyzing pitch deck...</span>
+              {/* Traction Metrics */}
+              <Card variant="gradient" hover>
+                <Card.Header>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-2xl">📈</div>
+                    <Card.Title>Traction Metrics</Card.Title>
                   </div>
-                ) : aiFeedbackKeyPoints.length > 0 ? (
-                  aiFeedbackKeyPoints.map((point, index) => (
-                    <div key={index} className="flex items-center gap-4 p-3 bg-purple-600/20 rounded-lg hover:bg-purple-600/30 transition">
-                      <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                        {getAIFeedbackIcon(point.type)}
-                      </div>
-                      <div>
-                        <div className={`font-semibold ${getAIFeedbackColor(point.type)}`}>{point.point}</div>
+                </Card.Header>
+                <Card.Content>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                      <span className="text-gray-300 font-medium">Monthly Revenue</span>
+                      <Badge variant="success" size="lg">{tractionMetrics.mrr}</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                      <span className="text-gray-300 font-medium">Active Users</span>
+                      <Badge variant="success" size="lg">{tractionMetrics.users}</Badge>
+                    </div>
+                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                      <span className="text-gray-300 font-medium">Growth Rate</span>
+                      <Badge variant="success" size="lg">{tractionMetrics.growth}</Badge>
+                    </div>
+                  </div>
+                </Card.Content>
+              </Card>
+
+              {/* Matched Investors */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🎯</div>
+                  <h3 className="text-xl font-semibold">Matched Investors</h3>
+                </div>
+                <p className="text-gray-300 mb-6">Based on your profile and industry focus</p>
+                
+                {loadingMatches ? (
+                  <div className="space-y-4 mb-6">
+                    <div className="animate-pulse">
+                      <div className="bg-purple-600/20 rounded-lg p-4 text-center">
+                        <div className="w-16 h-16 bg-gray-600 rounded-full mx-auto mb-3"></div>
+                        <div className="h-4 bg-gray-600 rounded mb-2"></div>
+                        <div className="h-3 bg-gray-600 rounded mb-2"></div>
+                        <div className="h-6 bg-gray-600 rounded w-20 mx-auto"></div>
                       </div>
                     </div>
-                  ))
+                  </div>
+                ) : matchedInvestors.length > 0 ? (
+                  <div className="space-y-4 mb-6">
+                    {matchedInvestors.slice(0, 3).map((match, index) => (
+                      <div key={index} className="bg-purple-600/20 rounded-lg p-4 text-center hover:bg-purple-600/30 transition">
+                        <div className="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold">
+                          {getInvestorInitials(match.investor)}
+                        </div>
+                        <div className="font-semibold text-white">{match.investor.fullName || 'Unknown Investor'}</div>
+                        <div className="text-sm text-gray-400 mb-2">{getInvestorOrganization(match.investor)}</div>
+                        <div className="bg-green-600/50 text-green-300 px-3 py-1 rounded-full text-sm font-semibold">
+                          {match.score}% Match
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
-                  <div className="text-center py-8">
-                    <div className="text-gray-400 mb-4">No AI analysis available</div>
-                    <div className="text-sm text-gray-500">Complete your profile and upload a pitch deck to get AI feedback.</div>
+                  <div className="text-center py-8 text-gray-400">
+                    No investor matches found yet. Complete your profile to get better matches.
                   </div>
                 )}
-              </div>
-              <div className="space-y-2">
-            <button
-              className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-              onClick={handleAIFeedback}
-            >
-              Get Detailed Analysis
-            </button>
-            <button className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition">
-              Upload New Deck
-            </button>
-          </div>
-            </div>
-
-            {/* Messages & Meetings */}
-            <div className="lg:col-span-2 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white text-sm">💬</div>
-                <h3 className="text-xl font-semibold">Messages & Meetings</h3>
-              </div>
-              <div className="space-y-4 mb-6">
-                {/* Recent Messages */}
-                <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-white">Sarah Johnson - TechVentures</span>
-                    <span className="text-sm text-gray-400">2 hours ago</span>
-                  </div>
-                  <p className="text-gray-300">Interested in learning more about your traction metrics. Available for a call this week?</p>
-                </div>
-                <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-white">Mike Chen - Innovation Partners</span>
-                    <span className="text-sm text-gray-400">1 day ago</span>
-                  </div>
-                  <p className="text-gray-300">Great pitch deck! Would love to discuss your go-to-market strategy.</p>
-                </div>
-                <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="font-semibold text-white">Emily Rodriguez - Startup Accelerator</span>
-                    <span className="text-sm text-gray-400">3 days ago</span>
-            </div>
-                  <p className="text-gray-300">Your application has been reviewed. We'd like to schedule a follow-up meeting.</p>
-            </div>
-          </div>
-              <div className="flex gap-4">
-                  <button 
-                  className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-                  onClick={() => navigate('/chat')}
-                  >
-                  View All Messages
+                <button 
+                  className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+                  onClick={() => setActiveTab('ai-matchmaking')}
+                >
+                  Find More Matches
                 </button>
-                <button className="flex-1 bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition">
-                  Schedule Meeting
+              </div>
+
+              {/* AI Pitch Feedback */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🤖</div>
+                  <h3 className="text-xl font-semibold">AI Pitch Feedback</h3>
+                </div>
+                <div className="space-y-4 mb-6">
+                  {aiAnalysisLoading ? (
+                    <div className="flex items-center justify-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+                      <span className="ml-3 text-gray-300 text-sm">Analyzing pitch deck...</span>
+                    </div>
+                  ) : aiFeedbackKeyPoints.length > 0 ? (
+                    aiFeedbackKeyPoints.map((point, index) => (
+                      <div key={index} className="flex items-center gap-4 p-3 bg-purple-600/20 rounded-lg hover:bg-purple-600/30 transition">
+                        <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                          {getAIFeedbackIcon(point.type)}
+                        </div>
+                        <div>
+                          <div className={`font-semibold ${getAIFeedbackColor(point.type)}`}>{point.point}</div>
+                          {point.suggestion && (
+                            <p className="text-sm text-gray-300 mt-1">{point.suggestion}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-center py-8">
+                      <div className="text-gray-400 mb-4">No AI analysis available</div>
+                      <p className="text-sm text-gray-500 mb-4">Upload your pitch deck to get AI-powered feedback</p>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button 
+                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex-1"
+                          onClick={() => document.getElementById('pitch-deck-upload')?.click()}
+                        >
+                          Upload Pitch Deck
+                        </button>
+                        <input 
+                          id="pitch-deck-upload" 
+                          type="file" 
+                          className="hidden" 
+                          accept=".pdf,.ppt,.pptx,.doc,.docx"
+                          onChange={handleFileUpload}
+                        />
+                        <button 
+                          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition flex-1"
+                          onClick={handleAIAnalysis}
+                          disabled={!selectedFile}
+                        >
+                          Analyze with AI
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                <button 
+                  className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition"
+                  onClick={() => setShowAIFeedback(true)}
+                >
+                  Get Detailed Analysis
+                </button>
+                <button className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition mt-2">
+                  Upload New Deck
+                </button>
+              </div>
+
+              {/* Messages & Meetings */}
+              <div className="lg:col-span-2 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">💬</div>
+                  <h3 className="text-xl font-semibold">Messages & Meetings</h3>
+                </div>
+                <div className="space-y-4 mb-6">
+                  <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold text-white">Sarah Johnson - TechVentures</span>
+                      <span className="text-sm text-gray-400">2 hours ago</span>
+                    </div>
+                    <p className="text-gray-300">Interested in learning more about your traction metrics. Available for a call this week?</p>
+                  </div>
+                  
+                  <div className="bg-gray-800/50 rounded-lg p-4 border-l-4 border-gray-600">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="font-semibold">Alex Chen - NextGen Capital</span>
+                      <span className="text-sm text-gray-400">1 day ago</span>
+                    </div>
+                    <p className="text-gray-400">Thanks for sharing your pitch deck. Let's schedule a follow-up next week.</p>
+                  </div>
+                </div>
+                <div className="flex gap-4">
+                  <button 
+                    className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+                    onClick={() => navigate('/chat')}
+                  >
+                    View All Messages
                   </button>
                 </div>
+              </div>
+            </div>
+
+            {/* Featured Investors Section */}
+            <div>
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bold">Featured Investors</h2>
+                <button 
+                  className="text-purple-400 hover:text-purple-300 text-sm font-medium"
+                  onClick={() => setActiveTab('investors')}
+                >
+                  View All Investors →
+                </button>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {featuredInvestors.slice(0, 3).map((investor) => (
+                  <div key={investor.id} className="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-purple-500/50 transition-colors">
+                    <div className="flex items-start gap-4">
+                      <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
+                        {investor.name.split(' ').map(n => n[0]).join('')}
+                      </div>
+                      <div>
+                        <h3 className="font-bold">{investor.name}</h3>
+                        <p className="text-sm text-purple-400 mb-2">{investor.focus}</p>
+                        <p className="text-sm text-gray-400 line-clamp-2">{investor.desc}</p>
+                        <button 
+                          className="mt-3 text-sm text-purple-400 hover:text-purple-300 font-medium"
+                          onClick={() => setActiveTab('investors')}
+                        >
+                          View Profile →
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* AI Matchmaking and Investor Directory Tabs */}
+            <div className="mt-12">
+              <Tabs value={activeTab} onChange={setActiveTab} className="mb-6">
+                <Tab value="ai-matchmaking" className="px-6 py-3 text-sm font-medium">
+                  AI Matchmaking
+                </Tab>
+                <Tab value="investors" className="px-6 py-3 text-sm font-medium">
+                  Investor Directory
+                </Tab>
+              </Tabs>
+
+              {activeTab === 'ai-matchmaking' && (
+                <AIMatchmaking 
+                  userType="startup" 
+                  userId={startupData?._id || ''} 
+                />
+              )}
+
+              {activeTab === 'investors' && (
+                <EntityList 
+                  type="investors" 
+                  currentUserId={startupData?._id || ''} 
+                />
+              )}
+            </div>
+
+            <div className="mt-8">
+              <button 
+          </div>
+          {matchedInvestors.length > 0 ? (
+            <div className="space-y-4 mb-6">
+              {matchedInvestors.slice(0, 3).map((match, index) => (
+                <div key={index} className="bg-purple-600/20 rounded-lg p-4 text-center hover:bg-purple-600/30 transition">
+                  <div className="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold">
+                    {getInvestorInitials(match.investor)}
+                  </div>
+                  <div className="font-semibold text-white">{match.investor.fullName || 'Unknown Investor'}</div>
+                  <div className="text-sm text-gray-400 mb-2">{getInvestorOrganization(match.investor)}</div>
+                  <div className="bg-green-600/50 text-green-300 px-3 py-1 rounded-full text-sm font-semibold">
+                    {match.score}% Match
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-8 text-gray-400">
+              No investor matches found yet. Complete your profile to get better matches.
+            </div>
+          )}
+          <button 
+            className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+            onClick={() => setActiveTab('ai-matchmaking')}
+          >
+            Find More Matches
+          </button>
+        </div>
+
+        {/* AI Pitch Feedback */}
+        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🤖</div>
+            <h3 className="text-xl font-semibold">AI Pitch Feedback</h3>
+          </div>
+          <div className="space-y-4 mb-6">
+            {aiAnalysisLoading ? (
+              <div className="flex items-center justify-center py-4">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+                <span className="ml-3 text-gray-300 text-sm">Analyzing pitch deck...</span>
+              </div>
+            ) : aiFeedbackKeyPoints.length > 0 ? (
+              aiFeedbackKeyPoints.map((point, index) => (
+                <div key={index} className="flex items-center gap-4 p-3 bg-purple-600/20 rounded-lg hover:bg-purple-600/30 transition">
+                  <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                    {getAIFeedbackIcon(point.type)}
+                  </div>
+                  <div>
+                    <div className={`font-semibold ${getAIFeedbackColor(point.type)}`}>{point.point}</div>
+                    {point.suggestion && (
+                      <p className="text-sm text-gray-300 mt-1">{point.suggestion}</p>
+                    )}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8">
+                <div className="text-gray-400 mb-4">No AI analysis available</div>
+                <p className="text-sm text-gray-500 mb-4">Upload your pitch deck to get AI-powered feedback</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button 
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex-1"
+                    onClick={() => document.getElementById('pitch-deck-upload')?.click()}
+                  >
+                    Upload Pitch Deck
+                  </button>
+                  <input 
+                    id="pitch-deck-upload" 
+                    type="file" 
+                    className="hidden" 
+                    accept=".pdf,.ppt,.pptx,.doc,.docx"
+                    onChange={handleFileUpload}
+                  />
+                  <button 
+                    className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition flex-1"
+                    onClick={handleAIAnalysis}
+                    disabled={!selectedFile}
+                  >
+                    Analyze with AI
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          <button 
+            className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition"
+            onClick={() => setShowAIFeedback(true)}
+          >
+            Get Detailed Analysis
+          </button>
+          <button className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition mt-2">
+            Upload New Deck
+          </button>
+        </div>
+
+        {/* Messages & Meetings */}
+        <div className="lg:col-span-2 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">💬</div>
+            <h3 className="text-xl font-semibold">Messages & Meetings</h3>
+          </div>
+          <div className="space-y-4 mb-6">
+            <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold text-white">Sarah Johnson - TechVentures</span>
+                <span className="text-sm text-gray-400">2 hours ago</span>
+              </div>
+              <p className="text-gray-300">Interested in learning more about your traction metrics. Available for a call this week?</p>
+            </div>
+            
+            <div className="bg-gray-800/50 rounded-lg p-4 border-l-4 border-gray-600">
+              <div className="flex justify-between items-center mb-2">
+                <span className="font-semibold">Alex Chen - NextGen Capital</span>
+                <span className="text-sm text-gray-400">1 day ago</span>
+              </div>
+              <p className="text-gray-400">Thanks for sharing your pitch deck. Let's schedule a follow-up next week.</p>
             </div>
           </div>
-
-          {/* Quick Actions Section */}
-          <div className="mt-12 text-center">
-            <h2 className="text-3xl font-bold mb-8">Quick Actions</h2>
-            <div className="flex flex-wrap justify-center gap-6">
-          <button 
-                className="bg-black text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-800 transition flex items-center gap-2"
-            onClick={() => navigate('/investor-search')}
-          >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                Browse Investors
-              </button>
-              <button 
-                className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-purple-600 hover:to-violet-700 transition flex items-center gap-2"
-                onClick={handleAIFeedback}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-                </svg>
-                AI Pitch Feedback
-              </button>
-              <button 
-                className="bg-gray-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-600 transition flex items-center gap-2"
-                onClick={() => navigate('/startup-form')}
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                </svg>
-                Update Profile
-          </button>
-            </div>
+          <div className="flex gap-4">
+            <button 
+              className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+              onClick={() => navigate('/chat')}
+            >
+              View All Messages
+            </button>
           </div>
         </div>
       </div>
 
-      {/* AI Pitch Feedback Modal */}
-      {showAIFeedback && startupData && (
-        <AIPitchFeedback
-          startupId={startupData._id}
-          onClose={() => setShowAIFeedback(false)}
-        />
-      )}
-
-      {/* Fixed AI Chat Icon */}
-      <div className="fixed bottom-6 right-6 z-50">
-        <button
-          onClick={() => setShowAIChat(true)}
-          className="bg-gradient-to-r from-purple-500 to-violet-600 text-white p-4 rounded-full shadow-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-300 transform hover:scale-110"
-          title="Chat with AI Assistant"
-        >
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-          </svg>
-        </button>
+      {/* Featured Investors Section */}
+      <div>
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl font-bold">Featured Investors</h2>
+          <button 
+            className="text-purple-400 hover:text-purple-300 text-sm font-medium"
+            onClick={() => setActiveTab('investors')}
+          >
+            View All Investors →
+          </button>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {featuredInvestors.slice(0, 3).map((investor) => (
+            <div key={investor.id} className="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-purple-500/50 transition-colors">
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
+                  {investor.name.split(' ').map(n => n[0]).join('')}
+                </div>
+                <div>
+                  <h3 className="font-bold">{investor.name}</h3>
+                  <p className="text-sm text-purple-400 mb-2">{investor.focus}</p>
+                  <p className="text-sm text-gray-400 line-clamp-2">{investor.desc}</p>
+                  <button 
+                    className="mt-3 text-sm text-purple-400 hover:text-purple-300 font-medium"
+                    onClick={() => setActiveTab('investors')}
+                  >
+                    View Profile →
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      {/* AI Chat Modal */}
-      {showAIChat && (
-        <AIChatModal onClose={() => setShowAIChat(false)} />
-      )}
-    </div>
-  );
-};
+      {/* AI Matchmaking and Investor Directory Tabs */}
+      <div className="mt-12">
+        <Tabs value={activeTab} onChange={setActiveTab} className="mb-6">
+          <Tab value="ai-matchmaking" className="px-6 py-3 text-sm font-medium">
+            AI Matchmaking
+          </Tab>
+          <Tab value="investors" className="px-6 py-3 text-sm font-medium">
+            Investor Directory
+          </Tab>
+        </Tabs>
 
-export default StartupDashboard;
+        {activeTab === 'ai-matchmaking' && (
+          <AIMatchmaking 
+            userType="startup" 
+            userId={startupData?._id || ''} 
+          />
+        )}
+
+        {activeTab === 'investors' && (
+          <EntityList 
+            type="investors" 
+            currentUserId={startupData?._id || ''} 
+          />
+        )}
+      </div>
+
+      <div className="mt-8">
+        <button 
+          className="bg-gray-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-600 transition flex items-center gap-2"
+          onClick={() => navigate('/startup-form')}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Update Profile
+        </button>
+      </div>
+    </div>
+
+    {/* AI Pitch Feedback Modal */}
+    {showAIFeedback && startupData && (
+      <AIPitchFeedback
+        startupId={startupData._id}
+        onClose={() => setShowAIFeedback(false)}
+      />
+    )}
+  </div>
+</>
