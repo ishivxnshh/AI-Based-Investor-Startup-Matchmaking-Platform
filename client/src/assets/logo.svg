@@ -1,17 +1,39 @@
-<svg width="610" height="444" viewBox="0 0 610 444" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="610" height="444" fill="none"/>
+<svg width="700" height="200" viewBox="0 0 700 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bridgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
 
-  <!-- Chat bubble -->
-  <g transform="translate(50, 162)">
-    <rect x="0" y="0" width="140" height="120" rx="30" fill="#A78BFA"/>
-    <circle cx="35" cy="60" r="8" fill="white"/>
-    <circle cx="70" cy="60" r="8" fill="white"/>
-    <circle cx="105" cy="60" r="8" fill="white"/>
-    <path d="M70,120 L85,100 H55 L70,120 Z" fill="#A78BFA"/>
+  <!-- Bridge Icon -->
+  <g transform="translate(20, 50)">
+    <!-- Left pillar (Startup) -->
+    <rect x="0" y="40" width="15" height="60" rx="3" fill="url(#bridgeGradient)"/>
+    <circle cx="7.5" cy="30" r="12" fill="#8B5CF6"/>
+    <text x="7.5" y="35" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="700" text-anchor="middle">S</text>
+    
+    <!-- Right pillar (Investor) -->
+    <rect x="125" y="40" width="15" height="60" rx="3" fill="url(#bridgeGradient)"/>
+    <circle cx="132.5" cy="30" r="12" fill="#3B82F6"/>
+    <text x="132.5" y="35" font-family="Arial, sans-serif" font-size="14" fill="white" font-weight="700" text-anchor="middle">I</text>
+    
+    <!-- Bridge arch -->
+    <path d="M 15 50 Q 70 20, 125 50" stroke="url(#bridgeGradient)" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M 15 60 Q 70 35, 125 60" stroke="url(#bridgeGradient)" stroke-width="4" fill="none" stroke-linecap="round"/>
+    
+    <!-- Connection lines -->
+    <line x1="30" y1="45" x2="50" y2="40" stroke="#8B5CF6" stroke-width="2" opacity="0.6"/>
+    <line x1="110" y1="45" x2="90" y2="40" stroke="#3B82F6" stroke-width="2" opacity="0.6"/>
   </g>
 
-  <!-- Chatiao text centered vertically -->
-  <text x="220" y="222" font-family="Segoe UI, sans-serif" font-size="90" fill="white" font-weight="600" dominant-baseline="middle">
-    Chatiao
+  <!-- VentureBridge Text -->
+  <text x="190" y="110" font-family="'Segoe UI', 'Arial', sans-serif" font-size="56" fill="white" font-weight="700" letter-spacing="-1">
+    Venture<tspan fill="#8B5CF6">Bridge</tspan>
+  </text>
+  
+  <!-- Tagline -->
+  <text x="192" y="140" font-family="'Segoe UI', 'Arial', sans-serif" font-size="16" fill="#D1D5DB" font-weight="400" letter-spacing="2">
+    CONNECTING INNOVATION
   </text>
 </svg>

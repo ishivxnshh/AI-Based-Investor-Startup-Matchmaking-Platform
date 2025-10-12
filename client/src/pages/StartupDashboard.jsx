@@ -4,6 +4,7 @@ import assets from '../assets/assets';
 import AIPitchFeedback from '../components/AIPitchFeedback';
 import AIChatModal from '../components/AIChatModal';
 import Navbar from '../components/Navbar';
+import { Card, Button, Badge, Skeleton } from '../components/ui';
 import axios from 'axios';
 
 const featuredInvestors = [
@@ -433,52 +434,67 @@ const StartupDashboard = () => {
           {/* Main Dashboard Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             {/* Profile Completeness */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white text-sm">📊</div>
-                <h3 className="text-xl font-semibold">Profile Completeness</h3>
-              </div>
-              <div className="mb-4">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-sm text-gray-300">Completion</span>
-                  <span className="text-sm font-semibold">{profileCompleteness}%</span>
+            <Card variant="gradient" hover>
+              <Card.Header>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center text-2xl">📊</div>
+                  <Card.Title>Profile Completeness</Card.Title>
                 </div>
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className="bg-gradient-to-r from-purple-500 to-violet-600 h-2 rounded-full transition-all duration-500"
-                    style={{ width: `${profileCompleteness}%` }}
-                  ></div>
+              </Card.Header>
+              <Card.Content>
+                <div className="mb-6">
+                  <div className="flex justify-between items-center mb-3">
+                    <span className="text-sm text-gray-300">Completion</span>
+                    <Badge variant={profileCompleteness === 100 ? 'success' : 'warning'} size="lg">
+                      {profileCompleteness}%
+                    </Badge>
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill"
+                      style={{ width: `${profileCompleteness}%` }}
+                    ></div>
+                  </div>
                 </div>
-              </div>
-              <button
-                className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-                onClick={() => navigate('/startup-profile-settings')}
-              >
-                Complete Profile
-              </button>
-            </div>
+                <Button
+                  fullWidth
+                  onClick={() => navigate('/startup-profile-settings')}
+                  icon={
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                  }
+                >
+                  Complete Profile
+                </Button>
+              </Card.Content>
+            </Card>
 
             {/* Traction Metrics */}
-            <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center text-white text-sm">📈</div>
-                <h3 className="text-xl font-semibold">Traction Metrics</h3>
-              </div>
-              <div className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Monthly Revenue</span>
-                  <span className="font-semibold text-green-400">{tractionMetrics.mrr}</span>
+            <Card variant="gradient" hover>
+              <Card.Header>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-2xl">📈</div>
+                  <Card.Title>Traction Metrics</Card.Title>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Active Users</span>
-                  <span className="font-semibold">{tractionMetrics.users}</span>
+              </Card.Header>
+              <Card.Content>
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                    <span className="text-gray-300 font-medium">Monthly Revenue</span>
+                    <Badge variant="success" size="lg">{tractionMetrics.mrr}</Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                    <span className="text-gray-300 font-medium">Active Users</span>
+                    <Badge variant="info" size="lg">{tractionMetrics.users}</Badge>
+                  </div>
+                  <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
+                    <span className="text-gray-300 font-medium">Growth Rate</span>
+                    <Badge variant="success" size="lg">{tractionMetrics.growth}</Badge>
+                  </div>
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-300">Growth Rate</span>
-                  <span className="font-semibold text-green-400">{tractionMetrics.growth}</span>
-                </div>
-              </div>
-            </div>
+              </Card.Content>
+            </Card>
 
             {/* Matched Investors */}
             <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">

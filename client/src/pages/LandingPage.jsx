@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import assets from '../assets/assets'
 
 const LandingPage = () => {
   const navigate = useNavigate()
@@ -83,7 +84,7 @@ const LandingPage = () => {
         {/* Navbar */}
         <header className="flex justify-between items-center px-6 py-4 max-w-7xl mx-auto">
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold">VentureBridge</span>
+            <img src={assets.logo} alt="VentureBridge Logo" className="h-16" />
           </div>
           <nav className="flex items-center gap-6 text-sm font-medium">
             <button

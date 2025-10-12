@@ -37,9 +37,14 @@ const useApi = () => {
     },
     (error) => {
       if (error.response?.status === 401) {
-        localStorage.removeItem('currentUser');
-        localStorage.removeItem('token');
-        window.location.href = '/login';
+        // Check if auto-redirect is disabled for this request
+        const disableAutoRedirect = error.config?.disableAutoRedirect;
+
+        if (!disableAutoRedirect) {
+          localStorage.removeItem('currentUser');
+          localStorage.removeItem('token');
+          window.location.href = '/login';
+        }
       }
       return Promise.reject(error);
     }
@@ -55,6 +60,7 @@ const useApi = () => {
       errorMessage = null,
       onSuccess = null,
       onError = null,
+      disableAutoRedirect = false,
     } = options;
 
     if (showLoading) {
@@ -62,8 +68,14 @@ const useApi = () => {
     }
     setError(null);
 
+    // Add disableAutoRedirect to config if specified
+    const axiosConfig = {
+      ...config,
+      disableAutoRedirect,
+    };
+
     try {
-      const response = await api(config);
+      const response = await api(axiosConfig);
       
       if (showSuccess && successMessage) {
         toast.success(successMessage);
