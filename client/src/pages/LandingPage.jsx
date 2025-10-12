@@ -478,14 +478,18 @@ const LandingPage = () => {
         <section id="contact-team" className="px-4 py-20 flex justify-center bg-black/60">
           <div className="max-w-5xl w-full text-center">
             <h2 className="text-3xl font-bold mb-10">Meet Our Team</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
-              <div className="bg-white/10 p-6 rounded-lg border border-gray-500 w-full max-w-xs">
-                <img src="https://i.ibb.co/67mNJMnR/Whats-App-Image-2025-07-17-at-15-57-25-659fea5d.jpg" alt="Shivansh Mittal" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
-                <h3 className="text-xl font-semibold">Shivansh Mittal</h3>
-                <p className="text-purple-300">Founder & Developer</p>
-                <p className="text-gray-300 text-sm mt-2">Tech visionary turning bold ideas into scalable products</p>
-                <a href="mailto:shivanshmittalsde@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ shivanshmittalsde@gmail.com</a>
-                <a href="https://www.linkedin.com/in/ishivxnshh " className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+            <div className="grid grid-cols-1 gap-8 place-items-center">
+              {/* each card */}
+              <div className="w-full max-w-md mx-auto">
+                {/* Founder card */}
+                <div className="bg-white/10 p-6 rounded-lg border border-gray-500">
+                  <img src="https://i.ibb.co/67mNJMnR/Whats-App-Image-2025-07-17-at-15-57-25-659fea5d.jpg" alt="Shivansh Mittal" className="w-25 h-28 rounded-full mx-auto mb-4 border-2 border-purple-500" />
+                  <h3 className="text-xl font-semibold">Shivansh Mittal</h3>
+                  <p className="text-purple-300">Founder & Developer</p>
+                  <p className="text-gray-300 text-sm mt-2">Tech visionary turning bold ideas into scalable products</p>
+                  <a href="mailto:shivanshmittalsde@gmail.com" className="text-purple-400 hover:underline mt-2 block">✉ shivanshmittalsde@gmail.com</a>
+                  <a href="https://www.linkedin.com/in/ishivxnshh " className="text-purple-400 hover:underline mt-2 block">LinkedIn</a>
+                </div>
               </div>
             </div>
           </div>

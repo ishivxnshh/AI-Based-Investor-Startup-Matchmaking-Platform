@@ -1,3 +1,4 @@
+import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -210,6 +211,7 @@ const handleSubmit = async (e) => {
           <div className="border-2 bg-white/10 backdrop-blur-2xl text-white border-gray-500 p-6 rounded-lg shadow-lg w-full max-w-4xl">
           <h1 className="text-3xl font-bold text-center mb-8 text-white">Startup Onboarding Form</h1>
           
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
             <motion.section
@@ -747,6 +749,7 @@ const handleSubmit = async (e) => {
               </motion.button>
             </div>
           </form>
+          </motion.div>
         </div>
         </div>
       </div>
