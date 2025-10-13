@@ -185,18 +185,6 @@ const InvestorDashboard = () => {
           </p>
         </section>
 
-                 {/* Fixed AI Chat Icon */}
-         <div className="fixed bottom-6 right-6 z-50">
-           <button
-             onClick={() => setShowAiChat(true)}
-             className="bg-gradient-to-r from-purple-500 to-violet-600 text-white p-4 rounded-full shadow-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-300 transform hover:scale-110"
-             title="Chat with AI Assistant"
-           >
-             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-             </svg>
-           </button>
-         </div>
 
                  {/* AI Chat Modal */}
          {showAiChat && (
@@ -521,7 +509,10 @@ const InvestorDashboard = () => {
              )}
              <div className="mt-4">
                <button
-                 onClick={() => navigate('/startupssearch')}
+                 onClick={() => {
+                   navigate('/startupssearch')
+                   window.scrollTo(0, 0)
+                 }}
                  className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-2 rounded-md font-medium hover:scale-105 transition"
                >
                  Explore More Startups
@@ -562,7 +553,10 @@ const InvestorDashboard = () => {
            <div className="flex flex-wrap justify-center gap-6">
              <button 
                className="bg-black text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-800 transition flex items-center gap-2"
-               onClick={() => navigate('/startupssearch')}
+               onClick={() => {
+                 navigate('/startupssearch')
+                 window.scrollTo(0, 0)
+               }}
              >
                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -570,17 +564,11 @@ const InvestorDashboard = () => {
                Browse Startups
              </button>
              <button 
-               className="bg-gradient-to-r from-purple-500 to-violet-600 text-white px-8 py-4 rounded-lg font-semibold hover:from-purple-600 hover:to-violet-700 transition flex items-center gap-2"
-               onClick={() => setShowAiChat(true)}
-             >
-               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-               </svg>
-               AI Investment Advisor
-             </button>
-             <button 
                className="bg-gray-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-600 transition flex items-center gap-2"
-               onClick={() => navigate('/investor-profile-settings')}
+               onClick={() => {
+                 navigate('/investor-profile-settings')
+                 window.scrollTo(0, 0)
+               }}
              >
                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -596,16 +584,6 @@ const InvestorDashboard = () => {
          © {new Date().getFullYear()} VentureBridge. All rights reserved.
        </footer>
 
-      {/* Floating Chat Toggle */}
-      <button
-        aria-label="Open chat"
-        onClick={() => setShowChat(true)}
-        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-500 to-violet-600 text-white p-4 rounded-full shadow-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-300 transform hover:scale-110"
-      >
-        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-      </button>
 
       {/* Chat Drawer */}
       {showChat && (
