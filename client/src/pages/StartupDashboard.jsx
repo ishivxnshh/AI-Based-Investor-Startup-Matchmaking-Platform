@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import assets from '../assets/assets';
+// import assets from '../assets/assets';
 import AIPitchFeedback from '../components/AIPitchFeedback';
 import AIMatchmaking from '../components/AIMatchmaking';
 import EntityList from '../components/EntityList';
+import { Card, Button, Badge, Skeleton } from '../components/ui';
 import Navbar from '../components/Navbar';
-import { Card, Button, Badge, Skeleton, Tabs, Tab } from '../components/ui';
 import axios from 'axios';
+// Removed chat drawer imports
 
 const featuredInvestors = [
   { id: 1, name: 'John Doe', focus: 'Fintech, SaaS, Seed-Stage', desc: 'Angel investor with a focus on early-stage technology startups.' },
@@ -29,11 +30,11 @@ const StartupDashboard = () => {
     users: '0',
     growth: '0%'
   });
-  const [activeTab, setActiveTab] = useState('ai-matchmaking');
-  const [monthlyUpdate, setMonthlyUpdate] = useState('');
+  // Removed tabs from dashboard
+  // const [monthlyUpdate, setMonthlyUpdate] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
-  const [dragOver, setDragOver] = useState(false);
-  const [userName, setUserName] = useState('');
+  // const [dragOver, setDragOver] = useState(false);
+  // const [userName, setUserName] = useState('');
   const [aiFeedbackKeyPoints, setAiFeedbackKeyPoints] = useState([]);
   const [aiAnalysisLoading, setAiAnalysisLoading] = useState(false);
 
@@ -214,7 +215,7 @@ const StartupDashboard = () => {
         // Extract bullet points
         if (currentSection && trimmedLine.length > 10) {
           const cleanPoint = trimmedLine
-            .replace(/^[•\-\*\s]+/, '')
+            .replace(/^[•*\s-]+/, '')
             .replace(/^🎯\s*/, '')
             .replace(/^✅\s*/, '')
             .replace(/^⚠️\s*/, '')
@@ -257,12 +258,12 @@ const StartupDashboard = () => {
   };
 
   // Get user name from localStorage
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem('currentUser'));
-    if (user && user.name) {
-      setUserName(user.name);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const user = JSON.parse(localStorage.getItem('currentUser'));
+  //   if (user && user.name) {
+  //     setUserName(user.name);
+  //   }
+  // }, []);
 
   // Fetch startup data for AI analysis and profile completeness
   useEffect(() => {
@@ -401,18 +402,16 @@ const StartupDashboard = () => {
     fetchMatchedInvestors();
   }, []);
 
-  const handleAIFeedback = () => {
-    if (!startupData || !startupData.pitchDeck || !startupData.pitchDeck.path) {
-      alert('Please upload a pitch deck first to get AI feedback. You can do this by filling out the startup form.');
-      navigate('/startup-form');
-      return;
-    }
-    setShowAIFeedback(true);
-  };
+  // const handleAIFeedback = () => {
+  //   if (!startupData || !startupData.pitchDeck || !startupData.pitchDeck.path) {
+  //     navigate('/startup-form');
+  //     return;
+  //   }
+  //   setShowAIFeedback(true);
+  // };
 
   const handleRefreshAIFeedback = async () => {
     if (!startupData || !startupData.pitchDeck || !startupData.pitchDeck.path) {
-      alert('Please complete your profile and upload a pitch deck first.');
       return;
     }
     
@@ -425,7 +424,6 @@ const StartupDashboard = () => {
       }
     } catch (error) {
       console.error('Failed to refresh AI analysis:', error);
-      alert('Failed to refresh AI feedback. Please try again.');
     } finally {
       setAiAnalysisLoading(false);
     }
@@ -437,21 +435,21 @@ const StartupDashboard = () => {
     console.log('File selected:', file.name);
   };
 
-  const handleFileDrop = (e) => {
-    e.preventDefault();
-    setDragOver(false);
-    const files = e.dataTransfer.files;
-    if (files.length > 0) {
-      handleFileUpload(files[0]);
-    }
-  };
+  // const handleFileDrop = (e) => {
+  //   e.preventDefault();
+  //   setDragOver(false);
+  //   const files = e.dataTransfer.files;
+  //   if (files.length > 0) {
+  //     handleFileUpload(files[0]);
+  //   }
+  // };
 
-  const handleFileSelect = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      handleFileUpload(file);
-    }
-  };
+  // const handleFileSelect = (e) => {
+  //   const file = e.target.files[0];
+  //   if (file) {
+  //     handleFileUpload(file);
+  //   }
+  // };
 
   // Helper function to get investor initials for avatar
   const getInvestorInitials = (investor) => {
@@ -505,14 +503,12 @@ const StartupDashboard = () => {
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
       {/* Background Layer */}
+      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
 
-        <Tabs value={activeTab} onChange={setActiveTab} className="mb-8">
-          <Tab value="dashboard" className="px-4 py-2">Dashboard</Tab>
-          <Tab value="investors" className="px-4 py-2">Investor Directory</Tab>
-          <Tab value="ai-matchmaking" className="px-4 py-2">AI Matchmaking</Tab>
-        </Tabs>
+        {/* Navbar */}
+        <Navbar userType="startup" />
 
-        {activeTab === 'dashboard' && (
+        {/* Header spacer */}
           <div className="space-y-8">
             {/* Main Dashboard Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -616,7 +612,7 @@ const StartupDashboard = () => {
                 )}
                 <button 
                   className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-                  onClick={() => setActiveTab('ai-matchmaking')}
+                  onClick={() => navigate('/investor-search')}
                 >
                   Find More Matches
                 </button>
@@ -668,7 +664,7 @@ const StartupDashboard = () => {
                         />
                         <button 
                           className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition flex-1"
-                          onClick={handleAIAnalysis}
+                          onClick={handleRefreshAIFeedback}
                           disabled={!selectedFile}
                         >
                           Analyze with AI
@@ -728,7 +724,7 @@ const StartupDashboard = () => {
                 <h2 className="text-2xl font-bold">Featured Investors</h2>
                 <button 
                   className="text-purple-400 hover:text-purple-300 text-sm font-medium"
-                  onClick={() => setActiveTab('investors')}
+                  onClick={() => navigate('/investor-search')}
                 >
                   View All Investors →
                 </button>
@@ -747,7 +743,7 @@ const StartupDashboard = () => {
                         <p className="text-sm text-gray-400 line-clamp-2">{investor.desc}</p>
                         <button 
                           className="mt-3 text-sm text-purple-400 hover:text-purple-300 font-medium"
-                          onClick={() => setActiveTab('investors')}
+                          onClick={() => navigate('/investor-search')}
                         >
                           View Profile →
                         </button>
@@ -758,244 +754,23 @@ const StartupDashboard = () => {
               </div>
             </div>
 
-            {/* AI Matchmaking and Investor Directory Tabs */}
-            <div className="mt-12">
-              <Tabs value={activeTab} onChange={setActiveTab} className="mb-6">
-                <Tab value="ai-matchmaking" className="px-6 py-3 text-sm font-medium">
-                  AI Matchmaking
-                </Tab>
-                <Tab value="investors" className="px-6 py-3 text-sm font-medium">
-                  Investor Directory
-                </Tab>
-              </Tabs>
-
-              {activeTab === 'ai-matchmaking' && (
-                <AIMatchmaking 
-                  userType="startup" 
-                  userId={startupData?._id || ''} 
-                />
-              )}
-
-              {activeTab === 'investors' && (
-                <EntityList 
-                  type="investors" 
-                  currentUserId={startupData?._id || ''} 
-                />
-              )}
-            </div>
-
-            <div className="mt-8">
-              <button 
-          </div>
-          {matchedInvestors.length > 0 ? (
-            <div className="space-y-4 mb-6">
-              {matchedInvestors.slice(0, 3).map((match, index) => (
-                <div key={index} className="bg-purple-600/20 rounded-lg p-4 text-center hover:bg-purple-600/30 transition">
-                  <div className="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold">
-                    {getInvestorInitials(match.investor)}
-                  </div>
-                  <div className="font-semibold text-white">{match.investor.fullName || 'Unknown Investor'}</div>
-                  <div className="text-sm text-gray-400 mb-2">{getInvestorOrganization(match.investor)}</div>
-                  <div className="bg-green-600/50 text-green-300 px-3 py-1 rounded-full text-sm font-semibold">
-                    {match.score}% Match
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="text-center py-8 text-gray-400">
-              No investor matches found yet. Complete your profile to get better matches.
-            </div>
-          )}
-          <button 
-            className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-            onClick={() => setActiveTab('ai-matchmaking')}
-          >
-            Find More Matches
-          </button>
-        </div>
-
-        {/* AI Pitch Feedback */}
-        <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🤖</div>
-            <h3 className="text-xl font-semibold">AI Pitch Feedback</h3>
-          </div>
-          <div className="space-y-4 mb-6">
-            {aiAnalysisLoading ? (
-              <div className="flex items-center justify-center py-4">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
-                <span className="ml-3 text-gray-300 text-sm">Analyzing pitch deck...</span>
-              </div>
-            ) : aiFeedbackKeyPoints.length > 0 ? (
-              aiFeedbackKeyPoints.map((point, index) => (
-                <div key={index} className="flex items-center gap-4 p-3 bg-purple-600/20 rounded-lg hover:bg-purple-600/30 transition">
-                  <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                    {getAIFeedbackIcon(point.type)}
-                  </div>
-                  <div>
-                    <div className={`font-semibold ${getAIFeedbackColor(point.type)}`}>{point.point}</div>
-                    {point.suggestion && (
-                      <p className="text-sm text-gray-300 mt-1">{point.suggestion}</p>
-                    )}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-center py-8">
-                <div className="text-gray-400 mb-4">No AI analysis available</div>
-                <p className="text-sm text-gray-500 mb-4">Upload your pitch deck to get AI-powered feedback</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <button 
-                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex-1"
-                    onClick={() => document.getElementById('pitch-deck-upload')?.click()}
-                  >
-                    Upload Pitch Deck
-                  </button>
-                  <input 
-                    id="pitch-deck-upload" 
-                    type="file" 
-                    className="hidden" 
-                    accept=".pdf,.ppt,.pptx,.doc,.docx"
-                    onChange={handleFileUpload}
-                  />
-                  <button 
-                    className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition flex-1"
-                    onClick={handleAIAnalysis}
-                    disabled={!selectedFile}
-                  >
-                    Analyze with AI
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-          <button 
-            className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition"
-            onClick={() => setShowAIFeedback(true)}
-          >
-            Get Detailed Analysis
-          </button>
-          <button className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition mt-2">
-            Upload New Deck
-          </button>
-        </div>
-
-        {/* Messages & Meetings */}
-        <div className="lg:col-span-2 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">💬</div>
-            <h3 className="text-xl font-semibold">Messages & Meetings</h3>
-          </div>
-          <div className="space-y-4 mb-6">
-            <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold text-white">Sarah Johnson - TechVentures</span>
-                <span className="text-sm text-gray-400">2 hours ago</span>
-              </div>
-              <p className="text-gray-300">Interested in learning more about your traction metrics. Available for a call this week?</p>
-            </div>
-            
-            <div className="bg-gray-800/50 rounded-lg p-4 border-l-4 border-gray-600">
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-semibold">Alex Chen - NextGen Capital</span>
-                <span className="text-sm text-gray-400">1 day ago</span>
-              </div>
-              <p className="text-gray-400">Thanks for sharing your pitch deck. Let's schedule a follow-up next week.</p>
+            {/* AI sections quick access */}
+            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Button className="w-full" onClick={() => navigate('/matches')}>View Matches</Button>
+              <Button className="w-full" onClick={() => navigate('/investor-search')}>Explore Investors</Button>
             </div>
           </div>
-          <div className="flex gap-4">
-            <button 
-              className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-              onClick={() => navigate('/chat')}
-            >
-              View All Messages
-            </button>
-          </div>
-        </div>
-      </div>
+      {/* AI Pitch Feedback Modal */}
+      {showAIFeedback && startupData && (
+        <AIPitchFeedback
+          startupId={startupData._id}
+          onClose={() => setShowAIFeedback(false)}
+        />
+      )}
 
-      {/* Featured Investors Section */}
-      <div>
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-bold">Featured Investors</h2>
-          <button 
-            className="text-purple-400 hover:text-purple-300 text-sm font-medium"
-            onClick={() => setActiveTab('investors')}
-          >
-            View All Investors →
-          </button>
-        </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredInvestors.slice(0, 3).map((investor) => (
-            <div key={investor.id} className="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-purple-500/50 transition-colors">
-              <div className="flex items-start gap-4">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                  {investor.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div>
-                  <h3 className="font-bold">{investor.name}</h3>
-                  <p className="text-sm text-purple-400 mb-2">{investor.focus}</p>
-                  <p className="text-sm text-gray-400 line-clamp-2">{investor.desc}</p>
-                  <button 
-                    className="mt-3 text-sm text-purple-400 hover:text-purple-300 font-medium"
-                    onClick={() => setActiveTab('investors')}
-                  >
-                    View Profile →
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* AI Matchmaking and Investor Directory Tabs */}
-      <div className="mt-12">
-        <Tabs value={activeTab} onChange={setActiveTab} className="mb-6">
-          <Tab value="ai-matchmaking" className="px-6 py-3 text-sm font-medium">
-            AI Matchmaking
-          </Tab>
-          <Tab value="investors" className="px-6 py-3 text-sm font-medium">
-            Investor Directory
-          </Tab>
-        </Tabs>
-
-        {activeTab === 'ai-matchmaking' && (
-          <AIMatchmaking 
-            userType="startup" 
-            userId={startupData?._id || ''} 
-          />
-        )}
-
-        {activeTab === 'investors' && (
-          <EntityList 
-            type="investors" 
-            currentUserId={startupData?._id || ''} 
-          />
-        )}
-      </div>
-
-      <div className="mt-8">
-        <button 
-          className="bg-gray-700 text-white px-8 py-4 rounded-lg font-semibold hover:bg-gray-600 transition flex items-center gap-2"
-          onClick={() => navigate('/startup-form')}
-        >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-          </svg>
-          Update Profile
-        </button>
-      </div>
+      
     </div>
+  );
+};
 
-    {/* AI Pitch Feedback Modal */}
-    {showAIFeedback && startupData && (
-      <AIPitchFeedback
-        startupId={startupData._id}
-        onClose={() => setShowAIFeedback(false)}
-      />
-    )}
-  </div>
-</>
+export default StartupDashboard;

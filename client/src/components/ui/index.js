@@ -8,6 +8,7 @@ export { default as Textarea } from './Textarea';
 export { default as Skeleton } from './Skeleton';
 export { default as Modal } from './Modal';
 export { default as Tabs } from './Tabs';
+export { default as Tab } from './Tab';
 export { default as Avatar } from './Avatar';
 export { default as Tooltip } from './Tooltip';
 export { default as Switch } from './Switch';

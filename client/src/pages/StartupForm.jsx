@@ -1,4 +1,4 @@
-import { AnimatePresence, LayoutGroup, motion } from 'framer-motion';
+      
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -42,7 +42,6 @@ const StartupForm = () => {
     useOfFunds: [],
     fundingRoundType: '',
     equityOffering: '',
-    pitchDeck: null,
     
     // Geography & Expansion
     headquarters: '',
@@ -70,7 +69,7 @@ const StartupForm = () => {
   const fundingRoundTypes = ['Pre-Seed', 'Seed', 'Series A', 'Series B', 'Series C+'];
 
   const handleChange = (e) => {
-    const { name, value, type, checked, files } = e.target;
+    const { name, value, type, checked } = e.target;
 
     if (type === 'checkbox') {
       if (name === 'previousStartupExperience') {
@@ -85,27 +84,7 @@ const StartupForm = () => {
           }
         });
       }
-    } else if (type === 'file') {
-      const file = files[0];
-      if (file) {
-        // Validate file size (10MB limit)
-        if (file.size > 10 * 1024 * 1024) {
-          toast.error('File size must be less than 10MB');
-          e.target.value = ''; // Clear the input
-          return;
-        }
-
-        // Validate file type
-        const allowedTypes = ['application/pdf', 'application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'];
-        if (!allowedTypes.includes(file.type)) {
-          toast.error('Only PDF and PowerPoint files are allowed');
-          e.target.value = ''; // Clear the input
-          return;
-        }
-
-        setFormData(prev => ({ ...prev, [name]: file }));
-      }
-    } else {
+  } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
@@ -193,10 +172,7 @@ const handleSubmit = async (e) => {
   }
 };
 
-  const sectionVariants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
-  };
+  
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
@@ -211,13 +187,10 @@ const handleSubmit = async (e) => {
           <div className="border-2 bg-white/10 backdrop-blur-2xl text-white border-gray-500 p-6 rounded-lg shadow-lg w-full max-w-4xl">
           <h1 className="text-3xl font-bold text-center mb-8 text-white">Startup Onboarding Form</h1>
           
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+          <div>
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Basic Information */}
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={sectionVariants}
+            <section
               className="p-6 bg-white/5 rounded-lg border border-white/10"
             >
               <h2 className="text-xl font-semibold mb-4 text-violet-300">1. Basic Information</h2>
@@ -287,14 +260,10 @@ const handleSubmit = async (e) => {
                   />
                 </div>
               </div>
-            </motion.section>
+            </section>
 
             {/* Team & Founder Details */}
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={sectionVariants}
-              transition={{ delay: 0.1 }}
+            <section
               className="p-6 bg-white/5 rounded-lg border border-white/10"
             >
               <h2 className="text-xl font-semibold mb-4 text-violet-300">2. Team & Founder Details</h2>
@@ -371,14 +340,10 @@ const handleSubmit = async (e) => {
                   ))}
                 </div>
               </div>
-            </motion.section>
+            </section>
 
             {/* Startup Profile */}
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={sectionVariants}
-              transition={{ delay: 0.2 }}
+            <section
               className="p-6 bg-white/5 rounded-lg border border-white/10"
             >
               <h2 className="text-xl font-semibold mb-4 text-violet-300">3. Startup Profile</h2>
@@ -483,14 +448,10 @@ const handleSubmit = async (e) => {
                   </div>
                 </div>
               </div>
-            </motion.section>
+            </section>
 
             {/* Traction & Metrics */}
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={sectionVariants}
-              transition={{ delay: 0.3 }}
+            <section
               className="p-6 bg-white/5 rounded-lg border border-white/10"
             >
               <h2 className="text-xl font-semibold mb-4 text-violet-300">4. Traction & Metrics</h2>
@@ -580,14 +541,10 @@ const handleSubmit = async (e) => {
                   </div>
                 </div>
               </div>
-            </motion.section>
+            </section>
 
             {/* Funding Needs */}
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={sectionVariants}
-              transition={{ delay: 0.4 }}
+            <section
               className="p-6 bg-white/5 rounded-lg border border-white/10"
             >
               <h2 className="text-xl font-semibold mb-4 text-violet-300">5. Funding Needs</h2>
@@ -669,32 +626,11 @@ const handleSubmit = async (e) => {
                 </div>
               </div>
               
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-white mb-1">Pitch Deck Upload</label>
-                <div className="mt-1 flex items-center">
-                  <input
-                    type="file"
-                    name="pitchDeck"
-                    onChange={handleChange}
-                    accept=".pdf,.ppt,.pptx"
-                    className="py-2 px-3 bg-white/5 border border-white/20 rounded-md text-sm text-white file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100"
-                  />
-                </div>
-                {formData.pitchDeck && (
-                  <p className="mt-1 text-xs text-green-300">
-                    Selected: {formData.pitchDeck.name} ({(formData.pitchDeck.size / 1024 / 1024).toFixed(2)} MB)
-                  </p>
-                )}
-                <p className="mt-1 text-xs text-gray-300">Upload your pitch deck (PDF or PowerPoint, max 10MB)</p>
-              </div>
-            </motion.section>
+              
+            </section>
 
             {/* Geography & Expansion */}
-            <motion.section
-              initial="hidden"
-              animate="visible"
-              variants={sectionVariants}
-              transition={{ delay: 0.5 }}
+            <section
               className="p-6 bg-white/5 rounded-lg border border-white/10"
             >
               <h2 className="text-xl font-semibold mb-4 text-violet-300">6. Geography & Expansion</h2>
@@ -736,20 +672,18 @@ const handleSubmit = async (e) => {
                   />
                 </div>
               </div>
-            </motion.section>
+            </section>
 
             <div className="flex justify-center">
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
                 type="submit"
                 className="px-6 py-3 bg-gradient-to-r from-purple-400 to-violet-600 text-white font-medium rounded-md hover:from-purple-500 hover:to-violet-700 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:ring-offset-2"
               >
                 Submit Application
-              </motion.button>
+              </button>
             </div>
           </form>
-          </motion.div>
+          </div>
         </div>
         </div>
       </div>

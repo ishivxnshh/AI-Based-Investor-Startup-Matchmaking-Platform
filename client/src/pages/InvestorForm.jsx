@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import assets from '../assets/assets';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 const InvestorForm = () => {
@@ -79,7 +78,6 @@ const InvestorForm = () => {
     const { name, value, type, checked } = e.target;
     
     if (type === 'checkbox') {
-      const { name, value, checked } = e.target;
       setFormData(prev => {
         const currentValues = prev[name];
         if (checked) {

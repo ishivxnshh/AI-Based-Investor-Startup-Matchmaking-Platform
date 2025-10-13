@@ -1,14 +1,17 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import assets from '../assets/assets'
+// import assets from '../assets/assets'
 import startupsData from '../startups.js'
 import Navbar from '../components/Navbar'
+import SideBar from '../components/Chat/SideBar'
+import ChatContainer from '../components/Chat/ChatContainer'
+import RightSidebar from '../components/Chat/RightSidebar'
 import AIInvestorChatModal from '../components/AIInvestorChatModal'
 import axios from 'axios'
 
 const InvestorDashboard = () => {
   const navigate = useNavigate()
-  const [currentUser, setCurrentUser] = useState(null)
+  // const [currentUser, setCurrentUser] = useState(null)
   const [profile, setProfile] = useState({
     fullName: '',
     email: '',
@@ -19,15 +22,16 @@ const InvestorDashboard = () => {
   const [marketTrends, setMarketTrends] = useState(null)
   const [portfolioAnalytics, setPortfolioAnalytics] = useState(null)
   const [recommendedStartups, setRecommendedStartups] = useState([])
+  const [showChat, setShowChat] = useState(false)
+  const [selectedUser, setSelectedUser] = useState(null)
   
   // Dummy: Replace with real data if available
-  const [investedStartups, setInvestedStartups] = useState([startupsData[0], startupsData[1]])
-  const [interestedStartups, setInterestedStartups] = useState([startupsData[2], startupsData[3]])
+  const [investedStartups] = useState([startupsData[0], startupsData[1]])
+  const [interestedStartups] = useState([startupsData[2], startupsData[3]])
 
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem('currentUser'))
     if (user) {
-      setCurrentUser(user)
       setProfile({
         fullName: user.fullName || '',
         email: user.email || '',
@@ -585,12 +589,49 @@ const InvestorDashboard = () => {
              </button>
            </div>
          </div>
-       </div>
+      </div>
 
        {/* Footer */}
        <footer className="text-center text-sm py-6 bg-black/70 border-t border-gray-700 relative z-10">
          © {new Date().getFullYear()} VentureBridge. All rights reserved.
        </footer>
+
+      {/* Floating Chat Toggle */}
+      <button
+        aria-label="Open chat"
+        onClick={() => setShowChat(true)}
+        className="fixed bottom-6 right-6 z-50 bg-gradient-to-r from-purple-500 to-violet-600 text-white p-4 rounded-full shadow-lg hover:from-purple-600 hover:to-violet-700 transition-all duration-300 transform hover:scale-110"
+      >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+        </svg>
+      </button>
+
+      {/* Chat Drawer */}
+      {showChat && (
+        <div className="fixed inset-0 z-50 bg-black/40">
+          <div className="absolute right-0 top-0 h-full w-full sm:w-[90%] lg:w-[70%] xl:w-[55%] bg-black/70 border-l border-purple-500/30 backdrop-blur-xl flex">
+            <div className="grid grid-cols-12 w-full h-full">
+              <div className="col-span-4 border-r border-purple-500/20">
+                <SideBar selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+              </div>
+              <div className="col-span-5 border-r border-purple-500/20">
+                <ChatContainer selectedUser={selectedUser} setSelectedUser={setSelectedUser} />
+              </div>
+              <div className="col-span-3">
+                <RightSidebar selectedUser={selectedUser} />
+              </div>
+            </div>
+            <button
+              aria-label="Close chat"
+              onClick={() => setShowChat(false)}
+              className="absolute top-4 right-4 text-white bg-white/10 hover:bg-white/20 border border-white/10 rounded-full px-3 py-1"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
