@@ -32,3 +32,4 @@ class MathComplex:
         """
         self.data = []
         return True
+# Optimized for performance
