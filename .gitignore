@@ -47,3 +47,5 @@ coverage/
 # Production
 /client/dist
 /server/dist
+
+repo_evaluator-main-new-2-no-llm
