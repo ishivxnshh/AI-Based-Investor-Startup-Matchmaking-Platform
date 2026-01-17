@@ -1,0 +1,98 @@
+{
+  "repo_name": "AI-Based-Investor-Startup-Matchmaking-Platform",
+  "repo_full_name": "ishivxnshh/AI-Based-Investor-Startup-Matchmaking-Platform",
+  "overall_score": 57.0,
+  "recommendation": "\u2705 GOOD",
+  "repo_metrics": {
+    "repo_name": "ishivxnshh_AI-Based-Investor-Startup-Matchmaking-Platform",
+    "total_files": 172,
+    "test_files": 24,
+    "test_file_ratio": 0.13953488372093023,
+    "source_files": 106,
+    "total_loc": 17481,
+    "source_loc": 16957,
+    "test_loc": 524,
+    "languages": {
+      "JavaScript": 96,
+      "Python": 39
+    },
+    "primary_language": "JavaScript",
+    "has_ci_cd": true,
+    "ci_files": [
+      ".github/workflows"
+    ],
+    "test_frameworks": [
+      "pytest"
+    ],
+    "has_test_runner": true,
+    "total_commits": 100,
+    "recent_commits_12mo": 100,
+    "commits_referencing_issues": 17,
+    "test_coverage_percentage": null,
+    "swebench_readiness_score": 95.0,
+    "recommendation": "\ud83c\udf1f EXCELLENT - Highly suitable for SWE-Bench+ samples",
+    "strengths": [],
+    "weaknesses": [],
+    "commit_spread_days": 195.9,
+    "median_commit_interval_hours": 0.09
+  },
+  "pr_analysis": {
+    "total_prs": 5,
+    "accepted": 0,
+    "rejected": 5,
+    "acceptance_rate": 0.0,
+    "rejection_breakdown": {
+      "fewer_than_min_test_files": {
+        "count": 3,
+        "percentage": 100.0
+      },
+      "BUILD_FAILED": {
+        "count": 2,
+        "percentage": 40.0
+      }
+    },
+    "accepted_prs": [],
+    "f2p_results": [
+      {
+        "pr_number": 3,
+        "pr_title": "feat: Add Advanced Data Structures Library (BST, Graph, LRU Cache)",
+        "base_sha": "ff4372c2ca70ced2d65a8c64d3f09a1d99ec7dec",
+        "head_sha": "6013aeeb8f261a72ac6bc09bed897597b3d50cdc",
+        "f2p_count": 0,
+        "p2p_count": 0,
+        "f2f_count": 0,
+        "p2f_count": 0,
+        "f2p_tests": [],
+        "p2p_tests": [],
+        "f2f_tests": [],
+        "p2f_tests": [],
+        "success": false,
+        "verdict": "BUILD_FAILED",
+        "error": "server: Tests failed at all commits",
+        "error_code": "BUILD_FAILED",
+        "rejection_reason": null,
+        "has_new_test_file": true
+      },
+      {
+        "pr_number": 2,
+        "pr_title": "feat: Add Mathematics & Statistics Engine Library",
+        "base_sha": "ff4372c2ca70ced2d65a8c64d3f09a1d99ec7dec",
+        "head_sha": "d85a9ac82191236ecabb2b9b486cbcd54ecf440a",
+        "f2p_count": 0,
+        "p2p_count": 0,
+        "f2f_count": 0,
+        "p2f_count": 0,
+        "f2p_tests": [],
+        "p2p_tests": [],
+        "f2f_tests": [],
+        "p2f_tests": [],
+        "success": false,
+        "verdict": "BUILD_FAILED",
+        "error": "server: Tests failed at all commits",
+        "error_code": "BUILD_FAILED",
+        "rejection_reason": null,
+        "has_new_test_file": true
+      }
+    ]
+  }
+}
