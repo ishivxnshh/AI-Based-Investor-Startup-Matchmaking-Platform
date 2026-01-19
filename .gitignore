@@ -47,8 +47,3 @@ coverage/
 # Production
 /client/dist
 /server/dist
-
-# Repo evaluator
-repo_evaluator-main-new-2-no-llm/
-
-/Score Booster
