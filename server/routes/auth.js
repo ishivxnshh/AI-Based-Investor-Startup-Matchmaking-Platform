@@ -5,6 +5,7 @@ import { body, validationResult } from 'express-validator';
 import User from '../models/User.js';
 import { protect } from '../middleware/auth.js';
 import { logger } from '../utils/logger.js';
+import emailService from '../services/emailService.js';
 
 const router = express.Router();
 
@@ -68,8 +69,16 @@ router.post('/register', [
     }
 
     const { fullName, password, role } = req.body;
-    // Normalize email to lowercase to prevent case-sensitive duplicates
-    const email = req.body.email.toLowerCase().trim();
+    
+    // Process and validate email using EmailService
+    const emailResult = emailService.processEmail(req.body.email);
+    if (!emailResult.valid) {
+      return res.status(400).json({
+        success: false,
+        error: emailResult.error || 'Invalid email format'
+      });
+    }
+    const email = emailResult.normalized;
 
     // Check if user already exists (case-insensitive)
     const existingUser = await User.findOne({ 
@@ -90,7 +99,7 @@ router.post('/register', [
       role
     });
 
-    logger.info(`New user registered: ${email} (${role})`);
+    logger.info(`New user registered: ${emailService.sanitizeForLogging(email)} (${role})`);
     sendTokenResponse(user, 201, res);
   } catch (error) {
     logger.error('Registration error:', error);
