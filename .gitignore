@@ -47,3 +47,5 @@ coverage/
 # Production
 /client/dist
 /server/dist
+
+/abcd

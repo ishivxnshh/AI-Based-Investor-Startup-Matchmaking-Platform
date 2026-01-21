@@ -67,10 +67,14 @@ router.post('/register', [
       });
     }
 
-    const { fullName, email, password, role } = req.body;
+    const { fullName, password, role } = req.body;
+    // Normalize email to lowercase to prevent case-sensitive duplicates
+    const email = req.body.email.toLowerCase().trim();
 
-    // Check if user already exists
-    const existingUser = await User.findByEmail(email);
+    // Check if user already exists (case-insensitive)
+    const existingUser = await User.findOne({ 
+      email: { $regex: new RegExp(`^${email}$`, 'i') } 
+    });
     if (existingUser) {
       return res.status(409).json({
         success: false,
