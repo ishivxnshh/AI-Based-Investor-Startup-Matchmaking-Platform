@@ -122,14 +122,16 @@ app.use('/api/', speedLimiter);
 
 // Session configuration
 const sessionConfig = {
-  secret: 'your-session-secret',
+  secret: process.env.SESSION_SECRET || 'your-session-secret-change-in-production',
   resave: false,
   saveUninitialized: false,
   cookie: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    sameSite: 'strict'
+  },
+  name: 'sessionId' // Custom name to avoid default 'connect.sid'
 };
 
 app.use(session(sessionConfig));
