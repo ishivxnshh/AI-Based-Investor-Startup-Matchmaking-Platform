@@ -501,7 +501,7 @@ const StartupDashboard = () => {
   };
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] transition-colors duration-300">
       {/* Animated Mesh Background */}
       <div className="fixed inset-0 gradient-mesh-animated opacity-30 pointer-events-none" />
 
@@ -536,7 +536,7 @@ const StartupDashboard = () => {
             </div>
             <div className="mb-6">
               <div className="flex justify-between items-center mb-3">
-                <span className="text-sm text-gray-300">Completion</span>
+                <span className="text-sm text-[var(--color-text-muted)]">Completion</span>
                 <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${profileCompleteness === 100 ? 'bg-green-500/20 text-green-300 border border-green-400/30' : 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'}`}>
                   {profileCompleteness}%
                 </span>
@@ -563,16 +563,16 @@ const StartupDashboard = () => {
               <h3 className="text-xl font-bold">Traction Metrics</h3>
             </div>
             <div className="space-y-4">
-              <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                <span className="text-gray-300 font-medium">Monthly Revenue</span>
+              <div className="flex justify-between items-center p-4 bg-[var(--color-bg-tertiary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all duration-300 hover:scale-105">
+                <span className="text-[var(--color-text-muted)] font-medium">Monthly Revenue</span>
                 <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-500/20 text-green-300 border border-green-400/30">{tractionMetrics.mrr}</span>
               </div>
-              <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                <span className="text-gray-300 font-medium">Active Users</span>
+              <div className="flex justify-between items-center p-4 bg-[var(--color-bg-tertiary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all duration-300 hover:scale-105">
+                <span className="text-[var(--color-text-muted)] font-medium">Active Users</span>
                 <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-500/20 text-green-300 border border-green-400/30">{tractionMetrics.users}</span>
               </div>
-              <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105">
-                <span className="text-gray-300 font-medium">Growth Rate</span>
+              <div className="flex justify-between items-center p-4 bg-[var(--color-bg-tertiary)] rounded-xl hover:bg-[var(--color-bg-secondary)] transition-all duration-300 hover:scale-105">
+                <span className="text-[var(--color-text-muted)] font-medium">Growth Rate</span>
                 <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-500/20 text-green-300 border border-green-400/30">{tractionMetrics.growth}</span>
               </div>
             </div>
@@ -584,7 +584,7 @@ const StartupDashboard = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">🎯</div>
               <h3 className="text-xl font-semibold">Matched Investors</h3>
             </div>
-            <p className="text-gray-300 mb-6">Based on your profile and industry focus</p>
+            <p className="text-[var(--color-text-muted)] mb-6">Based on your profile and industry focus</p>
 
             {loadingMatches ? (
               <div className="space-y-4 mb-6">

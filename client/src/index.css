@@ -589,22 +589,28 @@ textarea:focus-visible {
   --color-text-muted: #a78bca;
   --color-border: rgba(124, 58, 237, 0.2);
   --color-border-hover: rgba(124, 58, 237, 0.4);
+  --glass-bg: rgba(45, 27, 78, 0.6);
 }
 
-/* Light Mode */
-@media (prefers-color-scheme: light) {
-  :root {
-    --color-bg-primary: #ffffff;
-    --color-bg-secondary: #f8f7fc;
-    --color-bg-tertiary: #f0edf7;
-    --color-accent: #7c3aed;
-    --color-accent-hover: #6d28d9;
-    --color-text-primary: #1a0b2e;
-    --color-text-secondary: #2d1b4e;
-    --color-text-muted: #6b5b7b;
-    --color-border: rgba(124, 58, 237, 0.15);
-    --color-border-hover: rgba(124, 58, 237, 0.3);
-  }
+/* Light Mode Class Override */
+:root.light {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8f7fc;
+  --color-bg-tertiary: #f0edf7;
+  --color-accent: #7c3aed;
+  --color-accent-hover: #6d28d9;
+  --color-text-primary: #1a0b2e;
+  --color-text-secondary: #2d1b4e;
+  --color-text-muted: #6b5b7b;
+  --color-border: rgba(124, 58, 237, 0.15);
+  --color-border-hover: rgba(124, 58, 237, 0.3);
+  --glass-bg: rgba(255, 255, 255, 0.7);
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Simplified Backgrounds */
@@ -638,7 +644,7 @@ textarea:focus-visible {
 
 /* Premium Glassmorphism */
 .glass-premium {
-  background: rgba(45, 27, 78, 0.6);
+  background: var(--glass-bg);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid var(--color-border);

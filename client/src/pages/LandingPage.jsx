@@ -134,7 +134,7 @@ const LandingPage = () => {
   }
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-black">
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] transition-colors duration-300">
       {/* Animated Mesh Background */}
       <div className="fixed inset-0 gradient-mesh-animated opacity-20 pointer-events-none" />
 

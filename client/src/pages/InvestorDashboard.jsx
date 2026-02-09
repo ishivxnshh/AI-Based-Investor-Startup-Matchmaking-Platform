@@ -166,7 +166,7 @@ const InvestorDashboard = () => {
 
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+    <div className="relative min-h-screen w-full overflow-hidden flex flex-col bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] transition-colors duration-300">
       {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
@@ -192,7 +192,7 @@ const InvestorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
 
           {/* AI Investment Insights */}
-          <section className="lg:col-span-2 bg-white/10 rounded-xl p-6 border border-gray-700 shadow-lg">
+          <section className="lg:col-span-2 glass-premium rounded-xl p-6 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
               <span className="text-2xl">🤖</span>
               AI Investment Insights
@@ -214,7 +214,7 @@ const InvestorDashboard = () => {
                           <div className="font-medium text-sm text-white">{opp.sector || opp}</div>
                           {opp.confidence && (
                             <span className={`px-2 py-1 rounded text-xs ${opp.confidence === 'High' ? 'bg-green-600' :
-                                opp.confidence === 'Medium' ? 'bg-yellow-600' : 'bg-red-600'
+                              opp.confidence === 'Medium' ? 'bg-yellow-600' : 'bg-red-600'
                               }`}>
                               {opp.confidence}
                             </span>
@@ -266,7 +266,7 @@ const InvestorDashboard = () => {
                             <div className="font-medium text-sm text-white">{risk.risk || risk}</div>
                             {risk.severity && (
                               <span className={`px-2 py-1 rounded text-xs ${risk.severity === 'High' ? 'bg-red-600' :
-                                  risk.severity === 'Medium' ? 'bg-yellow-600' : 'bg-green-600'
+                                risk.severity === 'Medium' ? 'bg-yellow-600' : 'bg-green-600'
                                 }`}>
                                 {risk.severity}
                               </span>
@@ -335,7 +335,7 @@ const InvestorDashboard = () => {
           </section>
 
           {/* Portfolio Analytics */}
-          <section className="bg-white/10 rounded-xl p-6 border border-gray-700 shadow-lg">
+          <section className="glass-premium rounded-xl p-6 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
               <span className="text-2xl">📊</span>
               Portfolio Analytics
@@ -360,7 +360,7 @@ const InvestorDashboard = () => {
                   <div>
                     <span className="text-gray-300">Risk Score:</span>
                     <span className={`ml-2 px-2 py-1 rounded text-xs ${portfolioAnalytics.riskScore === 'Low' ? 'bg-green-600' :
-                        portfolioAnalytics.riskScore === 'Medium' ? 'bg-yellow-600' : 'bg-red-600'
+                      portfolioAnalytics.riskScore === 'Medium' ? 'bg-yellow-600' : 'bg-red-600'
                       }`}>
                       {portfolioAnalytics.riskScore}
                     </span>
@@ -377,7 +377,7 @@ const InvestorDashboard = () => {
           </section>
 
           {/* Market Trends */}
-          <section className="bg-white/10 rounded-xl p-6 border border-gray-700 shadow-lg">
+          <section className="glass-premium rounded-xl p-6 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
               <span className="text-2xl">📈</span>
               Market Trends
@@ -388,7 +388,7 @@ const InvestorDashboard = () => {
                 <div className="bg-white/5 p-3 rounded-lg">
                   <div className="text-sm text-gray-300 mb-1">Market Sentiment</div>
                   <div className={`text-lg font-bold ${marketTrends.marketSentiment === 'Bullish' ? 'text-green-400' :
-                      marketTrends.marketSentiment === 'Bearish' ? 'text-red-400' : 'text-yellow-400'
+                    marketTrends.marketSentiment === 'Bearish' ? 'text-red-400' : 'text-yellow-400'
                     }`}>
                     {marketTrends.marketSentiment}
                   </div>
@@ -458,7 +458,7 @@ const InvestorDashboard = () => {
           </section>
 
           {/* AI Recommended Startups */}
-          <section className="lg:col-span-2 bg-white/10 rounded-xl p-6 border border-gray-700 shadow-lg">
+          <section className="lg:col-span-2 glass-premium rounded-xl p-6 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
               <span className="text-2xl">🎯</span>
               AI Recommended Startups
@@ -514,7 +514,7 @@ const InvestorDashboard = () => {
 
         {/* Your Investments - Full Width Section */}
         <div className="max-w-7xl mx-auto px-4 mb-16">
-          <section className="bg-white/10 rounded-xl p-6 border border-gray-700 shadow-lg">
+          <section className="glass-premium rounded-xl p-6 shadow-lg">
             <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
               <span className="text-2xl">💼</span>
               Your Investments
