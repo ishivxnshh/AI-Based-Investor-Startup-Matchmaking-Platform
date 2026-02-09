@@ -505,9 +505,6 @@ const StartupDashboard = () => {
       {/* Animated Mesh Background */}
       <div className="fixed inset-0 gradient-mesh-animated opacity-30 pointer-events-none" />
 
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75 opacity-20"></div>
-
       {/* Floating Particles */}
       {[...Array(15)].map((_, i) => (
         <div

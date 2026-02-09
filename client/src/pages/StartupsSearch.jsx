@@ -46,9 +46,9 @@ function StartupsSearch() {
   const filteredStartups = startups.filter((startup) => {
     // Fix industry filtering - handle both array and string formats
     const startupIndustries = Array.isArray(startup.industry) ? startup.industry : [startup.industry];
-    const matchesIndustry = industry === 'all' || 
+    const matchesIndustry = industry === 'all' ||
       startupIndustries.some(ind => ind && ind.toLowerCase().includes(industry.toLowerCase()));
-    
+
     const matchesSearch =
       (startup.startupName && startup.startupName.toLowerCase().includes(search.toLowerCase())) ||
       (startupIndustries && startupIndustries.join(' ').toLowerCase().includes(search.toLowerCase())) ||
@@ -83,8 +83,7 @@ function StartupsSearch() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
         <Navbar userType="investor" />

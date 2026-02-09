@@ -5,7 +5,7 @@ import AIPitchFeedback from '../components/AIPitchFeedback';
 import Navbar from '../components/Navbar';
 
 const industries = [
-  'Fintech', 'AI', 'HealthTech', 'EdTech', 'E-commerce', 'SaaS', 
+  'Fintech', 'AI', 'HealthTech', 'EdTech', 'E-commerce', 'SaaS',
   'Blockchain', 'CleanTech', 'AgriTech', 'Consumer', 'Other'
 ];
 const stages = [
@@ -152,7 +152,7 @@ const StartupProfileSettings = () => {
         ...normalizedProfile,
         userId: user._id
       });
-      
+
       // Update the profile with the response data to ensure consistency
       if (response.data && response.data.startup) {
         setProfile(prev => ({
@@ -161,7 +161,7 @@ const StartupProfileSettings = () => {
           _id: response.data.startup._id
         }));
       }
-      
+
       localStorage.setItem('currentUser', JSON.stringify({ ...user, hasFilledForm: true }));
       alert('Profile updated successfully!');
     } catch (err) {
@@ -233,8 +233,7 @@ const StartupProfileSettings = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
         <Navbar userType="startup" />

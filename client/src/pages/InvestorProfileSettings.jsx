@@ -7,7 +7,7 @@ const investorTypes = [
   'Angel', 'VC', 'PE', 'Family Office', 'Corporate', 'Syndicate', 'HNI', 'Other'
 ]
 const industries = [
-  'Fintech', 'AI', 'HealthTech', 'EdTech', 'E-commerce', 'SaaS', 
+  'Fintech', 'AI', 'HealthTech', 'EdTech', 'E-commerce', 'SaaS',
   'Blockchain', 'CleanTech', 'AgriTech', 'Consumer', 'Other'
 ]
 const stages = [
@@ -138,8 +138,7 @@ const InvestorProfileSettings = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
         <Navbar userType="investor" />

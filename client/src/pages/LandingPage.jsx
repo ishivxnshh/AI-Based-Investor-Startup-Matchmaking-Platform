@@ -184,9 +184,6 @@ const LandingPage = () => {
         />
       ))}
 
-      {/* Background Layer with Parallax */}
-      <div ref={bgRef} className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center opacity-10 will-change-transform transition-transform duration-100"></div>
-
       {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Enhanced Navbar */}

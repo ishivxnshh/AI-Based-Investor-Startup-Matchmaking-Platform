@@ -36,8 +36,7 @@ function StartupsDetails() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
         <Navbar userType="investor" />
@@ -105,10 +104,10 @@ function StartupsDetails() {
         <section className="content-section bg-white/10 my-8 p-8 rounded-xl shadow-md container mx-auto">
           <div className="section-title text-2xl font-semibold mb-4 text-white">About</div>
           <div className="section-content text-gray-200 mb-8">{startup.productDescription}</div>
-          
+
           <div className="section-title text-2xl font-semibold mb-4 text-white">Problem Statement</div>
           <div className="section-content text-gray-200 mb-8">{startup.problemStatement}</div>
-          
+
           <div className="section-title text-2xl font-semibold mb-4 text-white">Business Model</div>
           <div className="section-content text-gray-200 mb-8">{startup.businessModel}</div>
 
@@ -147,17 +146,17 @@ function StartupsDetails() {
               </div>
             </div>
           )}
-          
+
           <div className="section-title text-2xl font-semibold mb-4 text-white">Industry</div>
           <div className="section-content text-gray-200 mb-8">{startup.industry && startup.industry.join(', ')}</div>
-          
+
           <div className="section-title text-2xl font-semibold mb-4 text-white">Team</div>
           <div className="section-content text-gray-200 mb-8">
             <p><strong>Founders:</strong> {startup.founderNames}</p>
             <p><strong>Team Size:</strong> {startup.teamSize}</p>
             <p><strong>Number of Founders:</strong> {startup.numberOfFounders}</p>
           </div>
-          
+
           <div className="section-title text-2xl font-semibold mb-4 text-white">Traction</div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white/10 rounded-lg p-4 text-center">

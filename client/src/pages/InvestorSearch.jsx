@@ -51,23 +51,23 @@ function InvestorSearch() {
 
   const filteredInvestors = investors.filter((investor) => {
     // Industry filter - check if any of the investor's preferred industries match the selected industry
-    const matchesIndustry = industry === 'all' || 
-      (investor.preferredIndustries && 
-       investor.preferredIndustries.some(invIndustry => 
-         invIndustry.toLowerCase().includes(industry.toLowerCase())
-       ));
-    
+    const matchesIndustry = industry === 'all' ||
+      (investor.preferredIndustries &&
+        investor.preferredIndustries.some(invIndustry =>
+          invIndustry.toLowerCase().includes(industry.toLowerCase())
+        ));
+
     // Search filter - check name, type, and organization
     const searchLower = search.toLowerCase();
     const matchesSearch =
       (investor.fullName && investor.fullName.toLowerCase().includes(searchLower)) ||
       (investor.investorType && investor.investorType.toLowerCase().includes(searchLower)) ||
       (investor.organization && investor.organization.toLowerCase().includes(searchLower)) ||
-      (investor.preferredIndustries && 
-       investor.preferredIndustries.some(invIndustry => 
-         invIndustry.toLowerCase().includes(searchLower)
-       ));
-    
+      (investor.preferredIndustries &&
+        investor.preferredIndustries.some(invIndustry =>
+          invIndustry.toLowerCase().includes(searchLower)
+        ));
+
     return matchesIndustry && matchesSearch;
   });
 
@@ -83,12 +83,12 @@ function InvestorSearch() {
       }
 
       console.log('Attempting AI matching for user:', user._id);
-      
+
       // Use the correct endpoint that works with startup profiles
       const response = await axios.get(`http://localhost:5000/api/matches/startup`);
-      
+
       console.log('AI matching response:', response.data);
-      
+
       if (response.data.success) {
         setAiMatches(response.data.data);
         setTotalProfilesAnalyzed(response.data.totalProfilesAnalyzed || response.data.data.length);
@@ -104,7 +104,7 @@ function InvestorSearch() {
         statusText: err.response?.statusText,
         data: err.response?.data
       });
-      
+
       if (err.response?.status === 404) {
         setError('Server endpoint not found. Please check if the server is running.');
       } else if (err.code === 'ECONNREFUSED') {
@@ -119,8 +119,7 @@ function InvestorSearch() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
-      {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      {/* Main Content */}
       <div className="relative z-10 flex-1 w-full">
         {/* Navbar */}
         <Navbar userType="startup" />

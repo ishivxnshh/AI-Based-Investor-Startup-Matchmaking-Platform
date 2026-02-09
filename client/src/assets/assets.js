@@ -7,7 +7,6 @@ import search_icon from './search_icon.png'
 import send_button from './send_button.svg'
 import menu_icon from './menu_icon.png'
 import arrow_icon from './arrow_icon.png'
-import bgImage from './bgImage.svg'
 import pic1 from './pic1.png'
 import pic2 from './pic2.png'
 import pic3 from './pic3.png'
@@ -25,7 +24,6 @@ const assets = {
     send_button,
     menu_icon,
     arrow_icon,
-    bgImage,
     profile_richard,
     chat_icon
 }
