@@ -135,6 +135,9 @@ const LandingPage = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-gray-900 via-purple-900 to-black">
+      {/* Animated Mesh Background */}
+      <div className="fixed inset-0 gradient-mesh-animated opacity-20 pointer-events-none" />
+
       {/* Animated Background Gradient Orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -165,6 +168,22 @@ const LandingPage = () => {
         />
       </div>
 
+      {/* Floating Particles */}
+      {[...Array(20)].map((_, i) => (
+        <div
+          key={i}
+          className="particle"
+          style={{
+            width: `${Math.random() * 12 + 4}px`,
+            height: `${Math.random() * 12 + 4}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 6}s`,
+            animationDuration: `${Math.random() * 4 + 4}s`,
+          }}
+        />
+      ))}
+
       {/* Background Layer with Parallax */}
       <div ref={bgRef} className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center opacity-10 will-change-transform transition-transform duration-100"></div>
 
@@ -174,7 +193,7 @@ const LandingPage = () => {
         <motion.header
           initial={{ y: -100 }}
           animate={{ y: 0 }}
-          className="flex justify-between items-center px-6 py-5 max-w-7xl mx-auto backdrop-blur-md bg-white/5 rounded-b-2xl border-b border-white/10"
+          className="flex justify-between items-center px-6 py-5 max-w-7xl mx-auto glass-premium rounded-b-2xl"
         >
           <motion.div
             className="flex items-center gap-2"
@@ -195,7 +214,7 @@ const LandingPage = () => {
               whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(139, 92, 246, 0.5)" }}
               whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/register')}
-              className="bg-gradient-to-r from-purple-500 to-violet-600 px-6 py-2.5 rounded-full text-white cursor-pointer font-semibold shadow-lg"
+              className="btn-premium ripple"
             >
               Get Started
             </motion.button>
@@ -214,7 +233,7 @@ const LandingPage = () => {
             variants={containerVariants}
           >
             <motion.div variants={itemVariants} className="mb-6">
-              <span className="inline-block px-4 py-2 bg-purple-500/20 border border-purple-400/30 rounded-full text-sm font-medium mb-8">
+              <span className="inline-block px-4 py-2 holographic rounded-full text-sm font-medium mb-8">
                 🚀 AI-Powered Matchmaking Platform
               </span>
             </motion.div>
@@ -223,11 +242,11 @@ const LandingPage = () => {
               variants={itemVariants}
               className="text-5xl md:text-7xl font-bold leading-tight mb-6"
             >
-              <span className="bg-gradient-to-r from-purple-400 via-violet-400 to-purple-600 bg-clip-text text-transparent">
+              <span className="text-gradient-animated">
                 Connecting Innovative
               </span>
               <br />
-              <span className="bg-gradient-to-r from-violet-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <span className="text-neon">
                 Startups with Visionary Investors
               </span>
             </motion.h1>
@@ -248,7 +267,7 @@ const LandingPage = () => {
                 whileHover={{ scale: 1.05, boxShadow: "0 20px 40px rgba(139, 92, 246, 0.4)" }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/register')}
-                className="group relative bg-gradient-to-r from-purple-500 to-violet-600 px-8 py-4 rounded-full text-white font-semibold text-lg shadow-2xl overflow-hidden"
+                className="btn-liquid text-lg px-12 py-5 shadow-2xl"
               >
                 <span className="relative z-10 flex items-center gap-2">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -256,14 +275,13 @@ const LandingPage = () => {
                   </svg>
                   Join Now - It's Free
                 </span>
-                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 to-purple-700 opacity-0 group-hover:opacity-100 transition-opacity" />
               </motion.button>
 
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => navigate('/login')}
-                className="border-2 border-purple-400/50 px-8 py-4 rounded-full text-white font-semibold text-lg hover:bg-purple-500/20 transition-all"
+                className="glass-premium px-8 py-5 rounded-full text-white font-semibold text-lg transition-all"
               >
                 <span className="flex items-center gap-2">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

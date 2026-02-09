@@ -90,27 +90,27 @@ const StartupDashboard = () => {
         Array.isArray(data[field])
           ? data[field].length > 0
           : (() => {
-              const value = data[field].toString().trim();
-              // Handle special cases for metrics that might have default values
-              if (field === 'monthlyRevenue') {
-                return value !== '$0' && value !== '0' && value !== '';
-              }
-              if (field === 'activeUsers') {
-                return value !== '0' && value !== '';
-              }
-              if (field === 'customerRetention') {
-                return value !== '0%' && value !== '0' && value !== '';
-              }
-              if (field === 'growthRate') {
-                return value !== '0%' && value !== '0' && value !== '';
-              }
-              // For funding fields, 0 is a valid value (means no funding yet)
-              if (field === 'fundingAmount' || field === 'fundingRaised') {
-                return value !== '' && value !== '0';
-              }
-              // For other fields, just check if not empty
-              return value !== '';
-            })()
+            const value = data[field].toString().trim();
+            // Handle special cases for metrics that might have default values
+            if (field === 'monthlyRevenue') {
+              return value !== '$0' && value !== '0' && value !== '';
+            }
+            if (field === 'activeUsers') {
+              return value !== '0' && value !== '';
+            }
+            if (field === 'customerRetention') {
+              return value !== '0%' && value !== '0' && value !== '';
+            }
+            if (field === 'growthRate') {
+              return value !== '0%' && value !== '0' && value !== '';
+            }
+            // For funding fields, 0 is a valid value (means no funding yet)
+            if (field === 'fundingAmount' || field === 'fundingRaised') {
+              return value !== '' && value !== '0';
+            }
+            // For other fields, just check if not empty
+            return value !== '';
+          })()
       );
       if (hasValue) {
         completedRequired++;
@@ -126,27 +126,27 @@ const StartupDashboard = () => {
         Array.isArray(data[field])
           ? data[field].length > 0
           : (() => {
-              const value = data[field].toString().trim();
-              // Handle special cases for metrics that might have default values
-              if (field === 'monthlyRevenue') {
-                return value !== '$0' && value !== '0' && value !== '';
-              }
-              if (field === 'activeUsers') {
-                return value !== '0' && value !== '';
-              }
-              if (field === 'customerRetention') {
-                return value !== '0%' && value !== '0' && value !== '';
-              }
-              if (field === 'growthRate') {
-                return value !== '0%' && value !== '0' && value !== '';
-              }
-              // For funding fields, 0 is a valid value (means no funding yet)
-              if (field === 'fundingAmount' || field === 'fundingRaised') {
-                return value !== '' && value !== '0';
-              }
-              // For other fields, just check if not empty
-              return value !== '';
-            })()
+            const value = data[field].toString().trim();
+            // Handle special cases for metrics that might have default values
+            if (field === 'monthlyRevenue') {
+              return value !== '$0' && value !== '0' && value !== '';
+            }
+            if (field === 'activeUsers') {
+              return value !== '0' && value !== '';
+            }
+            if (field === 'customerRetention') {
+              return value !== '0%' && value !== '0' && value !== '';
+            }
+            if (field === 'growthRate') {
+              return value !== '0%' && value !== '0' && value !== '';
+            }
+            // For funding fields, 0 is a valid value (means no funding yet)
+            if (field === 'fundingAmount' || field === 'fundingRaised') {
+              return value !== '' && value !== '0';
+            }
+            // For other fields, just check if not empty
+            return value !== '';
+          })()
       );
       if (hasValue) {
         completedOptional++;
@@ -190,16 +190,16 @@ const StartupDashboard = () => {
   // Extract key points from AI analysis
   const extractKeyPoints = (analysis) => {
     if (!analysis) return [];
-    
+
     const keyPoints = [];
     const lines = analysis.split('\n');
-    
+
     // Look for key sections in the AI analysis
     let currentSection = '';
-    
+
     for (const line of lines) {
       const trimmedLine = line.trim();
-      
+
       // Detect section headers
       if (trimmedLine.includes('✅ Strengths') || trimmedLine.includes('Strengths of This Pitch Deck') || trimmedLine.includes('### ✅ Strengths')) {
         currentSection = 'strengths';
@@ -222,7 +222,7 @@ const StartupDashboard = () => {
             .replace(/^📈\s*/, '')
             .replace(/^🚨\s*/, '')
             .replace(/^🔧\s*/, '');
-          
+
           if (cleanPoint.length > 5) {
             keyPoints.push({
               type: currentSection,
@@ -235,7 +235,7 @@ const StartupDashboard = () => {
         if (currentSection === '') {
           currentSection = 'general';
         }
-        
+
         if (currentSection && trimmedLine.length > 15) {
           keyPoints.push({
             type: currentSection,
@@ -244,7 +244,7 @@ const StartupDashboard = () => {
         }
       }
     }
-    
+
     // If no key points were extracted, provide fallback points
     if (keyPoints.length === 0) {
       return [
@@ -253,7 +253,7 @@ const StartupDashboard = () => {
         { type: 'recommendation', point: 'Check the full analysis for investment insights' }
       ];
     }
-    
+
     return keyPoints.slice(0, 6); // Limit to 6 key points
   };
 
@@ -325,7 +325,7 @@ const StartupDashboard = () => {
           console.log('Startup _id value:', startupData._id);
           const response = await axios.post(`http://localhost:5000/api/ai/analyze/${startupData._id}`);
           console.log('AI analysis response:', response.data);
-          
+
           if (response.data.success && response.data.analysis) {
             const keyPoints = extractKeyPoints(response.data.analysis);
             console.log('Extracted key points:', keyPoints);
@@ -342,7 +342,7 @@ const StartupDashboard = () => {
         } catch (error) {
           console.error('Failed to fetch AI analysis:', error);
           console.error('Error details:', error.response?.data || error.message);
-          
+
           // Set default key points if AI analysis fails
           setAiFeedbackKeyPoints([
             { type: 'strengths', point: 'AI analysis available for your pitch deck' },
@@ -368,7 +368,7 @@ const StartupDashboard = () => {
         ]);
       }
     };
-    
+
     fetchAIAnalysis();
   }, [startupData]);
 
@@ -414,7 +414,7 @@ const StartupDashboard = () => {
     if (!startupData || !startupData.pitchDeck || !startupData.pitchDeck.path) {
       return;
     }
-    
+
     setAiAnalysisLoading(true);
     try {
       const response = await axios.post(`http://localhost:5000/api/ai/analyze/${startupData._id}`);
@@ -502,264 +502,268 @@ const StartupDashboard = () => {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden text-white flex flex-col bg-gradient-to-br from-purple-900 via-indigo-900 to-black">
+      {/* Animated Mesh Background */}
+      <div className="fixed inset-0 gradient-mesh-animated opacity-30 pointer-events-none" />
+
       {/* Background Layer */}
-      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75"></div>
+      <div className="absolute inset-0 bg-[url('/src/assets/bgImage.svg')] bg-repeat-y bg-cover bg-center blur-sm brightness-75 opacity-20"></div>
 
-        {/* Navbar */}
-        <Navbar userType="startup" />
+      {/* Floating Particles */}
+      {[...Array(15)].map((_, i) => (
+        <div
+          key={i}
+          className="particle"
+          style={{
+            width: `${Math.random() * 15 + 5}px`,
+            height: `${Math.random() * 15 + 5}px`,
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+            animationDelay: `${Math.random() * 6}s`,
+            animationDuration: `${Math.random() * 4 + 4}s`,
+          }}
+        />
+      ))}
 
-        {/* Header spacer */}
-          <div className="space-y-8">
-            {/* Main Dashboard Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Profile Completeness */}
-              <Card variant="gradient" hover>
-                <Card.Header>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-lg flex items-center justify-center text-2xl">📊</div>
-                    <Card.Title>Profile Completeness</Card.Title>
-                  </div>
-                </Card.Header>
-                <Card.Content>
-                  <div className="mb-6">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-sm text-gray-300">Completion</span>
-                      <Badge variant={profileCompleteness === 100 ? 'success' : 'warning'} size="lg">
-                        {profileCompleteness}%
-                      </Badge>
-                    </div>
-                    <div className="w-full bg-gray-700 rounded-full h-2.5">
-                      <div 
-                        className={`h-2.5 rounded-full ${profileCompleteness === 100 ? 'bg-green-500' : 'bg-purple-500'}`}
-                        style={{ width: `${profileCompleteness}%` }}
-                      ></div>
-                    </div>
-                  </div>
-                  <Button 
-                    variant="primary" 
-                    className="w-full"
-                    onClick={() => navigate('/startup-onboarding')}
-                  >
-                    Complete Profile
-                  </Button>
-                </Card.Content>
-              </Card>
+      {/* Navbar */}
+      <Navbar userType="startup" />
 
-              {/* Traction Metrics */}
-              <Card variant="gradient" hover>
-                <Card.Header>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg flex items-center justify-center text-2xl">📈</div>
-                    <Card.Title>Traction Metrics</Card.Title>
-                  </div>
-                </Card.Header>
-                <Card.Content>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
-                      <span className="text-gray-300 font-medium">Monthly Revenue</span>
-                      <Badge variant="success" size="lg">{tractionMetrics.mrr}</Badge>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
-                      <span className="text-gray-300 font-medium">Active Users</span>
-                      <Badge variant="success" size="lg">{tractionMetrics.users}</Badge>
-                    </div>
-                    <div className="flex justify-between items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition">
-                      <span className="text-gray-300 font-medium">Growth Rate</span>
-                      <Badge variant="success" size="lg">{tractionMetrics.growth}</Badge>
-                    </div>
-                  </div>
-                </Card.Content>
-              </Card>
-
-              {/* Matched Investors */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🎯</div>
-                  <h3 className="text-xl font-semibold">Matched Investors</h3>
-                </div>
-                <p className="text-gray-300 mb-6">Based on your profile and industry focus</p>
-                
-                {loadingMatches ? (
-                  <div className="space-y-4 mb-6">
-                    <div className="animate-pulse">
-                      <div className="bg-purple-600/20 rounded-lg p-4 text-center">
-                        <div className="w-16 h-16 bg-gray-600 rounded-full mx-auto mb-3"></div>
-                        <div className="h-4 bg-gray-600 rounded mb-2"></div>
-                        <div className="h-3 bg-gray-600 rounded mb-2"></div>
-                        <div className="h-6 bg-gray-600 rounded w-20 mx-auto"></div>
-                      </div>
-                    </div>
-                  </div>
-                ) : matchedInvestors.length > 0 ? (
-                  <div className="space-y-4 mb-6">
-                    {matchedInvestors.slice(0, 3).map((match, index) => (
-                      <div key={index} className="bg-purple-600/20 rounded-lg p-4 text-center hover:bg-purple-600/30 transition">
-                        <div className="w-16 h-16 bg-purple-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold">
-                          {getInvestorInitials(match.investor)}
-                        </div>
-                        <div className="font-semibold text-white">{match.investor.fullName || 'Unknown Investor'}</div>
-                        <div className="text-sm text-gray-400 mb-2">{getInvestorOrganization(match.investor)}</div>
-                        <div className="bg-green-600/50 text-green-300 px-3 py-1 rounded-full text-sm font-semibold">
-                          {match.score}% Match
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-400">
-                    No investor matches found yet. Complete your profile to get better matches.
-                  </div>
-                )}
-                <button 
-                  className="w-full bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-                  onClick={() => navigate('/investor-search')}
-                >
-                  Find More Matches
-                </button>
+      {/* Header spacer */}
+      <div className="space-y-8 relative z-10">
+        {/* Main Dashboard Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Profile Completeness */}
+          <div className="card-morph p-6 stagger-item">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-violet-600 rounded-xl flex items-center justify-center text-2xl shadow-lg animate-pulse-glow">📊</div>
+              <h3 className="text-xl font-bold">Profile Completeness</h3>
+            </div>
+            <div className="mb-6">
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-300">Completion</span>
+                <span className={`px-4 py-1.5 rounded-full text-sm font-bold ${profileCompleteness === 100 ? 'bg-green-500/20 text-green-300 border border-green-400/30' : 'bg-yellow-500/20 text-yellow-300 border border-yellow-400/30'}`}>
+                  {profileCompleteness}%
+                </span>
               </div>
-
-              {/* AI Pitch Feedback */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🤖</div>
-                  <h3 className="text-xl font-semibold">AI Pitch Feedback</h3>
-                </div>
-                <div className="space-y-4 mb-6">
-                  {aiAnalysisLoading ? (
-                    <div className="flex items-center justify-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
-                      <span className="ml-3 text-gray-300 text-sm">Analyzing pitch deck...</span>
-                    </div>
-                  ) : aiFeedbackKeyPoints.length > 0 ? (
-                    aiFeedbackKeyPoints.map((point, index) => (
-                      <div key={index} className="flex items-center gap-4 p-3 bg-purple-600/20 rounded-lg hover:bg-purple-600/30 transition">
-                        <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
-                          {getAIFeedbackIcon(point.type)}
-                        </div>
-                        <div>
-                          <div className={`font-semibold ${getAIFeedbackColor(point.type)}`}>{point.point}</div>
-                          {point.suggestion && (
-                            <p className="text-sm text-gray-300 mt-1">{point.suggestion}</p>
-                          )}
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8">
-                      <div className="text-gray-400 mb-4">No AI analysis available</div>
-                      <p className="text-sm text-gray-500 mb-4">Upload your pitch deck to get AI-powered feedback</p>
-                      <div className="flex flex-col sm:flex-row gap-3">
-                        <button 
-                          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex-1"
-                          onClick={() => document.getElementById('pitch-deck-upload')?.click()}
-                        >
-                          Upload Pitch Deck
-                        </button>
-                        <input 
-                          id="pitch-deck-upload" 
-                          type="file" 
-                          className="hidden" 
-                          accept=".pdf,.ppt,.pptx,.doc,.docx"
-                          onChange={handleFileUpload}
-                        />
-                        <button 
-                          className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition flex-1"
-                          onClick={handleRefreshAIFeedback}
-                          disabled={!selectedFile}
-                        >
-                          Analyze with AI
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-                <button 
-                  className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition"
-                  onClick={() => setShowAIFeedback(true)}
-                >
-                  Get Detailed Analysis
-                </button>
-                <button className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition mt-2">
-                  Upload New Deck
-                </button>
-              </div>
-
-              {/* Messages & Meetings */}
-              <div className="lg:col-span-2 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">💬</div>
-                  <h3 className="text-xl font-semibold">Messages & Meetings</h3>
-                </div>
-                <div className="space-y-4 mb-6">
-                  <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-semibold text-white">Sarah Johnson - TechVentures</span>
-                      <span className="text-sm text-gray-400">2 hours ago</span>
-                    </div>
-                    <p className="text-gray-300">Interested in learning more about your traction metrics. Available for a call this week?</p>
-                  </div>
-                  
-                  <div className="bg-gray-800/50 rounded-lg p-4 border-l-4 border-gray-600">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="font-semibold">Alex Chen - NextGen Capital</span>
-                      <span className="text-sm text-gray-400">1 day ago</span>
-                    </div>
-                    <p className="text-gray-400">Thanks for sharing your pitch deck. Let's schedule a follow-up next week.</p>
-                  </div>
-                </div>
-                <div className="flex gap-4">
-                  <button 
-                    className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
-                    onClick={() => navigate('/chat')}
-                  >
-                    View All Messages
-                  </button>
-                </div>
+              <div className="w-full bg-gray-700/50 rounded-full h-3 overflow-hidden">
+                <div
+                  className={`h-3 rounded-full transition-all duration-1000 ease-out ${profileCompleteness === 100 ? 'bg-gradient-to-r from-green-400 to-emerald-500' : 'bg-gradient-to-r from-purple-500 to-violet-600'}`}
+                  style={{ width: `${profileCompleteness}%` }}
+                ></div>
               </div>
             </div>
+            <button
+              className="w-full btn-premium ripple"
+              onClick={() => navigate('/startup-onboarding')}
+            >
+              Complete Profile
+            </button>
+          </div>
 
-            {/* Featured Investors Section */}
-            <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Featured Investors</h2>
-                <button 
-                  className="text-purple-400 hover:text-purple-300 text-sm font-medium"
-                  onClick={() => navigate('/investor-search')}
-                >
-                  View All Investors →
-                </button>
+          {/* Traction Metrics */}
+          <div className="glass-premium p-6 rounded-3xl stagger-item spotlight">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">📈</div>
+              <h3 className="text-xl font-bold">Traction Metrics</h3>
+            </div>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                <span className="text-gray-300 font-medium">Monthly Revenue</span>
+                <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-500/20 text-green-300 border border-green-400/30">{tractionMetrics.mrr}</span>
               </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {featuredInvestors.slice(0, 3).map((investor) => (
-                  <div key={investor.id} className="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-purple-500/50 transition-colors">
-                    <div className="flex items-start gap-4">
-                      <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
-                        {investor.name.split(' ').map(n => n[0]).join('')}
-                      </div>
-                      <div>
-                        <h3 className="font-bold">{investor.name}</h3>
-                        <p className="text-sm text-purple-400 mb-2">{investor.focus}</p>
-                        <p className="text-sm text-gray-400 line-clamp-2">{investor.desc}</p>
-                        <button 
-                          className="mt-3 text-sm text-purple-400 hover:text-purple-300 font-medium"
-                          onClick={() => navigate('/investor-search')}
-                        >
-                          View Profile →
-                        </button>
-                      </div>
+              <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                <span className="text-gray-300 font-medium">Active Users</span>
+                <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-500/20 text-green-300 border border-green-400/30">{tractionMetrics.users}</span>
+              </div>
+              <div className="flex justify-between items-center p-4 bg-white/5 rounded-xl hover:bg-white/10 transition-all duration-300 hover:scale-105">
+                <span className="text-gray-300 font-medium">Growth Rate</span>
+                <span className="px-4 py-1.5 rounded-full text-sm font-bold bg-green-500/20 text-green-300 border border-green-400/30">{tractionMetrics.growth}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Matched Investors */}
+          <div className="holographic p-6 rounded-3xl stagger-item">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-600 rounded-xl flex items-center justify-center text-2xl shadow-lg">🎯</div>
+              <h3 className="text-xl font-semibold">Matched Investors</h3>
+            </div>
+            <p className="text-gray-300 mb-6">Based on your profile and industry focus</p>
+
+            {loadingMatches ? (
+              <div className="space-y-4 mb-6">
+                <div className="skeleton-premium h-32 rounded-2xl" />
+                <div className="skeleton-premium h-32 rounded-2xl" />
+              </div>
+            ) : matchedInvestors.length > 0 ? (
+              <div className="space-y-4 mb-6">
+                {matchedInvestors.slice(0, 3).map((match, index) => (
+                  <div key={index} className="glass-premium p-4 rounded-2xl text-center hover:scale-105 transition-all duration-300 magnetic">
+                    <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-violet-600 rounded-full mx-auto mb-3 flex items-center justify-center text-white font-bold text-xl shadow-xl">
+                      {getInvestorInitials(match.investor)}
+                    </div>
+                    <div className="font-semibold text-white text-lg">{match.investor.fullName || 'Unknown Investor'}</div>
+                    <div className="text-sm text-gray-400 mb-3">{getInvestorOrganization(match.investor)}</div>
+                    <div className="inline-block bg-gradient-to-r from-green-500 to-emerald-600 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                      {match.score}% Match
                     </div>
                   </div>
                 ))}
               </div>
-            </div>
+            ) : (
+              <div className="text-center py-8 text-gray-400">
+                No investor matches found yet. Complete your profile to get better matches.
+              </div>
+            )}
+            <button
+              className="w-full btn-liquid"
+              onClick={() => navigate('/investor-search')}
+            >
+              Find More Matches
+            </button>
+          </div>
 
-            {/* AI sections quick access */}
-            <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Button className="w-full" onClick={() => navigate('/matches')}>View Matches</Button>
-              <Button className="w-full" onClick={() => navigate('/investor-search')}>Explore Investors</Button>
+          {/* AI Pitch Feedback */}
+          <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">🤖</div>
+              <h3 className="text-xl font-semibold">AI Pitch Feedback</h3>
+            </div>
+            <div className="space-y-4 mb-6">
+              {aiAnalysisLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-500"></div>
+                  <span className="ml-3 text-gray-300 text-sm">Analyzing pitch deck...</span>
+                </div>
+              ) : aiFeedbackKeyPoints.length > 0 ? (
+                aiFeedbackKeyPoints.map((point, index) => (
+                  <div key={index} className="flex items-center gap-4 p-3 bg-purple-600/20 rounded-lg hover:bg-purple-600/30 transition">
+                    <div className="w-12 h-12 bg-purple-600 rounded-full flex items-center justify-center text-white font-bold">
+                      {getAIFeedbackIcon(point.type)}
+                    </div>
+                    <div>
+                      <div className={`font-semibold ${getAIFeedbackColor(point.type)}`}>{point.point}</div>
+                      {point.suggestion && (
+                        <p className="text-sm text-gray-300 mt-1">{point.suggestion}</p>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-gray-400 mb-4">No AI analysis available</div>
+                  <p className="text-sm text-gray-500 mb-4">Upload your pitch deck to get AI-powered feedback</p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <button
+                      className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex-1"
+                      onClick={() => document.getElementById('pitch-deck-upload')?.click()}
+                    >
+                      Upload Pitch Deck
+                    </button>
+                    <input
+                      id="pitch-deck-upload"
+                      type="file"
+                      className="hidden"
+                      accept=".pdf,.ppt,.pptx,.doc,.docx"
+                      onChange={handleFileUpload}
+                    />
+                    <button
+                      className="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition flex-1"
+                      onClick={handleRefreshAIFeedback}
+                      disabled={!selectedFile}
+                    >
+                      Analyze with AI
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            <button
+              className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition"
+              onClick={() => setShowAIFeedback(true)}
+            >
+              Get Detailed Analysis
+            </button>
+            <button className="w-full bg-gray-700 text-white py-3 rounded-lg font-semibold hover:bg-gray-600 transition mt-2">
+              Upload New Deck
+            </button>
+          </div>
+
+          {/* Messages & Meetings */}
+          <div className="lg:col-span-2 bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-purple-500/30">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center text-white text-lg">💬</div>
+              <h3 className="text-xl font-semibold">Messages & Meetings</h3>
+            </div>
+            <div className="space-y-4 mb-6">
+              <div className="bg-purple-600/20 rounded-lg p-4 border-l-4 border-purple-500">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-semibold text-white">Sarah Johnson - TechVentures</span>
+                  <span className="text-sm text-gray-400">2 hours ago</span>
+                </div>
+                <p className="text-gray-300">Interested in learning more about your traction metrics. Available for a call this week?</p>
+              </div>
+
+              <div className="bg-gray-800/50 rounded-lg p-4 border-l-4 border-gray-600">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="font-semibold">Alex Chen - NextGen Capital</span>
+                  <span className="text-sm text-gray-400">1 day ago</span>
+                </div>
+                <p className="text-gray-400">Thanks for sharing your pitch deck. Let's schedule a follow-up next week.</p>
+              </div>
+            </div>
+            <div className="flex gap-4">
+              <button
+                className="flex-1 bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition"
+                onClick={() => navigate('/chat')}
+              >
+                View All Messages
+              </button>
             </div>
           </div>
+        </div>
+
+        {/* Featured Investors Section */}
+        <div>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">Featured Investors</h2>
+            <button
+              className="text-purple-400 hover:text-purple-300 text-sm font-medium"
+              onClick={() => navigate('/investor-search')}
+            >
+              View All Investors →
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredInvestors.slice(0, 3).map((investor) => (
+              <div key={investor.id} className="bg-gray-800/50 rounded-xl p-6 border border-gray-700 hover:border-purple-500/50 transition-colors">
+                <div className="flex items-start gap-4">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-500 rounded-full flex items-center justify-center text-xl font-bold text-white">
+                    {investor.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <h3 className="font-bold">{investor.name}</h3>
+                    <p className="text-sm text-purple-400 mb-2">{investor.focus}</p>
+                    <p className="text-sm text-gray-400 line-clamp-2">{investor.desc}</p>
+                    <button
+                      className="mt-3 text-sm text-purple-400 hover:text-purple-300 font-medium"
+                      onClick={() => navigate('/investor-search')}
+                    >
+                      View Profile →
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* AI sections quick access */}
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Button className="w-full" onClick={() => navigate('/matches')}>View Matches</Button>
+          <Button className="w-full" onClick={() => navigate('/investor-search')}>Explore Investors</Button>
+        </div>
+      </div>
       {/* AI Pitch Feedback Modal */}
       {showAIFeedback && startupData && (
         <AIPitchFeedback
@@ -768,7 +772,7 @@ const StartupDashboard = () => {
         />
       )}
 
-      
+
     </div>
   );
 };
