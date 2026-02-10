@@ -5,6 +5,7 @@ import Investor from '../models/Investor.js';
 import Match from '../models/Match.js';
 import { protect, authorize } from '../middleware/auth.js';
 import { logger } from '../utils/logger.js';
+import { aiCache } from '../utils/cache.js';
 
 const router = express.Router();
 
@@ -18,7 +19,14 @@ const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
 router.post('/analyze/:startupId', protect, async (req, res) => {
   try {
     const { startupId } = req.params;
-    
+
+    // Check cache first
+    const cacheKey = `pitch_analysis_${startupId}`;
+    const cachedResult = aiCache.get(cacheKey);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     const startup = await Startup.findOne({ userId: req.user._id, _id: startupId });
     if (!startup) {
       return res.status(404).json({
@@ -36,12 +44,17 @@ router.post('/analyze/:startupId', protect, async (req, res) => {
 
     // Mock AI analysis for now (replace with actual AI processing)
     const analysis = await generatePitchAnalysis(startup);
-    
-    res.json({
+
+    const result = {
       success: true,
       analysis,
       startupId: startup._id
-    });
+    };
+
+    // Cache result
+    aiCache.set(cacheKey, result, 86400); // 24 hours
+
+    res.json(result);
   } catch (error) {
     logger.error('AI analysis error:', error);
     res.status(500).json({
@@ -56,6 +69,12 @@ router.post('/analyze/:startupId', protect, async (req, res) => {
 // @access  Private
 router.post('/investor-insights', protect, authorize('investor'), async (req, res) => {
   try {
+    const cacheKey = `investor_insights_${req.user._id}`;
+    const cachedResult = aiCache.get(cacheKey);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     const investor = await Investor.findOne({ userId: req.user._id });
     if (!investor) {
       return res.status(404).json({
@@ -65,11 +84,15 @@ router.post('/investor-insights', protect, authorize('investor'), async (req, re
     }
 
     const insights = await generateInvestorInsights(investor);
-    
-    res.json({
+
+    const result = {
       success: true,
       insights
-    });
+    };
+
+    aiCache.set(cacheKey, result, 86400); // 24 hours
+
+    res.json(result);
   } catch (error) {
     logger.error('Investor insights error:', error);
     res.status(500).json({
@@ -84,12 +107,22 @@ router.post('/investor-insights', protect, authorize('investor'), async (req, re
 // @access  Private
 router.post('/market-trends', protect, async (req, res) => {
   try {
+    const cacheKey = 'market_trends';
+    const cachedResult = aiCache.get(cacheKey);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     const trends = await generateMarketTrends();
-    
-    res.json({
+
+    const result = {
       success: true,
       trends
-    });
+    };
+
+    aiCache.set(cacheKey, result, 3600); // 1 hour
+
+    res.json(result);
   } catch (error) {
     logger.error('Market trends error:', error);
     res.status(500).json({
@@ -104,12 +137,22 @@ router.post('/market-trends', protect, async (req, res) => {
 // @access  Private
 router.post('/portfolio-analytics', protect, authorize('investor'), async (req, res) => {
   try {
+    const cacheKey = `portfolio_analytics_${req.user._id}`;
+    const cachedResult = aiCache.get(cacheKey);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     const analytics = await generatePortfolioAnalytics(req.user._id);
-    
-    res.json({
+
+    const result = {
       success: true,
       analytics
-    });
+    };
+
+    aiCache.set(cacheKey, result, 3600); // 1 hour
+
+    res.json(result);
   } catch (error) {
     logger.error('Portfolio analytics error:', error);
     res.status(500).json({
@@ -125,13 +168,22 @@ router.post('/portfolio-analytics', protect, authorize('investor'), async (req, 
 router.post('/recommendations', protect, authorize('investor'), async (req, res) => {
   try {
     const { limit = 10 } = req.query;
-    
+    const cacheKey = `recommendations_${req.user._id}_${limit}`;
+    const cachedResult = aiCache.get(cacheKey);
+    if (cachedResult) {
+      return res.json(cachedResult);
+    }
+
     const recommendations = await generateStartupRecommendations(req.user._id, parseInt(limit));
-    
-    res.json({
+
+    const result = {
       success: true,
       recommendations
-    });
+    };
+
+    aiCache.set(cacheKey, result, 3600); // 1 hour
+
+    res.json(result);
   } catch (error) {
     logger.error('Recommendations error:', error);
     res.status(500).json({
@@ -147,11 +199,11 @@ router.post('/recommendations', protect, authorize('investor'), async (req, res)
 router.post('/match-analysis/:matchId', protect, async (req, res) => {
   try {
     const { matchId } = req.params;
-    
+
     const match = await Match.findById(matchId)
       .populate('startup', 'startupName industry startupStage fundingAmount problemStatement productDescription')
       .populate('investor', 'organization investmentFocus investmentSize preferredIndustries');
-    
+
     if (!match) {
       return res.status(404).json({
         success: false,
@@ -160,7 +212,7 @@ router.post('/match-analysis/:matchId', protect, async (req, res) => {
     }
 
     const analysis = await generateMatchAnalysis(match);
-    
+
     res.json({
       success: true,
       analysis
@@ -324,7 +376,7 @@ async function generatePortfolioAnalytics(userId) {
   try {
     const matches = await Match.find({ investor: userId })
       .populate('startup', 'startupName industry startupStage fundingAmount');
-    
+
     const analytics = {
       totalInvestments: matches.length,
       portfolioValue: '$2.4M',
@@ -335,7 +387,7 @@ async function generatePortfolioAnalytics(userId) {
       sectors: [...new Set(matches.map(m => m.startup.industry))],
       stages: [...new Set(matches.map(m => m.startup.startupStage))]
     };
-    
+
     return analytics;
   } catch (error) {
     logger.error('Portfolio analytics error:', error);

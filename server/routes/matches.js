@@ -138,7 +138,7 @@ router.get('/:id', protect, async (req, res) => {
     // Check if user has access to this match
     const startup = await Startup.findOne({ userId: req.user._id });
     const investor = await Investor.findOne({ userId: req.user._id });
-    
+
     if (!startup && !investor) {
       return res.status(403).json({
         success: false,
@@ -219,7 +219,7 @@ router.put('/:id/startup-response', protect, authorize('startup'), async (req, r
     await match.save();
 
     logger.info(`Startup responded to match ${match._id}: ${status}`);
-    
+
     res.json({
       success: true,
       data: match
@@ -279,7 +279,7 @@ router.put('/:id/investor-response', protect, authorize('investor'), async (req,
     await match.save();
 
     logger.info(`Investor responded to match ${match._id}: ${status}`);
-    
+
     res.json({
       success: true,
       data: match
@@ -318,7 +318,7 @@ router.post('/:id/communication', protect, async (req, res) => {
     // Check if user has access to this match
     const startup = await Startup.findOne({ userId: req.user._id });
     const investor = await Investor.findOne({ userId: req.user._id });
-    
+
     if (!startup && !investor) {
       return res.status(403).json({
         success: false,
@@ -344,7 +344,7 @@ router.post('/:id/communication', protect, async (req, res) => {
     await match.save();
 
     logger.info(`Communication added to match ${match._id} by ${req.user.email}`);
-    
+
     res.json({
       success: true,
       data: communication
@@ -374,7 +374,7 @@ router.put('/:id/mark-read', protect, async (req, res) => {
     // Check if user has access to this match
     const startup = await Startup.findOne({ userId: req.user._id });
     const investor = await Investor.findOne({ userId: req.user._id });
-    
+
     if (!startup && !investor) {
       return res.status(403).json({
         success: false,
@@ -403,21 +403,18 @@ router.put('/:id/mark-read', protect, async (req, res) => {
 // @access  Private
 router.get('/unread-count', protect, async (req, res) => {
   try {
-    let matches = [];
-    
-    const startup = await Startup.findOne({ userId: req.user._id });
-    const investor = await Investor.findOne({ userId: req.user._id });
-    
-    if (startup) {
-      matches = await Match.find({ startup: startup._id, isActive: true });
-    } else if (investor) {
-      matches = await Match.find({ investor: investor._id, isActive: true });
-    }
-
     let totalUnread = 0;
-    matches.forEach(match => {
-      totalUnread += match.getUnreadCount(req.user._id);
-    });
+
+    const startup = await Startup.findOne({ userId: req.user._id });
+
+    if (startup) {
+      totalUnread = await Match.countUnreadForUser(startup._id, req.user._id, 'startup');
+    } else {
+      const investor = await Investor.findOne({ userId: req.user._id });
+      if (investor) {
+        totalUnread = await Match.countUnreadForUser(investor._id, req.user._id, 'investor');
+      }
+    }
 
     res.json({
       success: true,

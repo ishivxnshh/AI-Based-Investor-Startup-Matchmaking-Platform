@@ -236,7 +236,9 @@ investorSchema.index({ preferredIndustries: 1 });
 investorSchema.index({ 'investmentSize.min': 1, 'investmentSize.max': 1 });
 investorSchema.index({ isActive: 1 });
 investorSchema.index({ isVerified: 1 });
-investorSchema.index({ createdAt: -1 });
+investorSchema.index({ isActive: 1, isVerified: 1, createdAt: -1 });
+investorSchema.index({ isActive: 1, isVerified: 1, investmentFocus: 1 });
+investorSchema.index({ isActive: 1, isVerified: 1, preferredIndustries: 1 });
 
 // Text search index
 investorSchema.index({
@@ -247,7 +249,7 @@ investorSchema.index({
 });
 
 // Virtual for investment size range
-investorSchema.virtual('investmentSizeRange').get(function() {
+investorSchema.virtual('investmentSizeRange').get(function () {
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -256,12 +258,12 @@ investorSchema.virtual('investmentSizeRange').get(function() {
       maximumFractionDigits: 0
     }).format(amount);
   };
-  
+
   return `${formatCurrency(this.investmentSize.min)} - ${formatCurrency(this.investmentSize.max)}`;
 });
 
 // Method to get public profile
-investorSchema.methods.getPublicProfile = function() {
+investorSchema.methods.getPublicProfile = function () {
   const investorObject = this.toObject();
   delete investorObject.email;
   delete investorObject.phone;
@@ -269,7 +271,7 @@ investorSchema.methods.getPublicProfile = function() {
 };
 
 // Method to calculate profile completeness
-investorSchema.methods.calculateCompleteness = function() {
+investorSchema.methods.calculateCompleteness = function () {
   const requiredFields = [
     'organization', 'position', 'email', 'investmentFocus', 'investmentSize',
     'preferredIndustries', 'investmentCriteria', 'yearsOfExperience'
@@ -306,7 +308,7 @@ investorSchema.methods.calculateCompleteness = function() {
 
   const requiredPercentage = (completedRequired / requiredFields.length) * 70;
   const optionalPercentage = (completedOptional / optionalFields.length) * 30;
-  
+
   return Math.round(requiredPercentage + optionalPercentage);
 };
 

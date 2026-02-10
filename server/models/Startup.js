@@ -232,7 +232,9 @@ startupSchema.index({ startupStage: 1 });
 startupSchema.index({ fundingAmount: 1 });
 startupSchema.index({ isActive: 1 });
 startupSchema.index({ isVerified: 1 });
-startupSchema.index({ createdAt: -1 });
+startupSchema.index({ isActive: 1, isVerified: 1, createdAt: -1 });
+startupSchema.index({ isActive: 1, isVerified: 1, industry: 1 });
+startupSchema.index({ isActive: 1, isVerified: 1, startupStage: 1 });
 
 // Text search index
 startupSchema.index({
@@ -243,7 +245,7 @@ startupSchema.index({
 });
 
 // Virtual for funding amount in different currencies
-startupSchema.virtual('fundingAmountFormatted').get(function() {
+startupSchema.virtual('fundingAmountFormatted').get(function () {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
@@ -253,7 +255,7 @@ startupSchema.virtual('fundingAmountFormatted').get(function() {
 });
 
 // Method to get public profile
-startupSchema.methods.getPublicProfile = function() {
+startupSchema.methods.getPublicProfile = function () {
   const startupObject = this.toObject();
   delete startupObject.email;
   delete startupObject.phone;
@@ -262,7 +264,7 @@ startupSchema.methods.getPublicProfile = function() {
 };
 
 // Method to calculate profile completeness
-startupSchema.methods.calculateCompleteness = function() {
+startupSchema.methods.calculateCompleteness = function () {
   const requiredFields = [
     'startupName', 'websiteUrl', 'founderNames', 'email', 'numberOfFounders',
     'teamSize', 'founderBackground', 'industry', 'problemStatement',
@@ -301,7 +303,7 @@ startupSchema.methods.calculateCompleteness = function() {
 
   const requiredPercentage = (completedRequired / requiredFields.length) * 70;
   const optionalPercentage = (completedOptional / optionalFields.length) * 30;
-  
+
   return Math.round(requiredPercentage + optionalPercentage);
 };
 
