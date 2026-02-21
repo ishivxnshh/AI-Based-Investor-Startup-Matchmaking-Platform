@@ -103,7 +103,7 @@
 | **React Icons** | 5.5.0 | Icon library |
 | **Google GenAI** | 1.11.0 | AI integration |
 
-### Backend
+### Backend 
 
 | Technology | Version | Purpose |
 |------------|---------|---------|
